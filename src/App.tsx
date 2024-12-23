@@ -38,7 +38,7 @@ function Dashboard() {
   );
 
   return (
-    <div className="min-h-screen p-8 bg-gray-100">
+    <div className="min-h-screen p-8 bg-gray-100 mt-100">
       <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">
         Pilih Jenis Ujian
       </h1>
@@ -68,6 +68,7 @@ function App() {
             element={
               <>
                 <Navbar />
+                <div className="pt-16">
                 <Routes>
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/exam/cpns" element={<CPNSExam />} />
@@ -75,6 +76,7 @@ function App() {
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/history" element={<ExamHistory />} />
                 </Routes>
+                </div>
               </>
             }
           />
