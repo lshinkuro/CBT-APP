@@ -1,21 +1,15 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  User, 
-  History, 
-  LogOut, 
-  Menu, 
-  X, 
-  Home,
-  Shield,
-  GraduationCap 
+  User, History, LogOut, Menu, X, Home, Shield 
 } from 'lucide-react';
 import { useAuth } from '../../stores/authStore';
 
 export const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { user, logout } = useAuth();
+  const location = useLocation();
 
   const navItems = [
     { to: '/dashboard', icon: Home, label: 'Dashboard' },
@@ -23,36 +17,46 @@ export const Navbar = () => {
     { to: '/profile', icon: User, label: 'Profil' },
   ];
 
-  const toggleSidebar = () => setIsSidebarOpen(!isSidebarOpen);
+  const isActiveLink = (path) => location.pathname === path;
 
   return (
     <>
       {/* Desktop Navbar */}
-      <nav className="bg-white shadow-sm">
+      <nav className="bg-white/80 backdrop-blur-md fixed w-full top-0 z-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <Link to="/dashboard" className="flex items-center space-x-2">
+              <Link 
+                to="/dashboard" 
+                className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+              >
                 <Shield className="h-8 w-8 text-blue-600" />
-                <span className="text-xl font-bold text-blue-600">PoliceExam</span>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                  PoliceExam
+                </span>
               </Link>
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden md:flex items-center space-x-1">
               {navItems.map((item) => (
                 <Link
                   key={item.to}
                   to={item.to}
-                  className="flex items-center space-x-2 text-gray-600 hover:text-blue-600 transition-colors"
+                  className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200
+                    ${isActiveLink(item.to) 
+                      ? 'text-blue-600 bg-blue-50 font-medium' 
+                      : 'text-gray-600 hover:bg-gray-50'
+                    }`}
                 >
-                  <item.icon className="h-5 w-5" />
+                  <item.icon className={`h-5 w-5 ${isActiveLink(item.to) ? 'text-blue-600' : ''}`} />
                   <span>{item.label}</span>
                 </Link>
               ))}
               <button
                 onClick={logout}
-                className="flex items-center space-x-2 text-gray-600 hover:text-red-600 transition-colors"
+                className="flex items-center space-x-2 px-4 py-2 rounded-lg text-gray-600 
+                  hover:bg-red-50 hover:text-red-600 transition-all duration-200"
               >
                 <LogOut className="h-5 w-5" />
                 <span>Keluar</span>
@@ -62,8 +66,8 @@ export const Navbar = () => {
             {/* Mobile menu button */}
             <div className="md:hidden flex items-center">
               <button
-                onClick={toggleSidebar}
-                className="text-gray-600 hover:text-blue-600 transition-colors"
+                onClick={() => setIsSidebarOpen(true)}
+                className="p-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
               >
                 <Menu className="h-6 w-6" />
               </button>
@@ -81,8 +85,8 @@ export const Navbar = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
-              onClick={toggleSidebar}
-              className="fixed inset-0 bg-black z-40"
+              onClick={() => setIsSidebarOpen(false)}
+              className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40"
             />
 
             {/* Sidebar */}
@@ -90,56 +94,66 @@ export const Navbar = () => {
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 20 }}
-              className="fixed right-0 top-0 h-full w-64 bg-white shadow-lg z-50"
+              transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+              className="fixed right-0 top-0 h-full w-72 bg-white shadow-2xl z-50"
             >
-              <div className="p-4">
-                <div className="flex justify-between items-center mb-8">
-                  <div className="flex items-center space-x-2">
-                    <Shield className="h-6 w-6 text-blue-600" />
-                    <span className="text-lg font-bold text-blue-600">PoliceExam</span>
+              <div className="flex flex-col h-full">
+                <div className="p-4 border-b border-gray-100">
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center space-x-2">
+                      <Shield className="h-6 w-6 text-blue-600" />
+                      <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                        PoliceExam
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => setIsSidebarOpen(false)}
+                      className="p-2 rounded-lg text-gray-600 hover:bg-gray-50 transition-colors"
+                    >
+                      <X className="h-6 w-6" />
+                    </button>
                   </div>
-                  <button
-                    onClick={toggleSidebar}
-                    className="text-gray-600 hover:text-blue-600 transition-colors"
-                  >
-                    <X className="h-6 w-6" />
-                  </button>
                 </div>
 
-                <div className="space-y-6">
+                <div className="flex-1 overflow-y-auto">
                   {/* User info */}
-                  <div className="pb-6 border-b border-gray-200">
+                  <div className="p-4 border-b border-gray-100">
                     <div className="flex items-center space-x-3">
-                      <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                        <User className="h-6 w-6 text-blue-600" />
+                      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 
+                        flex items-center justify-center text-white">
+                        <User className="h-6 w-6" />
                       </div>
                       <div>
-                        <div className="font-medium text-gray-800">{user?.name}</div>
+                        <div className="font-medium text-gray-900">{user?.name}</div>
                         <div className="text-sm text-gray-500">{user?.email}</div>
                       </div>
                     </div>
                   </div>
 
                   {/* Navigation items */}
-                  <div className="space-y-4">
+                  <div className="p-4 space-y-1">
                     {navItems.map((item) => (
                       <Link
                         key={item.to}
                         to={item.to}
-                        onClick={toggleSidebar}
-                        className="flex items-center space-x-3 text-gray-600 hover:text-blue-600 transition-colors"
+                        onClick={() => setIsSidebarOpen(false)}
+                        className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-all duration-200
+                          ${isActiveLink(item.to)
+                            ? 'text-blue-600 bg-blue-50 font-medium'
+                            : 'text-gray-600 hover:bg-gray-50'
+                          }`}
                       >
-                        <item.icon className="h-5 w-5" />
+                        <item.icon className={`h-5 w-5 ${isActiveLink(item.to) ? 'text-blue-600' : ''}`} />
                         <span>{item.label}</span>
                       </Link>
                     ))}
                     <button
                       onClick={() => {
                         logout();
-                        toggleSidebar();
+                        setIsSidebarOpen(false);
                       }}
-                      className="w-full flex items-center space-x-3 text-gray-600 hover:text-red-600 transition-colors"
+                      className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg 
+                        text-gray-600 hover:bg-red-50 hover:text-red-600 transition-all duration-200"
                     >
                       <LogOut className="h-5 w-5" />
                       <span>Keluar</span>
