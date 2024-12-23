@@ -22,7 +22,7 @@ export interface Question {
     id: string;
     text: string;
     imageUrl?: string;
-    isCorrect: boolean;
+    isCorrect?: boolean;
     weight: number;
   }[];
   subSubType: SubSubType;

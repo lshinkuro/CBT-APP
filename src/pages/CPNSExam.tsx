@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { ExamHeader } from '../components/exam/ExamHeader';
 import { ExamProgress } from '../components/exam/ExamProgress';
 import { QuestionView } from '../components/exam/QuestionView';
-import { ExamTimer } from '../components/exam/ExamTimer';
-import { useExamStore } from '../stores/examStore';
 import { SubTypeSelector } from '../components/exam/SubTypeSelector';
 
 export const CPNSExam = () => {
