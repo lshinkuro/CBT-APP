@@ -1,5 +1,4 @@
 import { motion } from 'framer-motion';
-import { useState, useEffect } from 'react';
 import { useExamStore } from '../../stores/examStore';
 import { QuestionGrid } from './QuestionGrid';
 import { ExamComplete } from './ExamComplete';

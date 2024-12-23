@@ -27,13 +27,13 @@ export const CPNSExam = () => {
 
         {selectedSubType === 'SKD' && (
           <div className="mt-6">
-            <ExamProgress 
+            {/* <ExamProgress 
               sections={[
                 { id: 'TIU', label: 'Tes Intelegensi Umum', total: 10 },
                 { id: 'TKP', label: 'Tes Karakteristik Pribadi', total: 10 },
                 { id: 'TWK', label: 'Tes Wawasan Kebangsaan', total: 10 }
               ]}
-            />
+            /> */}
             <div className="mt-6">
               <QuestionView />
             </div>

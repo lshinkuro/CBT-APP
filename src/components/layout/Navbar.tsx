@@ -17,7 +17,7 @@ export const Navbar = () => {
     { to: '/profile', icon: User, label: 'Profil' },
   ];
 
-  const isActiveLink = (path) => location.pathname === path;
+  const isActiveLink = (path: string): boolean => location.pathname === path;
 
   return (
     <>
