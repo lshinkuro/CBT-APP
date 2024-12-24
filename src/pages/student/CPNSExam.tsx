@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { ExamHeader } from '../components/exam/ExamHeader';
-import { ExamProgress } from '../components/exam/ExamProgress';
-import { QuestionView } from '../components/exam/QuestionView';
-import { SubTypeSelector } from '../components/exam/SubTypeSelector';
+import { ExamHeader } from '../../components/exam/ExamHeader';
+import { ExamProgress } from '../../components/exam/ExamProgress';
+import { QuestionView } from '../../components/exam/QuestionView';
+import { SubTypeSelector } from '../../components/exam/SubTypeSelector';
 
 export const CPNSExam = () => {
   const [selectedSubType, setSelectedSubType] = useState<'SKD' | 'SKB'>('SKD');
