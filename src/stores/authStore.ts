@@ -1,10 +1,13 @@
 import { create } from "zustand";
 
+export type UserRole = 'admin' | 'student';
 interface User {
-    id: string;
-    name: string;
-    email: string;
-    createdAt: string;
+  id: string;
+  username: string;
+  displayName: string;
+  email: string;
+  role: UserRole;
+  createdAt: string;
 }
 
 interface AuthState {
@@ -13,11 +16,13 @@ interface AuthState {
 }
 
 export const useAuth = create<AuthState>((set) => ({
-    user: {
-        id: "1",
-        name: "John Doe",
-        email: "john@example.com",
-        createdAt: "2024-01-01",
-    },
-    logout: () => set({ user: null }),
+  user: {
+    id: '1',
+    username: 'admin',
+    displayName: 'Admin User',
+    email: 'admin@example.com',
+    role: 'student' as UserRole,
+    createdAt: new Date().toISOString()
+  },
+  logout: () => set({ user: null }),
 }));
