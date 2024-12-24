@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
 const API_BASE_URL: string = import.meta.env.VITE_APP_API_BASE_URL || "http://localhost:3001/api/v1";
-const MOCK_BASE_URL: string = "http://localhost:3001/api/v1"
+const MOCK_BASE_URL: string = "http://localhost:3001/api/v1";
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: API_BASE_URL,
@@ -22,12 +22,12 @@ const handleRequestError = (error: AxiosError): Promise<never> => {
     return Promise.reject(error);
 };
 
-export const get = async <T>(endpoint: string,
-    params: Record<string,
-    any> = {},
+export const get = async <T>(
+    endpoint: string,
+    params: Record<string, unknown> = {},
     token?: string,
     options: boolean = true
-    ): Promise<T> => {
+): Promise<T> => {
     try {
         const config: AxiosRequestConfig = {
             baseURL: options ? API_BASE_URL : MOCK_BASE_URL,
@@ -43,7 +43,7 @@ export const get = async <T>(endpoint: string,
     }
 };
 
-export const post = async <T>(endpoint: string, data: any, token?: string): Promise<T> => {
+export const post = async <T>(endpoint: string, data: unknown, token?: string): Promise<T> => {
     try {
         const isFormData = data instanceof FormData;
         const config: AxiosRequestConfig = {
@@ -59,7 +59,7 @@ export const post = async <T>(endpoint: string, data: any, token?: string): Prom
     }
 };
 
-export const put = async <T>(endpoint: string, data: any, token?: string): Promise<T> => {
+export const put = async <T>(endpoint: string, data: unknown, token?: string): Promise<T> => {
     try {
         const isFormData = data instanceof FormData;
         const config: AxiosRequestConfig = {
@@ -94,11 +94,11 @@ export const login = async (
     username: string,
     password: string
 ): Promise<{
-    data: any;
+    data: unknown;
     token: string;
 }> => {
     try {
-        const response: AxiosResponse<{ data: any; token: string }> = await axiosInstance.post(endpoint, {
+        const response: AxiosResponse<{ data: unknown; token: string }> = await axiosInstance.post(endpoint, {
             username,
             password,
         });
