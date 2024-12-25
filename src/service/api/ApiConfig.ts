@@ -1,7 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 
-const API_BASE_URL: string = import.meta.env.VITE_APP_API_BASE_URL || "http://localhost:3001/api/v1";
-const MOCK_BASE_URL: string = "http://localhost:3001/api/v1";
+const API_BASE_URL: string = import.meta.env.VITE_APP_API_BASE_URL || "http://localhost:8080";
 
 const axiosInstance: AxiosInstance = axios.create({
     baseURL: API_BASE_URL,
@@ -22,35 +22,35 @@ const handleRequestError = (error: AxiosError): Promise<never> => {
     return Promise.reject(error);
 };
 
-export const get = async <T>(
+export const get = async (
     endpoint: string,
-    params: Record<string, unknown> = {},
-    token?: string,
-    options: boolean = true
-): Promise<T> => {
+    params: Record<string, any> = {},
+    withCredentials: boolean = true
+): Promise<{
+    message: string;
+    status: number;
+    data: any;
+}> => {
     try {
         const config: AxiosRequestConfig = {
-            baseURL: options ? API_BASE_URL : MOCK_BASE_URL,
+            baseURL: API_BASE_URL,
             params,
-            headers: {
-                Authorization: token ? `Bearer ${token}` : undefined,
-            },
+            withCredentials,
         };
-        const response: AxiosResponse<T> = await axiosInstance.get(endpoint, config);
+        const response: AxiosResponse = await axiosInstance.get(endpoint, config);
         return response.data;
     } catch (error) {
         return handleRequestError(error as AxiosError);
     }
 };
-
-export const post = async <T>(endpoint: string, data: unknown, token?: string): Promise<T> => {
+export const post = async <T>(endpoint: string, data: any, withCredentials: boolean = true): Promise<T> => {
     try {
         const isFormData = data instanceof FormData;
         const config: AxiosRequestConfig = {
             headers: {
-                Authorization: token ? `Bearer ${token}` : undefined,
                 "Content-Type": isFormData ? "multipart/form-data" : "application/json",
             },
+            withCredentials,
         };
         const response: AxiosResponse<T> = await axiosInstance.post(endpoint, data, config);
         return response.data;
@@ -59,14 +59,14 @@ export const post = async <T>(endpoint: string, data: unknown, token?: string): 
     }
 };
 
-export const put = async <T>(endpoint: string, data: unknown, token?: string): Promise<T> => {
+export const put = async <T>(endpoint: string, data: any, withCredentials: boolean = true): Promise<T> => {
     try {
         const isFormData = data instanceof FormData;
         const config: AxiosRequestConfig = {
             headers: {
-                Authorization: token ? `Bearer ${token}` : undefined,
                 "Content-Type": isFormData ? "multipart/form-data" : "application/json",
             },
+            withCredentials,
         };
         const response: AxiosResponse<T> = await axiosInstance.put(endpoint, data, config);
         return response.data;
@@ -75,12 +75,10 @@ export const put = async <T>(endpoint: string, data: unknown, token?: string): P
     }
 };
 
-export const del = async <T>(endpoint: string, token?: string): Promise<T> => {
+export const del = async <T>(endpoint: string, withCredentials: boolean = true): Promise<T> => {
     try {
         const config: AxiosRequestConfig = {
-            headers: {
-                Authorization: token ? `Bearer ${token}` : undefined,
-            },
+            withCredentials,
         };
         const response: AxiosResponse<T> = await axiosInstance.delete(endpoint, config);
         return response.data;
@@ -91,17 +89,22 @@ export const del = async <T>(endpoint: string, token?: string): Promise<T> => {
 
 export const login = async (
     endpoint: string,
-    username: string,
+    email: string,
     password: string
 ): Promise<{
-    data: unknown;
-    token: string;
+    data: any;
 }> => {
     try {
-        const response: AxiosResponse<{ data: unknown; token: string }> = await axiosInstance.post(endpoint, {
-            username,
-            password,
-        });
+        const response: AxiosResponse<{ data: any }> = await axiosInstance.post(
+            endpoint,
+            {
+                email,
+                password,
+            },
+            {
+                withCredentials: true,
+            }
+        );
         return response.data;
     } catch (error) {
         return handleRequestError(error as AxiosError);

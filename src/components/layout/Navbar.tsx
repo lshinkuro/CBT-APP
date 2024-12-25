@@ -4,11 +4,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   User, History, LogOut, Menu, X, Home, Shield 
 } from 'lucide-react';
-import { useAuth } from '../../stores/authStore';
+import useAuthStore from '../../stores/authStore';
 
 export const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const { user, logout } = useAuth();
+  const { user, logout } = useAuthStore();
   const location = useLocation();
 
   const navItems = [
@@ -124,7 +124,7 @@ export const Navbar = () => {
                         <User className="h-6 w-6" />
                       </div>
                       <div>
-                        <div className="font-medium text-gray-900">{user?.name}</div>
+                        <div className="font-medium text-gray-900">{user?.username}</div>
                         <div className="text-sm text-gray-500">{user?.email}</div>
                       </div>
                     </div>
