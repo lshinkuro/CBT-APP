@@ -1,6 +1,6 @@
-import { ExamHeader } from '../components/exam/ExamHeader';
-import { ExamProgress } from '../components/exam/ExamProgress';
-import { QuestionView } from '../components/exam/QuestionView';
+import { ExamHeader } from '../../components/exam/ExamHeader';
+import { ExamProgress } from '../../components/exam/ExamProgress';
+import { QuestionView } from '../../components/exam/QuestionView';
 
 
 export const IkatanDinasExam = () => {

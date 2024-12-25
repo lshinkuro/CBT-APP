@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { useExamHistory } from '../stores/examHistoryStore';
+import { useExamHistory } from '../../stores/examHistoryStore';
 
 export const ExamHistory = () => {
   const { history } = useExamHistory();

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import useAuthStore from "../stores/authStore";
+import useAuthStore from "../../stores/authStore";
 
 export const Profile = () => {
     const { user } = useAuthStore();
@@ -34,14 +34,10 @@ export const Profile = () => {
                         </div>
 
                         <div>
-                            <label htmlFor="joined" className="block text-sm font-medium text-gray-600">
+                            <label htmlFor="createdAt" className="block text-sm font-medium text-gray-600">
                                 Bergabung Sejak
                             </label>
-                            <p id="joined" className="mt-1 text-lg">
-                                {user?.createdAt
-                                    ? new Date(user.createdAt).toLocaleDateString()
-                                    : "Tanggal tidak diketahui"}
-                            </p>
+                            <p className="mt-1 text-lg">{user && new Date(user?.createdAt).toLocaleDateString()}</p>
                         </div>
                     </div>
                 </motion.div>
