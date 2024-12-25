@@ -43,7 +43,15 @@ export const get = async (
         return handleRequestError(error as AxiosError);
     }
 };
-export const post = async <T>(endpoint: string, data: any, withCredentials: boolean = true): Promise<T> => {
+export const post = async (
+    endpoint: string,
+    data: any,
+    withCredentials: boolean = true
+): Promise<{
+    message: string;
+    status: number;
+    data: any;
+}> => {
     try {
         const isFormData = data instanceof FormData;
         const config: AxiosRequestConfig = {
@@ -52,7 +60,7 @@ export const post = async <T>(endpoint: string, data: any, withCredentials: bool
             },
             withCredentials,
         };
-        const response: AxiosResponse<T> = await axiosInstance.post(endpoint, data, config);
+        const response: AxiosResponse = await axiosInstance.post(endpoint, data, config);
         return response.data;
     } catch (error) {
         return handleRequestError(error as AxiosError);
