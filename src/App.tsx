@@ -15,6 +15,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { ExamHistory } from "./pages/student/ExamHistory";
 import { IkatanDinasExam } from "./pages/student/IkatanDinasExam";
 import { CPNSExam } from "./pages/student/CPNSExam";
+import { Profile } from "./pages/student/Profile";
 
 function App() {
     const { user, checkAuth, isLoading } = useAuthStore();
