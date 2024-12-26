@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "./Modal";
 
 interface FormModalUserProps {
@@ -13,14 +13,36 @@ interface FormModalUserProps {
         role: "admin" | "student";
     }) => Promise<void>;
     isLoading?: boolean;
+    initialValues?: {
+        username: string;
+        displayName: string;
+        email: string;
+        phoneNumber: string;
+        role: "admin" | "student";
+    };
 }
 
-const FormModalUser: React.FC<FormModalUserProps> = ({ isOpen, onClose, title, onSubmit, isLoading }) => {
+const FormModalUser: React.FC<FormModalUserProps> = ({
+    isOpen,
+    onClose,
+    title,
+    onSubmit,
+    isLoading,
+    initialValues,
+}) => {
     const [username, setUsername] = useState<string>("");
     const [displayName, setDisplayName] = useState<string>("");
     const [email, setEmail] = useState<string>("");
     const [phoneNumber, setPhoneNumber] = useState<string>("");
     const [role, setRole] = useState<"admin" | "student">("student");
+
+    useEffect(() => {
+        setUsername(initialValues?.username ?? "");
+        setDisplayName(initialValues?.displayName ?? "");
+        setEmail(initialValues?.email ?? "");
+        setPhoneNumber(initialValues?.phoneNumber ?? "");
+        setRole(initialValues?.role ?? "student");
+    }, [initialValues]);
 
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value);
     const handleDisplayNameChange = (e: React.ChangeEvent<HTMLInputElement>) => setDisplayName(e.target.value);
@@ -114,4 +136,3 @@ const FormModalUser: React.FC<FormModalUserProps> = ({ isOpen, onClose, title, o
 };
 
 export default FormModalUser;
-

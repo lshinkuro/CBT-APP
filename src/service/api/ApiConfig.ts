@@ -67,7 +67,15 @@ export const post = async (
     }
 };
 
-export const put = async <T>(endpoint: string, data: any, withCredentials: boolean = true): Promise<T> => {
+export const put = async (
+    endpoint: string,
+    data: any,
+    withCredentials: boolean = true
+): Promise<{
+    message: string;
+    status: number;
+    data: any;
+}> => {
     try {
         const isFormData = data instanceof FormData;
         const config: AxiosRequestConfig = {
@@ -76,19 +84,26 @@ export const put = async <T>(endpoint: string, data: any, withCredentials: boole
             },
             withCredentials,
         };
-        const response: AxiosResponse<T> = await axiosInstance.put(endpoint, data, config);
+        const response: AxiosResponse = await axiosInstance.put(endpoint, data, config);
         return response.data;
     } catch (error) {
         return handleRequestError(error as AxiosError);
     }
 };
 
-export const del = async <T>(endpoint: string, withCredentials: boolean = true): Promise<T> => {
+export const del = async (
+    endpoint: string,
+    withCredentials: boolean = true
+): Promise<{
+    message: string;
+    status: number;
+    data: any;
+}> => {
     try {
         const config: AxiosRequestConfig = {
             withCredentials,
         };
-        const response: AxiosResponse<T> = await axiosInstance.delete(endpoint, config);
+        const response: AxiosResponse = await axiosInstance.delete(endpoint, config);
         return response.data;
     } catch (error) {
         return handleRequestError(error as AxiosError);

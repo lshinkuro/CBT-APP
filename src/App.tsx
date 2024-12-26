@@ -16,6 +16,8 @@ import { ExamHistory } from "./pages/student/ExamHistory";
 import { IkatanDinasExam } from "./pages/student/IkatanDinasExam";
 import { CPNSExam } from "./pages/student/CPNSExam";
 import { Profile } from "./pages/student/Profile";
+import { Helmet } from "react-helmet-async";
+import logoPencil from "./assets/images/pencil.png";
 
 function App() {
     const { user, checkAuth, isLoading } = useAuthStore();
@@ -31,6 +33,10 @@ function App() {
     }
     return (
         <Router>
+            <Helmet>
+                <link rel="icon" href={logoPencil} />
+                <title>Tryout CPNS Polri</title>
+            </Helmet>
             <AnimatedBackground />
             <div className="min-h-screen">
                 <Routes>
