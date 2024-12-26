@@ -5,9 +5,7 @@ import { LoginForm } from "./components/LoginForm";
 import { useEffect } from "react";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { UsersList } from "./pages/admin/UsersList";
-import { CreateTryOut } from "./pages/admin/CreateTryOut";
 import { AdminSettings } from "./pages/admin/AdminSettings";
-import { CreateUser } from "./pages/admin/CreateUser";
 import useAuthStore from "./stores/authStore";
 import Loading from "./components/loading/Loading";
 import { StudentDashboard } from "./pages/student/StudentDashboard";
@@ -18,6 +16,7 @@ import { CPNSExam } from "./pages/student/CPNSExam";
 import { Profile } from "./pages/student/Profile";
 import { Helmet } from "react-helmet-async";
 import logoPencil from "./assets/images/pencil.png";
+import TryoutsList from "./pages/admin/TryoutsList";
 
 function App() {
     const { user, checkAuth, isLoading } = useAuthStore();
@@ -49,8 +48,7 @@ function App() {
                                 <Routes>
                                     <Route path="dashboard" element={<AdminDashboard />} />
                                     <Route path="users" element={<UsersList />} />
-                                    <Route path="users/create" element={<CreateUser />} />
-                                    <Route path="tryouts" element={<CreateTryOut />} />
+                                    <Route path="tryouts" element={<TryoutsList />} />
                                     <Route path="settings" element={<AdminSettings />} />
                                 </Routes>
                             </ProtectedRoute>

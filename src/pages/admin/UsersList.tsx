@@ -7,22 +7,14 @@ import useUserStore from "../../stores/userStore";
 import FormModalUser from "../../components/admin/FormModalUser";
 import toast from "react-hot-toast";
 import ConfirmationBox, { ConfirmationBoxProps } from "../../components/layout/ConfirmationBox";
-
-interface User {
-    id: string;
-    username: string;
-    email: string;
-    phoneNumber: string;
-    displayName: string;
-    role: "admin" | "student";
-    createdAt: string;
-}
+import { User } from "../../types/user";
 
 export const UsersList = () => {
     const { users, isLoading, getAllUsers, createUser, error, deleteUser, totalRows, updateUser, message } =
         useUserStore();
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [limit, setLimit] = useState<number>(10);
+    const [searchTerm, setSearchTerm] = useState<string>("");
     const [confirmationBox, setConfirmationBox] = useState<ConfirmationBoxProps>({
         isOpen: false,
         message: "",
@@ -38,6 +30,7 @@ export const UsersList = () => {
         email: "",
         role: "student",
         createdAt: "",
+        isActive: true,
     });
 
     const columns: IDataTableProps<{
@@ -48,6 +41,7 @@ export const UsersList = () => {
         role: "admin" | "student";
         phoneNumber: string;
         createdAt: string;
+        isActive: boolean;
     }>["columns"] = [
         {
             name: "Name",
@@ -77,8 +71,25 @@ export const UsersList = () => {
                     minute: "2-digit",
                 }),
             sortable: true,
+            grow: 1.5,
             sortFunction: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
         },
+        {
+            name: "Active",
+            cell: (props) =>
+                props.isActive ? (
+                    <span className="inline-block px-2 py-1 text-xs font-semibold leading-none text-white rounded-full bg-green-500 items-center justify-center">
+                        Active
+                    </span>
+                ) : (
+                    <span className="inline-block px-2 py-1 text-xs font-semibold leading-none text-white rounded-full bg-red-500 items-center justify-center">
+                        Inactive
+                    </span>
+                ),
+            sortable: true,
+            grow: 0.2,
+        },
+
         {
             name: "Action",
             cell: (props) => (
@@ -114,9 +125,21 @@ export const UsersList = () => {
         if (message) {
             toast.success(message);
         }
+        useUserStore.setState({ message: null });
     }, [message]);
 
     const handleClickRegister = () => {
+        setMode("create");
+        setSelectedUser({
+            id: "",
+            username: "",
+            displayName: "",
+            email: "",
+            phoneNumber: "",
+            role: "student",
+            createdAt: "",
+            isActive: true,
+        });
         setIsOpenModal(true);
     };
 
@@ -132,6 +155,7 @@ export const UsersList = () => {
         email: string;
         phoneNumber: string;
         role: "admin" | "student";
+        isActive: boolean;
     }) => {
         if (mode === "update") {
             await updateUser(selectedUser.id, data);
@@ -147,6 +171,7 @@ export const UsersList = () => {
             phoneNumber: "",
             role: "student",
             createdAt: "",
+            isActive: true,
         });
         setMode("create");
     };
@@ -174,6 +199,12 @@ export const UsersList = () => {
         getAllUsers();
     };
 
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
+        useUserStore.setState({ search: e.target.value, offset: 0 });
+        getAllUsers();
+    };
+
     return (
         <div className="flex flex-col w-full">
             <AdminSidebar />
@@ -193,6 +224,8 @@ export const UsersList = () => {
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="search"
                             placeholder="Username, Display Name, Email, Phone Number"
+                            value={searchTerm}
+                            onChange={handleSearchChange}
                         />
                     </div>
                 </div>

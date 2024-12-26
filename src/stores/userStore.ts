@@ -1,48 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { post, get, put, del } from "../service/api/ApiConfig";
-import { UserRole } from "./authStore";
-
-interface User {
-    id: string;
-    username: string;
-    phoneNumber: string;
-    displayName: string;
-    email: string;
-    role: UserRole;
-    createdAt: string;
-    updatedAt: string;
-}
-
-interface UserState {
-    users: User[];
-    isLoading: boolean;
-    error: string | null;
-    limit: number;
-    offset: number;
-    search: string;
-    totalRows: number;
-    message: string | null;
-    getAllUsers: () => Promise<void>;
-    createUser: (data: {
-        username: string;
-        displayName: string;
-        email: string;
-        role: UserRole;
-        phoneNumber: string;
-    }) => Promise<void>;
-    deleteUser: (id: string) => Promise<void>;
-    updateUser: (
-        id: string,
-        data: {
-            username?: string;
-            displayName?: string;
-            email?: string;
-            role?: UserRole;
-            phoneNumber?: string;
-        }
-    ) => Promise<void>;
-}
+import { UserRole, UserState } from "../types/user";
 
 const useUserStore = create<UserState>((set) => ({
     users: [],
@@ -82,7 +41,7 @@ const useUserStore = create<UserState>((set) => ({
         } catch (error: any) {
             set({ error: error.response?.data?.message || "Failed to create user" });
         } finally {
-            set({ isLoading: false});
+            set({ isLoading: false });
         }
     },
     updateUser: async (

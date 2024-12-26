@@ -1,26 +1,6 @@
 import { useState, useEffect } from "react";
 import Modal from "./Modal";
-
-interface FormModalUserProps {
-    isOpen: boolean;
-    onClose: () => void;
-    title: string;
-    onSubmit: (data: {
-        username: string;
-        displayName: string;
-        email: string;
-        phoneNumber: string;
-        role: "admin" | "student";
-    }) => Promise<void>;
-    isLoading?: boolean;
-    initialValues?: {
-        username: string;
-        displayName: string;
-        email: string;
-        phoneNumber: string;
-        role: "admin" | "student";
-    };
-}
+import { FormModalUserProps } from "../../types/user";
 
 const FormModalUser: React.FC<FormModalUserProps> = ({
     isOpen,
@@ -35,6 +15,7 @@ const FormModalUser: React.FC<FormModalUserProps> = ({
     const [email, setEmail] = useState<string>("");
     const [phoneNumber, setPhoneNumber] = useState<string>("");
     const [role, setRole] = useState<"admin" | "student">("student");
+    const [isActive, setIsActive] = useState<boolean>(true);
 
     useEffect(() => {
         setUsername(initialValues?.username ?? "");
@@ -42,6 +23,7 @@ const FormModalUser: React.FC<FormModalUserProps> = ({
         setEmail(initialValues?.email ?? "");
         setPhoneNumber(initialValues?.phoneNumber ?? "");
         setRole(initialValues?.role ?? "student");
+        setIsActive(initialValues?.isActive ?? true);
     }, [initialValues]);
 
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value);
@@ -50,11 +32,12 @@ const FormModalUser: React.FC<FormModalUserProps> = ({
     const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => setPhoneNumber(e.target.value);
     const handleRoleChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
         setRole(e.target.value as "admin" | "student");
+    const handleIsActiveChange = (e: React.ChangeEvent<HTMLSelectElement>) => setIsActive(e.target.value === "true");
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            await onSubmit({ username, displayName, email, phoneNumber, role });
+            await onSubmit({ username, displayName, email, phoneNumber, role, isActive });
             onClose();
         } catch (error) {
             console.error(error);
@@ -128,6 +111,20 @@ const FormModalUser: React.FC<FormModalUserProps> = ({
                     >
                         <option value="admin">Admin</option>
                         <option value="student">Student</option>
+                    </select>
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="isActive" className="block mb-2 text-sm font-medium text-gray-600">
+                        Active Status
+                    </label>
+                    <select
+                        id="isActive"
+                        value={isActive.toString()}
+                        onChange={handleIsActiveChange}
+                        className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
                     </select>
                 </div>
             </form>
