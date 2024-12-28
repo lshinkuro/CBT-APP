@@ -5,13 +5,13 @@ import useQuestionStore from "../../stores/questionStore";
 import FormModalQuestion from "../../components/admin/FormModalQuestion";
 import ConfirmationBox, { ConfirmationBoxProps } from "../../components/layout/ConfirmationBox";
 import { Pencil, Trash, Plus } from "lucide-react";
-import { Question } from "../../types/question";
+import { Question, QuestionDto } from "../../types/question";
 import toast from "react-hot-toast";
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
-import useTryoutStore from "../../stores/tryoutStore";
-import { SelectTryoutProps } from "../../types/tryout";
 import useTryoutSectionStore from "../../stores/tryoutSectionStore";
-import { SelectTryoutSectionProps } from "../../types/tryoutSection";
+import SelectTryout from "../../components/admin/SelectTryout";
+import SelectTryoutSection from "../../components/admin/SelectTryoutSection";
+import { MockData } from "../../mocks/Option";
 
 const QuestionsList = () => {
     const {
@@ -24,10 +24,10 @@ const QuestionsList = () => {
         error,
         message,
         totalRows,
+        selectedTryoutId,
+        selectedTryoutSectionId,
     } = useQuestionStore();
     const { getAllAvailableTryoutSectionsByTryoutId, availableTryoutSections } = useTryoutSectionStore();
-    const [tryoutId, setTryoutId] = useState<string>("");
-    const [tryoutSectionId, setTryoutSectionId] = useState<string>("");
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [mode, setMode] = useState<"create" | "update">("create");
     const [limit, setLimit] = useState<number>(10);
@@ -35,11 +35,13 @@ const QuestionsList = () => {
     const [selectedQuestion, setSelectedQuestion] = useState<Question>({
         id: "",
         content: "",
+        tryoutSectionId: "",
         image: "",
-        type: "",
-        isActive: false,
-        data: {},
+        type: "multiple-choice",
+        isActive: true,
+        data: MockData,
         createdAt: "",
+        tryoutSection: { id: "", title: "", type: "", subType: "", tryout: { id: "", title: "", type: "" } },
     });
     const [confirmationBox, setConfirmationBox] = useState<ConfirmationBoxProps>({
         isOpen: false,
@@ -55,14 +57,36 @@ const QuestionsList = () => {
             sortable: true,
         },
         {
+            name: "Tryout",
+            selector: (row) => row.tryoutSection.tryout.title,
+            sortable: true,
+        },
+        {
+            name: "Tryout Section",
+            selector: (row) => row.tryoutSection.type,
+            sortable: true,
+        },
+        {
+            name: "Sub Type",
+            selector: (row) => row.tryoutSection.subType ?? "-",
+            sortable: true,
+        },
+        {
             name: "Type",
             selector: (row) => row.type,
             sortable: true,
         },
         {
             name: "Created At",
-            selector: (row) => row.createdAt,
-            sortable: false,
+            selector: (row) =>
+                new Date(row.createdAt).toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                }),
+            sortable: true,
         },
         {
             name: "Active",
@@ -103,7 +127,7 @@ const QuestionsList = () => {
 
     useEffect(() => {
         getAllQuestions();
-    }, [getAllQuestions]);
+    }, [getAllQuestions, selectedTryoutId, selectedTryoutSectionId]);
 
     useEffect(() => {
         if (error) {
@@ -120,12 +144,12 @@ const QuestionsList = () => {
     }, [message]);
 
     useEffect(() => {
-        if (tryoutId !== "") {
-            getAllAvailableTryoutSectionsByTryoutId(tryoutId);
+        if (selectedTryoutId !== "") {
+            getAllAvailableTryoutSectionsByTryoutId(selectedTryoutId);
         } else {
             useTryoutSectionStore.setState({ availableTryoutSections: [] });
         }
-    }, [getAllAvailableTryoutSectionsByTryoutId, tryoutId]);
+    }, [getAllAvailableTryoutSectionsByTryoutId, selectedTryoutId]);
 
     const handleClickCreateQuestion = () => {
         setIsOpenModal(true);
@@ -133,11 +157,13 @@ const QuestionsList = () => {
         setSelectedQuestion({
             id: "",
             content: "",
+            tryoutSectionId: "",
             image: "",
-            type: "",
-            isActive: false,
-            data: {},
+            type: "multiple-choice",
+            isActive: true,
+            data: MockData,
             createdAt: "",
+            tryoutSection: { id: "", title: "", type: "", subType: "", tryout: { id: "", title: "", type: "" } },
         });
     };
 
@@ -159,33 +185,36 @@ const QuestionsList = () => {
         });
     };
 
-    const handleSubmit = async (data: Omit<Question, "id" | "createdAt">) => {
+    const handleSubmit = async (data: QuestionDto) => {
         if (mode === "update") {
             await updateQuestion(selectedQuestion.id, data);
         } else {
             await createQuestion(data);
         }
+        console.log(data);
         setIsOpenModal(false);
         setSelectedQuestion({
             id: "",
             content: "",
             image: "",
-            type: "",
-            isActive: false,
-            data: {},
+            tryoutSectionId: "",
+            type: "multiple-choice",
+            isActive: true,
+            data: MockData,
             createdAt: "",
+            tryoutSection: { id: "", title: "", type: "", subType: "", tryout: { id: "", title: "", type: "" } },
         });
         setMode("create");
     };
 
     const handlePageChange = (page: number) => {
-        useTryoutStore.setState({ offset: (page - 1) * limit });
+        useQuestionStore.setState({ offset: (page - 1) * limit });
         getAllQuestions();
     };
 
     const handleLimitChange = (limit: number) => {
         setLimit(limit);
-        useTryoutStore.setState({ limit, offset: 0 });
+        useQuestionStore.setState({ limit, offset: 0 });
         getAllQuestions();
     };
 
@@ -200,14 +229,8 @@ const QuestionsList = () => {
             <AdminSidebar />
             <main className="flex-1 ml-64 p-8 rounded">
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">List Questions</h1>
-                <SelectTryout setTryoutId={setTryoutId} tryoutId={tryoutId} />
-                {availableTryoutSections.length > 0 && (
-                    <SelectTryoutSection
-                        setTryoutSectionId={setTryoutSectionId}
-                        tryoutSectionId={tryoutSectionId}
-                        availableTryoutSections={availableTryoutSections}
-                    />
-                )}
+                <SelectTryout />
+                {availableTryoutSections.length > 0 && <SelectTryoutSection />}
                 <div className="flex items-center justify-between mb-4">
                     <button
                         className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
@@ -221,7 +244,7 @@ const QuestionsList = () => {
                         <input
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="search"
-                            placeholder="Text, Type"
+                            placeholder="Type, Content"
                             value={searchTerm}
                             onChange={handleSearchChange}
                         />
@@ -242,68 +265,13 @@ const QuestionsList = () => {
                 <FormModalQuestion
                     isOpen={isOpenModal}
                     onClose={() => setIsOpenModal(false)}
-                    title={selectedQuestion ? "Edit Question" : "Create New Question"}
+                    title={mode === "update" ? "Edit Question" : "Create New Question"}
                     onSubmit={handleSubmit}
                     isLoading={isLoading}
                     initialValues={selectedQuestion}
                 />
                 <ConfirmationBox {...confirmationBox} />
             </main>
-        </div>
-    );
-};
-
-const SelectTryout: React.FC<SelectTryoutProps> = ({ setTryoutId, tryoutId }) => {
-    const { getAllAvailableTryouts, availableTryouts } = useTryoutStore();
-
-    useEffect(() => {
-        getAllAvailableTryouts();
-    }, [getAllAvailableTryouts]);
-
-    return (
-        <div className="mb-4">
-            <label htmlFor="tryout" className="block mb-1 text-xs font-medium text-gray-600">
-                Select Tryout
-            </label>
-            <select
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={tryoutId}
-                onChange={(e) => setTryoutId(e.target.value)}
-            >
-                <option value="">Select Tryout</option>
-                {availableTryouts.map((tryout) => (
-                    <option key={tryout.id} value={tryout.id}>
-                        {tryout.title}
-                    </option>
-                ))}
-            </select>
-        </div>
-    );
-};
-
-const SelectTryoutSection: React.FC<SelectTryoutSectionProps> = ({
-    tryoutSectionId,
-    setTryoutSectionId,
-    availableTryoutSections,
-}) => {
-    return (
-        <div className="mb-4">
-            <label htmlFor="tryout" className="block mb-1 text-xs font-medium text-gray-600">
-                Select Tryout Section
-            </label>
-            <select
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={tryoutSectionId}
-                onChange={(e) => setTryoutSectionId(e.target.value)}
-            >
-                <option value="">Select Tryout Section</option>
-                {availableTryoutSections.map((tryoutSection) => (
-                    <option key={tryoutSection.id} value={tryoutSection.id}>
-                        {tryoutSection.title} - {tryoutSection.type}{" "}
-                        {tryoutSection.subType && `- ${tryoutSection.subType}`}
-                    </option>
-                ))}
-            </select>
         </div>
     );
 };

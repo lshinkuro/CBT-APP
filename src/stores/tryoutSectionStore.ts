@@ -38,7 +38,7 @@ const useTryoutSectionStore = create<TryoutSectionState>((set) => ({
             if (response.message === "Success") {
                 set({
                     tryoutSections: response.data.tryoutSections,
-                    totalRows: response.totalRows,
+                    totalRows: response.data.count,
                 });
             }
         } catch (error: any) {

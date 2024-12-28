@@ -1,4 +1,16 @@
 export interface Question {
+    tryoutSection: {
+        id: string;
+        title: string;
+        type: string;
+        subType: string | null;
+        tryout: {
+            id: string;
+            title: string;
+            type: string;
+        };
+    };
+    tryoutSectionId: string;
     id: string;
     content: string;
     type: string;
@@ -9,6 +21,8 @@ export interface Question {
 }
 
 export interface QuestionState {
+    selectedTryoutId: string;
+    selectedTryoutSectionId: string;
     questions: Question[];
     isLoading: boolean;
     message: string | null;
@@ -32,4 +46,17 @@ export interface FormModalQuestionProps {
     initialValues?: Question;
 }
 
-export type QuestionDto = Omit<Question, "id" | "createdAt">;
+export interface Option {
+    key: string;
+    content: string;
+    score: number;
+    image: string | null;
+    correct: boolean;
+}
+
+export interface OptionProps {
+    setData: (data: { options: Option[] }) => void;
+    data: { options: Option[] };
+}
+
+export type QuestionDto = Omit<Question, "id" | "createdAt" | "tryoutSection">;

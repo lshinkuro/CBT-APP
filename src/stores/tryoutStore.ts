@@ -40,7 +40,7 @@ const useTryoutStore = create<TryoutState>((set) => ({
             if (response.message === "Success") {
                 set({
                     tryouts: response.data.tryouts,
-                    totalRows: response.totalRows,
+                    totalRows: response.data.count,
                 });
             }
         } catch (error: any) {

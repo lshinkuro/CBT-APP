@@ -230,7 +230,7 @@ const TryoutsList = () => {
                 <FormModalTryout
                     isOpen={isOpenModal}
                     onClose={() => setIsOpenModal(false)}
-                    title={selectedTryout ? "Edit Try Out" : "Create New Try Out"}
+                    title={mode === "update" ? "Edit Try Out" : "Create New Try Out"}
                     onSubmit={handleSubmit}
                     isLoading={isLoading}
                     initialValues={selectedTryout}

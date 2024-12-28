@@ -212,13 +212,13 @@ const TryoutSectionsList = () => {
     };
 
     const handlePageChange = (page: number) => {
-        useTryoutStore.setState({ offset: (page - 1) * limit });
+        useTryoutSectionStore.setState({ offset: (page - 1) * limit });
         getAllTryoutSections();
     };
 
     const handleLimitChange = (limit: number) => {
         setLimit(limit);
-        useTryoutStore.setState({ limit, offset: 0 });
+        useTryoutSectionStore.setState({ limit, offset: 0 });
         getAllTryoutSections();
     };
 
@@ -267,7 +267,7 @@ const TryoutSectionsList = () => {
                 <FormModalTryoutSection
                     isOpen={isOpenModal}
                     onClose={() => setIsOpenModal(false)}
-                    title={selectedTryoutSection ? "Edit Try Out Section" : "Create New Try Out Section"}
+                    title={mode === "update" ? "Edit Try Out Section" : "Create New Try Out Section"}
                     onSubmit={handleSubmit}
                     isLoading={isLoading}
                     initialValues={selectedTryoutSection}

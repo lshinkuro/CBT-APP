@@ -20,6 +20,10 @@ export interface AvailableTryoutSections {
     title: string;
     type: string;
     subType: string;
+    tryout: {
+        id: string;
+        title: string;
+    };
 }
 export interface TryoutSectionState {
     availableTryoutSections: AvailableTryoutSections[];
@@ -45,12 +49,6 @@ export interface FormModalTryoutSectionProps {
     onSubmit: (data: TryoutSectionDto) => Promise<void>;
     isLoading?: boolean;
     initialValues?: TryoutSection;
-}
-
-export interface SelectTryoutSectionProps {
-    setTryoutSectionId: React.Dispatch<React.SetStateAction<string>>;
-    tryoutSectionId: string;
-    availableTryoutSections: AvailableTryoutSections[];
 }
 
 export type TryoutSectionDto = Omit<TryoutSection, "id" | "createdAt" | "tryout">;

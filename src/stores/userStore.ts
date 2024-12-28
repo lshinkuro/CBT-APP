@@ -5,6 +5,7 @@ import { UserDto, UserState } from "../types/user";
 
 const useUserStore = create<UserState>((set) => ({
     users: [],
+    selectedUserProfile: null,
     isLoading: false,
     message: null,
     error: null,
@@ -12,6 +13,19 @@ const useUserStore = create<UserState>((set) => ({
     offset: 0,
     search: "",
     totalRows: 0,
+    getSelectedUserProfile: async (userId: string) => {
+        set({ isLoading: true, error: null });
+        try {
+            const response = await get(`/api/admin/users/profile/${userId}`);
+            if (response.message === "Success") {
+                set({ selectedUserProfile: response.data });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to fetch user profile" });
+        } finally {
+            set({ isLoading: false });
+        }
+    },
     getAllUsers: async () => {
         set({ isLoading: true, error: null });
         try {

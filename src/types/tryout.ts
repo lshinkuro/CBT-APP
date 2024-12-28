@@ -41,9 +41,4 @@ export interface FormModalTryoutProps {
     initialValues?: Tryout;
 }
 
-export interface SelectTryoutProps {
-    setTryoutId: React.Dispatch<React.SetStateAction<string>>;
-    tryoutId: string;
-}
-
 export type TryoutDto = Omit<Tryout, "id" | "createdAt">;

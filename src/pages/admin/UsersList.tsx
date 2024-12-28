@@ -2,17 +2,30 @@
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
 import DataTable, { IDataTableProps } from "react-data-table-component";
 import { useEffect, useState } from "react";
-import { Pencil, Trash, Plus } from "lucide-react";
+import { Pencil, Trash, Plus, UserRound } from "lucide-react";
 import useUserStore from "../../stores/userStore";
 import FormModalUser from "../../components/admin/FormModalUser";
 import toast from "react-hot-toast";
 import ConfirmationBox, { ConfirmationBoxProps } from "../../components/layout/ConfirmationBox";
 import { User, UserDto } from "../../types/user";
+import { ModalProfile } from "../../components/admin/ModalProfile";
 
 export const UsersList = () => {
-    const { users, isLoading, getAllUsers, createUser, error, deleteUser, totalRows, updateUser, message } =
-        useUserStore();
+    const {
+        users,
+        isLoading,
+        getAllUsers,
+        createUser,
+        error,
+        deleteUser,
+        totalRows,
+        updateUser,
+        message,
+        selectedUserProfile,
+        getSelectedUserProfile,
+    } = useUserStore();
     const [isOpenModal, setIsOpenModal] = useState(false);
+    const [isOpenModalProfile, setIsOpenModalProfile] = useState(false);
     const [limit, setLimit] = useState<number>(10);
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [confirmationBox, setConfirmationBox] = useState<ConfirmationBoxProps>({
@@ -93,6 +106,15 @@ export const UsersList = () => {
             name: "Action",
             cell: (props) => (
                 <div className="flex items-center justify-end space-x-2">
+                    <button
+                        className="bg-blue-500 hover:bg-blue-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
+                        onClick={() => {
+                            getSelectedUserProfile(props.id);
+                            setIsOpenModalProfile(true);
+                        }}
+                    >
+                        <UserRound className="w-4 h-4" />
+                    </button>
                     <button
                         className="bg-yellow-500 hover:bg-yellow-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
                         onClick={() => handleClickEdit(props)}
@@ -238,10 +260,18 @@ export const UsersList = () => {
             <FormModalUser
                 isOpen={isOpenModal}
                 onClose={() => setIsOpenModal(false)}
-                title={selectedUser ? "Edit User" : "Register New User"}
+                title={mode === "update" ? "Edit User" : "Register New User"}
                 onSubmit={handleSubmit}
                 isLoading={isLoading}
                 initialValues={selectedUser}
+            />
+            <ModalProfile
+                isOpen={isOpenModalProfile}
+                onClose={() => setIsOpenModalProfile(false)}
+                title={"User Profile"}
+                onSubmit={() => {}}
+                isLoading={isLoading}
+                initialValues={selectedUserProfile}
             />
             <ConfirmationBox {...confirmationBox} />
         </div>

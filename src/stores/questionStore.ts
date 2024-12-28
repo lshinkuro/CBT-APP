@@ -4,6 +4,8 @@ import { post, get, put, del } from "../service/api/ApiConfig";
 import { QuestionDto, QuestionState } from "../types/question";
 
 const useQuestionStore = create<QuestionState>((set) => ({
+    selectedTryoutId: "",
+    selectedTryoutSectionId: "",
     questions: [],
     isLoading: false,
     message: null,
@@ -15,16 +17,18 @@ const useQuestionStore = create<QuestionState>((set) => ({
     getAllQuestions: async () => {
         set({ isLoading: true });
         try {
-            const { limit, offset, search } = useQuestionStore.getState();
+            const { limit, offset, search, selectedTryoutId, selectedTryoutSectionId } = useQuestionStore.getState();
             const params: Record<string, any> = { limit, offset };
             if (search) {
                 params.search = search;
             }
+            params.selectedTryoutId = selectedTryoutId;
+            params.selectedTryoutSectionId = selectedTryoutSectionId;
             const response = await get(`/api/admin/questions`, params);
             if (response.message === "Success") {
                 set({
                     questions: response.data.questions,
-                    totalRows: response.totalRows,
+                    totalRows: response.data.count,
                 });
             }
         } catch (error: any) {
@@ -36,6 +40,7 @@ const useQuestionStore = create<QuestionState>((set) => ({
     createQuestion: async (data: QuestionDto) => {
         set({ isLoading: true });
         try {
+            data.tryoutSectionId = useQuestionStore.getState().selectedTryoutSectionId;
             const response = await post("/api/admin/questions", data);
             if (response.message === "Success") {
                 await useQuestionStore.getState().getAllQuestions();
