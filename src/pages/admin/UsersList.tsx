@@ -7,7 +7,7 @@ import useUserStore from "../../stores/userStore";
 import FormModalUser from "../../components/admin/FormModalUser";
 import toast from "react-hot-toast";
 import ConfirmationBox, { ConfirmationBoxProps } from "../../components/layout/ConfirmationBox";
-import { User } from "../../types/user";
+import { User, UserDto } from "../../types/user";
 
 export const UsersList = () => {
     const { users, isLoading, getAllUsers, createUser, error, deleteUser, totalRows, updateUser, message } =
@@ -89,7 +89,6 @@ export const UsersList = () => {
             sortable: true,
             grow: 0.2,
         },
-
         {
             name: "Action",
             cell: (props) => (
@@ -119,6 +118,7 @@ export const UsersList = () => {
         if (error) {
             toast.error(error);
         }
+        useUserStore.setState({ error: null });
     }, [error]);
 
     useEffect(() => {
@@ -149,14 +149,7 @@ export const UsersList = () => {
         setIsOpenModal(true);
     };
 
-    const handleSubmit = async (data: {
-        username: string;
-        displayName: string;
-        email: string;
-        phoneNumber: string;
-        role: "admin" | "student";
-        isActive: boolean;
-    }) => {
+    const handleSubmit = async (data: UserDto) => {
         if (mode === "update") {
             await updateUser(selectedUser.id, data);
         } else {

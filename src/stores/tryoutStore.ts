@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { post, get, put, del } from "../service/api/ApiConfig";
-import { TryoutState } from "../types/tryout";
+import { TryoutDto, TryoutState } from "../types/tryout";
 
 const useTryoutStore = create<TryoutState>((set) => ({
+    availableTryouts: [],
     tryouts: [],
     isLoading: false,
     message: null,
@@ -12,6 +13,21 @@ const useTryoutStore = create<TryoutState>((set) => ({
     offset: 0,
     search: "",
     totalRows: 0,
+    getAllAvailableTryouts: async () => {
+        set({ isLoading: true });
+        try {
+            const response = await get(`/api/admin/tryouts/available`);
+            if (response.message === "Success") {
+                set({
+                    availableTryouts: response.data,
+                });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to get available tryouts" });
+        } finally {
+            set({ isLoading: false });
+        }
+    },
     getAllTryouts: async () => {
         set({ isLoading: true });
         try {
@@ -21,7 +37,6 @@ const useTryoutStore = create<TryoutState>((set) => ({
                 params.search = search;
             }
             const response = await get(`/api/admin/tryouts`, params);
-            console.log(response);
             if (response.message === "Success") {
                 set({
                     tryouts: response.data.tryouts,
@@ -34,22 +49,13 @@ const useTryoutStore = create<TryoutState>((set) => ({
             set({ isLoading: false });
         }
     },
-    createTryout: async (data: {
-        title: string;
-        type: string;
-        description: string;
-        startDate: string;
-        endDate: string;
-    }) => {
+    createTryout: async (data: TryoutDto) => {
         set({ isLoading: true });
         try {
-            const response = await post("/api/tryouts", data);
+            const response = await post("/api/admin/tryouts", data);
             if (response.message === "Success") {
-                set((state) => ({
-                    tryouts: [...state.tryouts, response.data],
-                    message: "Tryout created successfully",
-                    isLoading: false,
-                }));
+                await useTryoutStore.getState().getAllTryouts();
+                set({ message: "Tryout created successfully" });
             }
         } catch (error: any) {
             set({ error: error.response?.data?.message || "Failed to create tryout" });
@@ -70,13 +76,10 @@ const useTryoutStore = create<TryoutState>((set) => ({
     ) => {
         set({ isLoading: true });
         try {
-            const response = await put(`/api/tryouts/${id}`, data);
+            const response = await put(`/api/admin/tryouts/${id}`, data);
             if (response.message === "Success") {
-                set((state) => ({
-                    tryouts: state.tryouts.map((tryout) => (tryout.id === id ? response.data : tryout)),
-                    message: "Tryout updated successfully",
-                    isLoading: false,
-                }));
+                await useTryoutStore.getState().getAllTryouts();
+                set({ message: "Tryout updated successfully" });
             }
         } catch (error: any) {
             set({ error: error.response?.data?.message || "Failed to update tryout" });
@@ -87,12 +90,11 @@ const useTryoutStore = create<TryoutState>((set) => ({
     deleteTryout: async (id: string) => {
         set({ isLoading: true });
         try {
-            const response = await del(`/api/tryouts/${id}`);
+            const response = await del(`/api/admin/tryouts/${id}`);
             if (response.message === "Success") {
                 set((state) => ({
                     tryouts: state.tryouts.filter((tryout) => tryout.id !== id),
                     message: "Tryout deleted successfully",
-                    isLoading: false,
                 }));
             }
         } catch (error: any) {

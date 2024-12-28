@@ -21,38 +21,18 @@ export interface UserState {
     totalRows: number;
     message: string | null;
     getAllUsers: () => Promise<void>;
-    createUser: (data: {
-        username: string;
-        displayName: string;
-        email: string;
-        role: UserRole;
-        phoneNumber: string;
-    }) => Promise<void>;
+    createUser: (data: UserDto) => Promise<void>;
     deleteUser: (id: string) => Promise<void>;
-    updateUser: (
-        id: string,
-        data: {
-            username?: string;
-            displayName?: string;
-            email?: string;
-            role?: UserRole;
-            phoneNumber?: string;
-        }
-    ) => Promise<void>;
+    updateUser: (id: string, data: UserDto) => Promise<void>;
 }
 
 export interface FormModalUserProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
-    onSubmit: (data: {
-        username: string;
-        displayName: string;
-        email: string;
-        phoneNumber: string;
-        role: "admin" | "student";
-        isActive: boolean;
-    }) => Promise<void>;
+    onSubmit: (data: UserDto) => Promise<void>;
     isLoading?: boolean;
     initialValues?: User;
 }
+
+export type UserDto = Omit<User, "id" | "createdAt">;

@@ -1,29 +1,45 @@
 import { useState, useEffect } from "react";
 import DataTable, { IDataTableProps } from "react-data-table-component";
-import useTryoutStore from "../../stores/tryoutStore";
-import FormModalTryout from "../../components/admin/FormModalTryout";
+import useTryoutSectionStore from "../../stores/tryoutSectionStore";
+import FormModalTryoutSection from "../../components/admin/FormModalTryoutSection";
 import ConfirmationBox, { ConfirmationBoxProps } from "../../components/layout/ConfirmationBox";
 import { Pencil, Trash, Plus } from "lucide-react";
-import { Tryout, TryoutDto } from "../../types/tryout";
+import { TryoutSection, TryoutSectionDto } from "../../types/tryoutSection";
 import toast from "react-hot-toast";
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
+import useTryoutStore from "../../stores/tryoutStore";
 
-const TryoutsList = () => {
-    const { tryouts, isLoading, getAllTryouts, createTryout, updateTryout, totalRows, deleteTryout, error, message } =
-        useTryoutStore();
+const TryoutSectionsList = () => {
+    const {
+        totalRows,
+        tryoutSections,
+        isLoading,
+        getAllTryoutSections,
+        createTryoutSection,
+        updateTryoutSection,
+        deleteTryoutSection,
+        error,
+        message,
+    } = useTryoutSectionStore();
+    const { getAllAvailableTryouts, availableTryouts } = useTryoutStore();
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [mode, setMode] = useState<"create" | "update">("create");
-    const [searchTerm, setSearchTerm] = useState<string>("");
     const [limit, setLimit] = useState<number>(10);
-    const [selectedTryout, setSelectedTryout] = useState<Tryout>({
+    const [searchTerm, setSearchTerm] = useState<string>("");
+    const [selectedTryoutSection, setSelectedTryoutSection] = useState<TryoutSection>({
         id: "",
+        tryout: {
+            id: "",
+            title: "",
+        },
+        tryoutId: "",
         title: "",
-        type: "CPNS",
-        description: "",
-        startDate: "",
-        endDate: "",
-        isActive: false,
+        type: "",
+        subType: null,
+        duration: 0,
+        order: 0,
         createdAt: "",
+        isActive: true,
     });
     const [confirmationBox, setConfirmationBox] = useState<ConfirmationBoxProps>({
         isOpen: false,
@@ -32,26 +48,36 @@ const TryoutsList = () => {
         onClose: () => {},
     });
 
-    const columns: IDataTableProps<Tryout>["columns"] = [
+    const columns: IDataTableProps<TryoutSection>["columns"] = [
         {
             name: "Title",
             selector: (row) => row.title,
             sortable: true,
+            grow: 2,
+        },
+        {
+            name: "Tryout",
+            selector: (row) => row.tryout.title,
+            sortable: true,
         },
         {
             name: "Type",
-            selector: (row) => {
-                switch (row.type) {
-                    case "ikatan_dinas":
-                        return "Ikatan Dinas";
-                    case "cpns":
-                        return "CPNS";
-                    case "polri":
-                        return "POLRI";
-                    default:
-                        return row.type;
-                }
-            },
+            selector: (row) => row.type,
+            sortable: true,
+        },
+        {
+            name: "Sub Type",
+            selector: (row) => row.subType ?? "-",
+            sortable: true,
+        },
+        {
+            name: "Duration (minutes)",
+            selector: (row) => row.duration,
+            sortable: true,
+        },
+        {
+            name: "Order",
+            selector: (row) => row.order,
             sortable: true,
         },
         {
@@ -93,7 +119,7 @@ const TryoutsList = () => {
                     </button>
                     <button
                         className="bg-red-500 hover:bg-red-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
-                        onClick={() => handleDeleteTryout(props.id, props.title)}
+                        onClick={() => handleDeleteTryoutSection(props.id, props.title)}
                     >
                         <Trash className="w-4 h-4" />
                     </button>
@@ -104,112 +130,123 @@ const TryoutsList = () => {
     ];
 
     useEffect(() => {
-        getAllTryouts();
-    }, [getAllTryouts]);
+        getAllTryoutSections();
+        getAllAvailableTryouts();
+    }, [getAllTryoutSections, getAllAvailableTryouts]);
 
     useEffect(() => {
         if (error) {
             toast.error(error);
         }
-        useTryoutStore.setState({ error: null });
+        useTryoutSectionStore.setState({ error: null });
     }, [error]);
 
     useEffect(() => {
         if (message) {
             toast.success(message);
         }
-        useTryoutStore.setState({ message: null });
+        useTryoutSectionStore.setState({ message: null });
     }, [message]);
 
-    const handleClickCreateTryout = () => {
+    const handleClickCreateTryoutSection = () => {
         setIsOpenModal(true);
         setMode("create");
-        setSelectedTryout({
+        setSelectedTryoutSection({
             id: "",
+            tryoutId: availableTryouts[0]?.id ?? "",
+            tryout: {
+                id: "",
+                title: "",
+            },
             title: "",
-            type: "CPNS",
-            description: "",
-            startDate: "",
-            endDate: "",
-            isActive: false,
+            type: "",
+            subType: null,
+            duration: 0,
+            order: 0,
             createdAt: "",
+            isActive: true,
         });
     };
 
-    const handleClickEdit = (tryout: Tryout) => {
-        setSelectedTryout(tryout);
+    const handleClickEdit = (tryoutSection: TryoutSection) => {
+        setSelectedTryoutSection(tryoutSection);
         setIsOpenModal(true);
         setMode("update");
     };
 
-    const handleDeleteTryout = (id: string, title: string) => {
+    const handleDeleteTryoutSection = (id: string, title: string) => {
         setConfirmationBox({
             isOpen: true,
-            message: `Are you sure to delete tryout ${title}?`,
+            message: `Are you sure to delete tryout section ${title}?`,
             onConfirm: async () => {
-                await deleteTryout(id);
+                await deleteTryoutSection(id);
                 setConfirmationBox({ ...confirmationBox, isOpen: false });
             },
             onClose: () => setConfirmationBox({ ...confirmationBox, isOpen: false }),
         });
     };
 
-    const handleSubmit = async (data: TryoutDto) => {
+    const handleSubmit = async (data: TryoutSectionDto) => {
         if (mode === "update") {
-            await updateTryout(selectedTryout.id, data);
+            await updateTryoutSection(selectedTryoutSection.id, data);
         } else {
-            await createTryout(data);
+            await createTryoutSection(data);
         }
         setIsOpenModal(false);
-        setSelectedTryout({
+        setSelectedTryoutSection({
             id: "",
+            tryoutId: "",
+            tryout: {
+                id: "",
+                title: "",
+            },
             title: "",
-            type: "CPNS",
-            description: "",
-            startDate: "",
-            endDate: "",
-            isActive: false,
+            type: "",
+            subType: null,
+            duration: 0,
+            order: 0,
             createdAt: "",
+            isActive: true,
         });
         setMode("create");
     };
 
     const handlePageChange = (page: number) => {
         useTryoutStore.setState({ offset: (page - 1) * limit });
-        getAllTryouts();
+        getAllTryoutSections();
     };
 
     const handleLimitChange = (limit: number) => {
         setLimit(limit);
         useTryoutStore.setState({ limit, offset: 0 });
-        getAllTryouts();
+        getAllTryoutSections();
     };
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
-        useTryoutStore.setState({ search: e.target.value, offset: 0 });
-        getAllTryouts();
+        useTryoutSectionStore.setState({ search: e.target.value, offset: 0 });
+        getAllTryoutSections();
     };
 
     return (
         <div className="flex flex-col w-full">
             <AdminSidebar />
             <main className="flex-1 ml-64 p-8 rounded">
-                <h1 className="text-2xl font-bold text-gray-800 mb-6">List Tryouts</h1>
+                <h1 className="text-2xl font-bold text-gray-800 mb-6">List Tryout Sections</h1>
                 <div className="flex items-center justify-between mb-4">
                     <button
                         className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
                         type="button"
-                        onClick={handleClickCreateTryout}
+                        onClick={handleClickCreateTryoutSection}
                     >
                         <Plus className="w-4 h-4 mr-1" />
-                        Create Tryout
+                        Create Tryout Section
                     </button>
                     <div className="w-1/3">
                         <input
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="search"
-                            placeholder="Title, Description"
+                            placeholder="Title, Type, Sub Type"
                             value={searchTerm}
                             onChange={handleSearchChange}
                         />
@@ -217,7 +254,7 @@ const TryoutsList = () => {
                 </div>
                 <DataTable
                     columns={columns}
-                    data={tryouts}
+                    data={tryoutSections}
                     progressPending={isLoading}
                     pagination
                     paginationServer
@@ -227,13 +264,13 @@ const TryoutsList = () => {
                     highlightOnHover
                     responsive={true}
                 />
-                <FormModalTryout
+                <FormModalTryoutSection
                     isOpen={isOpenModal}
                     onClose={() => setIsOpenModal(false)}
-                    title={selectedTryout ? "Edit Try Out" : "Create New Try Out"}
+                    title={selectedTryoutSection ? "Edit Try Out Section" : "Create New Try Out Section"}
                     onSubmit={handleSubmit}
                     isLoading={isLoading}
-                    initialValues={selectedTryout}
+                    initialValues={selectedTryoutSection}
                 />
                 <ConfirmationBox {...confirmationBox} />
             </main>
@@ -241,4 +278,4 @@ const TryoutsList = () => {
     );
 };
 
-export default TryoutsList;
+export default TryoutSectionsList;

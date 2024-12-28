@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import { Users, ClipboardList, ClipboardCheck, Settings, BarChart } from "lucide-react";
+import { Users, ClipboardList, ClipboardCheck, Settings, BarChart, MessageCircleQuestion } from "lucide-react";
 
 const menuItems = [
     {
@@ -20,7 +20,12 @@ const menuItems = [
     {
         title: "Try Out Sections",
         icon: ClipboardCheck,
-        path: "/admin/tryout-section",
+        path: "/admin/tryout-sections",
+    },
+    {
+        title: "Questions",
+        icon: MessageCircleQuestion,
+        path: "/admin/questions",
     },
     {
         title: "Settings",

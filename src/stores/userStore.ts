@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { post, get, put, del } from "../service/api/ApiConfig";
-import { UserRole, UserState } from "../types/user";
+import { UserDto, UserState } from "../types/user";
 
 const useUserStore = create<UserState>((set) => ({
     users: [],
@@ -44,16 +44,7 @@ const useUserStore = create<UserState>((set) => ({
             set({ isLoading: false });
         }
     },
-    updateUser: async (
-        id: string,
-        data: {
-            username?: string;
-            displayName?: string;
-            email?: string;
-            role?: UserRole;
-            phoneNumber?: string;
-        }
-    ) => {
+    updateUser: async (id: string, data: UserDto) => {
         set({ isLoading: true, error: null });
         try {
             const response = await put(`/api/admin/users/${id}`, data);

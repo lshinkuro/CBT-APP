@@ -17,6 +17,8 @@ import { Profile } from "./pages/student/Profile";
 import { Helmet } from "react-helmet-async";
 import logoPencil from "./assets/images/pencil.png";
 import TryoutsList from "./pages/admin/TryoutsList";
+import TryoutSectionsList from "./pages/admin/TryoutSectionsList";
+import QuestionsList from "./pages/admin/QuestionsList";
 
 function App() {
     const { user, checkAuth, isLoading } = useAuthStore();
@@ -49,6 +51,8 @@ function App() {
                                     <Route path="dashboard" element={<AdminDashboard />} />
                                     <Route path="users" element={<UsersList />} />
                                     <Route path="tryouts" element={<TryoutsList />} />
+                                    <Route path="tryout-sections" element={<TryoutSectionsList />} />
+                                    <Route path="questions" element={<QuestionsList />} />
                                     <Route path="settings" element={<AdminSettings />} />
                                 </Routes>
                             </ProtectedRoute>

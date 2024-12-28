@@ -27,6 +27,7 @@ export const get = async (
     params: Record<string, any> = {},
     withCredentials: boolean = true
 ): Promise<{
+    totalRows: number | undefined;
     message: string;
     status: number;
     data: any;

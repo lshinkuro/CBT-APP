@@ -9,7 +9,14 @@ export interface Tryout {
     createdAt: string;
 }
 
+export interface AvailableTryouts {
+    id: string;
+    title: string;
+    type: string;
+}
+
 export interface TryoutState {
+    availableTryouts: AvailableTryouts[];
     tryouts: Tryout[];
     isLoading: boolean;
     message: string | null;
@@ -18,23 +25,10 @@ export interface TryoutState {
     offset: number;
     search: string;
     totalRows: number;
+    getAllAvailableTryouts: () => Promise<void>;
     getAllTryouts: () => Promise<void>;
-    createTryout: (data: {
-        title: string;
-        type: string;
-        description: string;
-        startDate: string;
-        endDate: string;
-        isActive: boolean;
-    }) => Promise<void>;
-    updateTryout: (id: string, data: {
-        title: string;
-        type: string;
-        description: string;
-        startDate: string;
-        endDate: string;
-        isActive: boolean;
-    }) => Promise<void>;
+    createTryout: (data: TryoutDto) => Promise<void>;
+    updateTryout: (id: string, data: TryoutDto) => Promise<void>;
     deleteTryout: (id: string) => Promise<void>;
 }
 
@@ -42,14 +36,14 @@ export interface FormModalTryoutProps {
     isOpen: boolean;
     onClose: () => void;
     title: string;
-    onSubmit: (data: {
-        title: string;
-        type: string;
-        description: string;
-        startDate: string;
-        endDate: string;
-        isActive: boolean;
-    }) => Promise<void>;
+    onSubmit: (data: TryoutDto) => Promise<void>;
     isLoading?: boolean;
     initialValues?: Tryout;
 }
+
+export interface SelectTryoutProps {
+    setTryoutId: React.Dispatch<React.SetStateAction<string>>;
+    tryoutId: string;
+}
+
+export type TryoutDto = Omit<Tryout, "id" | "createdAt">;

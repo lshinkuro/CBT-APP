@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import Modal from "./Modal";
 import { FormModalUserProps } from "../../types/user";
+import { toast } from "react-hot-toast";
 
 const FormModalUser: React.FC<FormModalUserProps> = ({
     isOpen,
@@ -36,6 +37,10 @@ const FormModalUser: React.FC<FormModalUserProps> = ({
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!username || !displayName || !email || !phoneNumber || !role) {
+            toast.error("Missing required fields");
+            return;
+        }
         try {
             await onSubmit({ username, displayName, email, phoneNumber, role, isActive });
             onClose();
@@ -48,80 +53,86 @@ const FormModalUser: React.FC<FormModalUserProps> = ({
         <Modal isOpen={isOpen} onClose={onClose} title={title} isLoading={isLoading} onSubmit={handleSubmit}>
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
-                    <label htmlFor="username" className="block mb-2 text-sm font-medium text-gray-600">
-                        Username
+                    <label htmlFor="username" className="block mb-2 text-xs font-medium text-gray-600">
+                        Username *
                     </label>
                     <input
                         type="text"
                         id="username"
                         value={username}
                         onChange={handleUsernameChange}
-                        className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Enter your username"
+                        required
                     />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="displayName" className="block mb-2 text-sm font-medium text-gray-600">
-                        Display Name
+                    <label htmlFor="displayName" className="block mb-2 text-xs font-medium text-gray-600">
+                        Display Name *
                     </label>
                     <input
                         type="text"
                         id="displayName"
                         value={displayName}
                         onChange={handleDisplayNameChange}
-                        className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Enter your display name"
+                        required
                     />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-600">
-                        Email
+                    <label htmlFor="email" className="block mb-2 text-xs font-medium text-gray-600">
+                        Email *
                     </label>
                     <input
                         type="email"
                         id="email"
                         value={email}
                         onChange={handleEmailChange}
-                        className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Enter your email"
+                        required
                     />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="phoneNumber" className="block mb-2 text-sm font-medium text-gray-600">
-                        Phone Number
+                    <label htmlFor="phoneNumber" className="block mb-2 text-xs font-medium text-gray-600">
+                        Phone Number *
                     </label>
                     <input
                         type="tel"
                         id="phoneNumber"
                         value={phoneNumber}
                         onChange={handlePhoneNumberChange}
-                        className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         placeholder="Enter your phone number"
+                        required
                     />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="role" className="block mb-2 text-sm font-medium text-gray-600">
-                        Role
+                    <label htmlFor="role" className="block mb-2 text-xs font-medium text-gray-600">
+                        Role *
                     </label>
                     <select
                         id="role"
                         value={role}
                         onChange={handleRoleChange}
-                        className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
                     >
                         <option value="admin">Admin</option>
                         <option value="student">Student</option>
                     </select>
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="isActive" className="block mb-2 text-sm font-medium text-gray-600">
-                        Active Status
+                    <label htmlFor="isActive" className="block mb-2 text-xs font-medium text-gray-600">
+                        Active Status *
                     </label>
                     <select
                         id="isActive"
                         value={isActive.toString()}
                         onChange={handleIsActiveChange}
-                        className="w-full px-3 py-2 text-sm border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
                     >
                         <option value="true">Active</option>
                         <option value="false">Inactive</option>
@@ -133,3 +144,5 @@ const FormModalUser: React.FC<FormModalUserProps> = ({
 };
 
 export default FormModalUser;
+
+
