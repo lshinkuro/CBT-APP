@@ -20,9 +20,10 @@ import TryoutSectionsList from "./pages/admin/TryoutSectionsList";
 import QuestionsList from "./pages/admin/QuestionsList";
 import InstructionExam from "./pages/student/InstructionExam";
 import CountdownTimer from "./pages/student/CountdownTimer";
-import CardTryoutSection from "./pages/student/CardTryoutSection";
 import ProgramsList from "./pages/admin/ProgramsList";
 import Logout from "./components/auth/Logout";
+import CardTryout from "./pages/student/CardTryout";
+import NotFound from "./pages/NotFound";
 
 function App() {
     const { user, isLoading } = useAuthStore();
@@ -53,6 +54,7 @@ function App() {
                                     <Route path="tryout-sections" element={<TryoutSectionsList />} />
                                     <Route path="questions" element={<QuestionsList />} />
                                     <Route path="settings" element={<AdminSettings />} />
+                                    <Route path="*" element={<NotFound />} />
                                 </Routes>
                             </ProtectedRoute>
                         }
@@ -66,13 +68,14 @@ function App() {
                                 <div className="pt-16">
                                     <Routes>
                                         <Route path="/dashboard" element={<StudentDashboard />} />
-                                        <Route path="/tryout-section/:id" element={<CardTryoutSection />} />
+                                        <Route path="/tryout/:id" element={<CardTryout />} />
                                         <Route path="/instruction/:code" element={<InstructionExam />} />
                                         <Route path="/exam/cpns" element={<CPNSExam />} />
                                         <Route path="/exam/ikatan-dinas" element={<IkatanDinasExam />} />
                                         <Route path="/profile" element={<Profile />} />
                                         <Route path="/history" element={<ExamHistory />} />
                                         <Route path="/starting-exam/:code" element={<CountdownTimer />} />
+                                        <Route path="*" element={<NotFound />} />
                                     </Routes>
                                 </div>
                             </ProtectedRoute>

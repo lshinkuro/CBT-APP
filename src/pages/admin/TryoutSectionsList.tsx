@@ -147,6 +147,7 @@ const TryoutSectionsList = () => {
     };
 
     const handleClickEdit = (tryoutSection: TryoutSection) => {
+        useTryoutStore.setState({ selectedTryoutId: tryoutSection.tryoutId });
         setSelectedTryoutSection(tryoutSection);
         setIsOpenModal(true);
         setMode("update");

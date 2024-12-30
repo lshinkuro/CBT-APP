@@ -112,6 +112,7 @@ const TryoutsList = () => {
     };
 
     const handleClickEdit = (tryout: Tryout) => {
+        useProgramStore.setState({ selectedProgramId: tryout.programId });
         setSelectedTryout(tryout);
         setIsOpenModal(true);
         setMode("update");

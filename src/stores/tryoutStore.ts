@@ -19,7 +19,6 @@ const useTryoutStore = create<TryoutState>((set) => ({
         set({ isLoading: true });
         try {
             const response = await get(`/api/tryouts/instruction/${code}`);
-            console.log(response);
             if (response.message === "Success") {
                 set({
                     instruction: response.data,
@@ -27,6 +26,22 @@ const useTryoutStore = create<TryoutState>((set) => ({
             }
         } catch (error: any) {
             set({ error: error.response?.data?.message || "Failed to get tryout instruction" });
+            set({ instruction: null });
+        } finally {
+            set({ isLoading: false });
+        }
+    },
+    getAllAvailableTryoutsByProgramId: async (programId: string | null) => {
+        set({ isLoading: true });
+        try {
+            const response = await get(`/api/tryouts/available/${programId}`);
+            if (response.message === "Success") {
+                set({
+                    availableTryouts: response.data,
+                });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to get available tryouts" });
         } finally {
             set({ isLoading: false });
         }
@@ -34,7 +49,7 @@ const useTryoutStore = create<TryoutState>((set) => ({
     getAllAvailableTryouts: async () => {
         set({ isLoading: true });
         try {
-            const response = await get(`/api/tryouts/available`);
+            const response = await get(`/api/tryouts/all/available`);
             if (response.message === "Success") {
                 set({
                     availableTryouts: response.data,

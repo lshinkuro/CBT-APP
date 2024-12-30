@@ -25,7 +25,7 @@ const CountdownTimer = () => {
 
         if (count === 0) {
             clearInterval(timer);
-            navigate("/dashboard", { replace: true });
+            navigate("/exam/cpns", { replace: true });
         }
 
         return () => clearInterval(timer);

@@ -36,6 +36,7 @@ export interface TryoutState {
     totalRows: number;
     getInstructionByCode: (code: string) => Promise<void>;
     getAllAvailableTryouts: () => Promise<void>;
+    getAllAvailableTryoutsByProgramId: (programId: string | null) => Promise<void>;
     getAllTryouts: () => Promise<void>;
     createTryout: (data: TryoutDto) => Promise<void>;
     updateTryout: (id: string, data: TryoutDto) => Promise<void>;
