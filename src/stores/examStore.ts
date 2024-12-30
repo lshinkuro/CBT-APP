@@ -1,7 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
-import { Question, SubType, SubSubType } from "../types/exam";
+import { Question, SubType, SubSubType, ExamDto } from "../types/exam";
+import { post } from "../service/api/ApiConfig";
 
 interface ExamState {
+    isLoading: boolean;
+    isReadIstruction: boolean;
+    message: string;
+    error: string | null;
+    createExam: (data: ExamDto) => Promise<void>;
     currentQuestion: number;
     questions: Question[];
     answers: Record<string, string>;
@@ -21,6 +28,22 @@ interface ExamState {
 }
 
 export const useExamStore = create<ExamState>((set, get) => ({
+    isLoading: false,
+    isReadIstruction: false,
+    message: "",
+    createExam: async (data: ExamDto) => {
+        set({ isLoading: true });
+        try {
+            const response = await post("/api/exams", data);
+            if (response.message === "Success") {
+                set({ message: "Tryout started!" });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to start Tryout" });
+        } finally {
+            set({ isLoading: false });
+        }
+    },
     currentQuestion: 0,
     questions: [
         {

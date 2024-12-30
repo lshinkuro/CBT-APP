@@ -4,7 +4,9 @@ import { post, get, put, del } from "../service/api/ApiConfig";
 import { TryoutDto, TryoutState } from "../types/tryout";
 
 const useTryoutStore = create<TryoutState>((set) => ({
+    selectedTryoutId: "",
     availableTryouts: [],
+    instruction: null,
     tryouts: [],
     isLoading: false,
     message: null,
@@ -13,10 +15,26 @@ const useTryoutStore = create<TryoutState>((set) => ({
     offset: 0,
     search: "",
     totalRows: 0,
+    getInstructionByCode: async (code: string) => {
+        set({ isLoading: true });
+        try {
+            const response = await get(`/api/tryouts/instruction/${code}`);
+            console.log(response);
+            if (response.message === "Success") {
+                set({
+                    instruction: response.data,
+                });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to get tryout instruction" });
+        } finally {
+            set({ isLoading: false });
+        }
+    },
     getAllAvailableTryouts: async () => {
         set({ isLoading: true });
         try {
-            const response = await get(`/api/admin/tryouts/available`);
+            const response = await get(`/api/tryouts/available`);
             if (response.message === "Success") {
                 set({
                     availableTryouts: response.data,
@@ -63,17 +81,7 @@ const useTryoutStore = create<TryoutState>((set) => ({
             set({ isLoading: false });
         }
     },
-    updateTryout: async (
-        id: string,
-        data: {
-            title: string;
-            type: string;
-            description: string;
-            startDate: string;
-            endDate: string;
-            isActive: boolean;
-        }
-    ) => {
+    updateTryout: async (id: string, data: TryoutDto) => {
         set({ isLoading: true });
         try {
             const response = await put(`/api/admin/tryouts/${id}`, data);

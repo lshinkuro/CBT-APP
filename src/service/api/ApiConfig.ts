@@ -14,6 +14,10 @@ const axiosInstance: AxiosInstance = axios.create({
 const handleRequestError = (error: AxiosError): Promise<never> => {
     if (error.response) {
         console.error("Response error:", error.response.data);
+        if (error.response.status === 401) {
+            sessionStorage.clear();
+            location.href = "/";
+        }
     } else if (error.request) {
         console.error("Request error:", error.request);
     } else {
@@ -130,6 +134,24 @@ export const login = async (
             }
         );
         return response.data;
+    } catch (error) {
+        return handleRequestError(error as AxiosError);
+    }
+};
+
+export const logout = async (endpoint: string): Promise<void> => {
+    try {
+        const response: AxiosResponse = await axiosInstance.post(
+            endpoint,
+            {},
+            {
+                withCredentials: true,
+            }
+        );
+        if (response.data.status === 200) {
+            sessionStorage.clear();
+            location.href = "/";
+        }
     } catch (error) {
         return handleRequestError(error as AxiosError);
     }

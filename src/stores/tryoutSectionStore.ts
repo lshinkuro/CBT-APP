@@ -4,6 +4,7 @@ import { post, get, put, del } from "../service/api/ApiConfig";
 import { TryoutSectionDto, TryoutSectionState } from "../types/tryoutSection";
 
 const useTryoutSectionStore = create<TryoutSectionState>((set) => ({
+    selectedTryoutSectionId: "",
     availableTryoutSections: [],
     tryoutSections: [],
     isLoading: false,
@@ -13,10 +14,10 @@ const useTryoutSectionStore = create<TryoutSectionState>((set) => ({
     offset: 0,
     search: "",
     totalRows: 0,
-    getAllAvailableTryoutSectionsByTryoutId: async (tryoutId: string) => {
+    getAllAvailableTryoutSectionsByTryoutId: async (tryoutId: string | null) => {
         set({ isLoading: true });
         try {
-            const response = await get(`/api/admin/tryout-sections/available/${tryoutId}`);
+            const response = await get(`/api/tryout-sections/available/${tryoutId}`);
             if (response.message === "Success") {
                 set({ availableTryoutSections: response.data });
             }
@@ -63,14 +64,7 @@ const useTryoutSectionStore = create<TryoutSectionState>((set) => ({
     },
     updateTryoutSection: async (
         id: string,
-        data: {
-            tryoutId: string;
-            title: string;
-            type: string;
-            subType: string | null;
-            duration: number;
-            order: number;
-        }
+        data: TryoutSectionDto
     ) => {
         set({ isLoading: true });
         try {

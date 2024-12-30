@@ -39,3 +39,7 @@ export interface ExamResult {
     totalScore: number;
     completedAt: Date;
 }
+
+export interface ExamDto {
+    code: string;
+}

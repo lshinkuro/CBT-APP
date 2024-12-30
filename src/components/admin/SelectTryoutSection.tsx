@@ -1,13 +1,12 @@
-import useQuestionStore from "../../stores/questionStore";
 import useTryoutSectionStore from "../../stores/tryoutSectionStore";
 
 const SelectTryoutSection = () => {
-    const { selectedTryoutSectionId } = useQuestionStore();
+    const { selectedTryoutSectionId } = useTryoutSectionStore();
     const { availableTryoutSections } = useTryoutSectionStore();
 
     const handleChangeTryoutSection = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const tryoutSectionId = e.target.value;
-        useQuestionStore.setState({ selectedTryoutSectionId: tryoutSectionId });
+        useTryoutSectionStore.setState({ selectedTryoutSectionId: tryoutSectionId });
     };
     return (
         <div className="mb-4">
@@ -15,7 +14,7 @@ const SelectTryoutSection = () => {
                 Select Tryout Section
             </label>
             <select
-                className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={selectedTryoutSectionId}
                 onChange={(e) => handleChangeTryoutSection(e)}
             >

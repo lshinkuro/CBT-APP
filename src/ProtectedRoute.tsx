@@ -8,14 +8,14 @@ export const ProtectedRoute = ({
     children: React.ReactNode;
     allowedRole?: "admin" | "student";
 }) => {
-    const { user } = useAuthStore();
+    const { isAuthenticated, user } = useAuthStore();
 
-    if (!user) {
+    if (!isAuthenticated) {
         return <Navigate to="/" replace />;
     }
 
-    if (allowedRole && user.role !== allowedRole) {
-        return <Navigate to={user.role === "admin" ? "/admin/dashboard" : "/dashboard"} replace />;
+    if (allowedRole && user?.role !== allowedRole) {
+        return <Navigate to={user?.role === "admin" ? "/admin/dashboard" : "/dashboard"} replace />;
     }
 
     return <>{children}</>;

@@ -7,24 +7,18 @@ import { Pencil, Trash, Plus } from "lucide-react";
 import { Tryout, TryoutDto } from "../../types/tryout";
 import toast from "react-hot-toast";
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
+import { MockTryout } from "../../mocks/Tryout";
+import useProgramStore from "../../stores/programStore";
 
 const TryoutsList = () => {
     const { tryouts, isLoading, getAllTryouts, createTryout, updateTryout, totalRows, deleteTryout, error, message } =
         useTryoutStore();
+    const { getAllAvailablePrograms } = useProgramStore();
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [mode, setMode] = useState<"create" | "update">("create");
     const [searchTerm, setSearchTerm] = useState<string>("");
     const [limit, setLimit] = useState<number>(10);
-    const [selectedTryout, setSelectedTryout] = useState<Tryout>({
-        id: "",
-        title: "",
-        type: "CPNS",
-        description: "",
-        startDate: "",
-        endDate: "",
-        isActive: false,
-        createdAt: "",
-    });
+    const [selectedTryout, setSelectedTryout] = useState<Tryout>(MockTryout);
     const [confirmationBox, setConfirmationBox] = useState<ConfirmationBoxProps>({
         isOpen: false,
         message: "",
@@ -39,19 +33,8 @@ const TryoutsList = () => {
             sortable: true,
         },
         {
-            name: "Type",
-            selector: (row) => {
-                switch (row.type) {
-                    case "ikatan_dinas":
-                        return "Ikatan Dinas";
-                    case "cpns":
-                        return "CPNS";
-                    case "polri":
-                        return "POLRI";
-                    default:
-                        return row.type;
-                }
-            },
+            name: "Code",
+            selector: (row) => row.code,
             sortable: true,
         },
         {
@@ -105,7 +88,8 @@ const TryoutsList = () => {
 
     useEffect(() => {
         getAllTryouts();
-    }, [getAllTryouts]);
+        getAllAvailablePrograms();
+    }, [getAllTryouts, getAllAvailablePrograms]);
 
     useEffect(() => {
         if (error) {
@@ -124,16 +108,7 @@ const TryoutsList = () => {
     const handleClickCreateTryout = () => {
         setIsOpenModal(true);
         setMode("create");
-        setSelectedTryout({
-            id: "",
-            title: "",
-            type: "CPNS",
-            description: "",
-            startDate: "",
-            endDate: "",
-            isActive: false,
-            createdAt: "",
-        });
+        setSelectedTryout(MockTryout);
     };
 
     const handleClickEdit = (tryout: Tryout) => {
@@ -161,16 +136,7 @@ const TryoutsList = () => {
             await createTryout(data);
         }
         setIsOpenModal(false);
-        setSelectedTryout({
-            id: "",
-            title: "",
-            type: "CPNS",
-            description: "",
-            startDate: "",
-            endDate: "",
-            isActive: false,
-            createdAt: "",
-        });
+        setSelectedTryout(MockTryout);
         setMode("create");
     };
 

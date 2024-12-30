@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { AnimatedBackground } from "./components/AnimatedBackground";
 import { Navbar } from "./components/layout/Navbar";
 import { LoginForm } from "./components/LoginForm";
-import { useEffect } from "react";
 import { AdminDashboard } from "./pages/admin/AdminDashboard";
 import { UsersList } from "./pages/admin/UsersList";
 import { AdminSettings } from "./pages/admin/AdminSettings";
@@ -19,15 +18,14 @@ import logoPencil from "./assets/images/pencil.png";
 import TryoutsList from "./pages/admin/TryoutsList";
 import TryoutSectionsList from "./pages/admin/TryoutSectionsList";
 import QuestionsList from "./pages/admin/QuestionsList";
+import InstructionExam from "./pages/student/InstructionExam";
+import CountdownTimer from "./pages/student/CountdownTimer";
+import CardTryoutSection from "./pages/student/CardTryoutSection";
+import ProgramsList from "./pages/admin/ProgramsList";
+import Logout from "./components/auth/Logout";
 
 function App() {
-    const { user, checkAuth, isLoading } = useAuthStore();
-
-    useEffect(() => {
-        if (!user) {
-            checkAuth();
-        }
-    }, [checkAuth, user]);
+    const { user, isLoading } = useAuthStore();
 
     if (isLoading) {
         return <Loading />;
@@ -50,6 +48,7 @@ function App() {
                                 <Routes>
                                     <Route path="dashboard" element={<AdminDashboard />} />
                                     <Route path="users" element={<UsersList />} />
+                                    <Route path="programs" element={<ProgramsList />} />
                                     <Route path="tryouts" element={<TryoutsList />} />
                                     <Route path="tryout-sections" element={<TryoutSectionsList />} />
                                     <Route path="questions" element={<QuestionsList />} />
@@ -67,15 +66,19 @@ function App() {
                                 <div className="pt-16">
                                     <Routes>
                                         <Route path="/dashboard" element={<StudentDashboard />} />
+                                        <Route path="/tryout-section/:id" element={<CardTryoutSection />} />
+                                        <Route path="/instruction/:code" element={<InstructionExam />} />
                                         <Route path="/exam/cpns" element={<CPNSExam />} />
                                         <Route path="/exam/ikatan-dinas" element={<IkatanDinasExam />} />
                                         <Route path="/profile" element={<Profile />} />
                                         <Route path="/history" element={<ExamHistory />} />
+                                        <Route path="/starting-exam/:code" element={<CountdownTimer />} />
                                     </Routes>
                                 </div>
                             </ProtectedRoute>
                         }
                     />
+                    <Route path="/logout" element={<Logout />} />
                 </Routes>
             </div>
         </Router>

@@ -10,7 +10,7 @@ export interface Question {
             type: string;
         };
     };
-    tryoutSectionId: string;
+    tryoutSectionId: string | null;
     id: string;
     content: string;
     type: string;
@@ -21,8 +21,6 @@ export interface Question {
 }
 
 export interface QuestionState {
-    selectedTryoutId: string;
-    selectedTryoutSectionId: string;
     questions: Question[];
     isLoading: boolean;
     message: string | null;

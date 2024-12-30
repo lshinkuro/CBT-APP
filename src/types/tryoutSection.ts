@@ -7,6 +7,8 @@ export interface TryoutSection {
     id: string;
     tryoutId: string;
     title: string;
+    code: string;
+    description: string;
     type: string;
     subType: string | null;
     duration: number;
@@ -19,13 +21,16 @@ export interface AvailableTryoutSections {
     id: string;
     title: string;
     type: string;
+    code: string;
     subType: string;
+    description: string;
     tryout: {
         id: string;
         title: string;
     };
 }
 export interface TryoutSectionState {
+    selectedTryoutSectionId: string;
     availableTryoutSections: AvailableTryoutSections[];
     tryoutSections: TryoutSection[];
     isLoading: boolean;
@@ -35,7 +40,7 @@ export interface TryoutSectionState {
     offset: number;
     search: string;
     totalRows: number;
-    getAllAvailableTryoutSectionsByTryoutId: (tryoutId: string) => Promise<void>;
+    getAllAvailableTryoutSectionsByTryoutId: (tryoutId: string | null) => Promise<void>;
     getAllTryoutSections: () => Promise<void>;
     createTryoutSection: (data: TryoutSectionDto) => Promise<void>;
     updateTryoutSection: (id: string, data: TryoutSectionDto) => Promise<void>;

@@ -1,11 +1,9 @@
 import { useState, useEffect } from "react";
 import Modal from "./Modal";
-import { FormModalTryoutProps } from "../../types/tryout";
+import { FormModalProgramProps } from "../../types/program";
 import { toast } from "react-hot-toast";
-import useProgramStore from "../../stores/programStore";
-import SelectProgram from "./SelectProgram";
 
-const FormModalTryout: React.FC<FormModalTryoutProps> = ({
+const FormModalProgram: React.FC<FormModalProgramProps> = ({
     isOpen,
     onClose,
     title,
@@ -13,38 +11,31 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
     isLoading,
     initialValues,
 }) => {
-    const { selectedProgramId } = useProgramStore();
-    const [startDate, setStartDate] = useState<string>(initialValues?.startDate ?? "");
-    const [endDate, setEndDate] = useState<string>(initialValues?.endDate ?? "");
     const [code, setCode] = useState<string>(initialValues?.code ?? "");
-    const [titleTryout, setTitleTryout] = useState<string>(initialValues?.title ?? "");
+    const [titleProgram, setTitleProgram] = useState<string>(initialValues?.title ?? "");
     const [description, setDescription] = useState<string>(initialValues?.description ?? "");
     const [isActive, setIsActive] = useState<boolean>(initialValues?.isActive ?? true);
 
     useEffect(() => {
-        setStartDate(initialValues?.startDate ?? "");
-        setEndDate(initialValues?.endDate ?? "");
         setCode(initialValues?.code ?? "");
-        setTitleTryout(initialValues?.title ?? "");
+        setTitleProgram(initialValues?.title ?? "");
         setDescription(initialValues?.description ?? "");
         setIsActive(initialValues?.isActive ?? true);
     }, [initialValues]);
 
-    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => setTitleTryout(e.target.value);
+    const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => setTitleProgram(e.target.value);
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value);
-    const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => setStartDate(e.target.value);
-    const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => setEndDate(e.target.value);
     const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => setCode(e.target.value);
     const handleIsActiveChange = (e: React.ChangeEvent<HTMLSelectElement>) => setIsActive(e.target.value === "true");
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!titleTryout || !startDate || !endDate || !code || selectedProgramId === "") {
+        if (!titleProgram || !code) {
             toast.error("Missing required fields");
             return;
         }
         try {
-            await onSubmit({ startDate, endDate, code, title: titleTryout, description, isActive, programId: selectedProgramId });
+            await onSubmit({ code, title: titleProgram, description, isActive });
             onClose();
         } catch (error) {
             console.error(error);
@@ -61,13 +52,12 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
                     <input
                         id="title"
                         type="text"
-                        value={titleTryout}
+                        value={titleProgram}
                         onChange={handleTitleChange}
                         className="w-full px-4 py-1 text-xs border rounded-md focus:ring-2 focus:ring-blue-500"
                         required
                     />
                 </div>
-                <SelectProgram />
                 <div className="mb-4">
                     <label htmlFor="description" className="block mb-1 text-xs font-medium text-gray-600">
                         Description *
@@ -81,33 +71,7 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
                     ></textarea>
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="startDate" className="block mb-1 text-xs font-medium text-gray-600">
-                        Start Date *
-                    </label>
-                    <input
-                        id="startDate"
-                        type="date"
-                        value={startDate ? new Date(startDate).toISOString().slice(0, 10) : ""}
-                        onChange={handleStartDateChange}
-                        className="w-full px-4 py-1 border text-xs rounded-md focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="endDate" className="block mb-1 text-xs font-medium text-gray-600">
-                        End Date *
-                    </label>
-                    <input
-                        id="endDate"
-                        type="date"
-                        value={endDate ? new Date(endDate).toISOString().slice(0, 10) : ""}
-                        onChange={handleEndDateChange}
-                        className="w-full px-4 py-1 border text-xs rounded-md focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="type" className="block mb-1 text-xs font-medium text-gray-600">
+                    <label htmlFor="code" className="block mb-1 text-xs font-medium text-gray-600">
                         Code *
                     </label>
                     <input
@@ -137,4 +101,4 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
     );
 };
 
-export default FormModalTryout;
+export default FormModalProgram;

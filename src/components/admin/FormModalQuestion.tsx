@@ -8,7 +8,7 @@ import SelectTryout from "./SelectTryout";
 import SelectTryoutSection from "./SelectTryoutSection";
 import QuestionOption from "./QuestionOption";
 import { MockData } from "../../mocks/Option";
-import useQuestionStore from "../../stores/questionStore";
+import useTryoutStore from "../../stores/tryoutStore";
 
 const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
     isOpen,
@@ -19,7 +19,8 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
     initialValues,
 }) => {
     const { availableTryoutSections } = useTryoutSectionStore();
-    const { selectedTryoutId, selectedTryoutSectionId } = useQuestionStore();
+    const { selectedTryoutId } = useTryoutStore();
+    const { selectedTryoutSectionId } = useTryoutSectionStore();
     const [content, setContent] = useState<string>(initialValues?.content ?? "");
     const [type, setType] = useState<string>(initialValues?.type ?? "");
     const [image, setImage] = useState<string | null>(initialValues?.image ?? null);
@@ -41,10 +42,6 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(content);
-        console.log(type);
-        console.log(selectedTryoutId);
-        console.log(selectedTryoutSectionId);
         if (!content || !type || selectedTryoutId === "" || selectedTryoutSectionId === "") {
             toast.error("Missing required fields");
             return;

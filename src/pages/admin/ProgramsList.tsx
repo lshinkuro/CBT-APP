@@ -1,49 +1,31 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import DataTable, { IDataTableProps } from "react-data-table-component";
-import useQuestionStore from "../../stores/questionStore";
-import FormModalQuestion from "../../components/admin/FormModalQuestion";
+import useProgramStore from "../../stores/programStore";
+import FormModalProgram from "../../components/admin/FormModalProgram";
 import ConfirmationBox, { ConfirmationBoxProps } from "../../components/layout/ConfirmationBox";
 import { Pencil, Trash, Plus } from "lucide-react";
-import { Question, QuestionDto } from "../../types/question";
+import { Program, ProgramDto } from "../../types/program";
 import toast from "react-hot-toast";
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
-import useTryoutSectionStore from "../../stores/tryoutSectionStore";
-import SelectTryout from "../../components/admin/SelectTryout";
-import SelectTryoutSection from "../../components/admin/SelectTryoutSection";
-import { MockData } from "../../mocks/Option";
-import useTryoutStore from "../../stores/tryoutStore";
+import { MockProgram } from "../../mocks/Program";
 
-const QuestionsList = () => {
+const ProgramsList = () => {
     const {
-        questions,
+        programs,
         isLoading,
-        getAllQuestions,
-        createQuestion,
-        updateQuestion,
-        deleteQuestion,
+        getAllPrograms,
+        createProgram,
+        updateProgram,
+        totalRows,
+        deleteProgram,
         error,
         message,
-        totalRows,
-    } = useQuestionStore();
-    const { selectedTryoutId } = useTryoutStore();
-    const { selectedTryoutSectionId } = useTryoutSectionStore();
-    const { getAllAvailableTryoutSectionsByTryoutId, availableTryoutSections } = useTryoutSectionStore();
+    } = useProgramStore();
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [mode, setMode] = useState<"create" | "update">("create");
-    const [limit, setLimit] = useState<number>(10);
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const [selectedQuestion, setSelectedQuestion] = useState<Question>({
-        id: "",
-        content: "",
-        tryoutSectionId: "",
-        image: "",
-        type: "multiple-choice",
-        isActive: true,
-        data: MockData,
-        createdAt: "",
-        tryoutSection: { id: "", title: "", type: "", subType: "", tryout: { id: "", title: "", type: "" } },
-    });
+    const [limit, setLimit] = useState<number>(10);
+    const [selectedProgram, setSelectedProgram] = useState<Program>(MockProgram);
     const [confirmationBox, setConfirmationBox] = useState<ConfirmationBoxProps>({
         isOpen: false,
         message: "",
@@ -51,30 +33,15 @@ const QuestionsList = () => {
         onClose: () => {},
     });
 
-    const columns: IDataTableProps<Question>["columns"] = [
+    const columns: IDataTableProps<Program>["columns"] = [
         {
-            name: "Content",
-            selector: (row) => row.content,
+            name: "Title",
+            selector: (row) => row.title,
             sortable: true,
         },
         {
-            name: "Tryout",
-            selector: (row) => row.tryoutSection.tryout.title,
-            sortable: true,
-        },
-        {
-            name: "Tryout Section",
-            selector: (row) => row.tryoutSection.type,
-            sortable: true,
-        },
-        {
-            name: "Sub Type",
-            selector: (row) => row.tryoutSection.subType ?? "-",
-            sortable: true,
-        },
-        {
-            name: "Type",
-            selector: (row) => row.type,
+            name: "Code",
+            selector: (row) => row.code,
             sortable: true,
         },
         {
@@ -116,7 +83,7 @@ const QuestionsList = () => {
                     </button>
                     <button
                         className="bg-red-500 hover:bg-red-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
-                        onClick={() => handleDeleteQuestion(props.id)}
+                        onClick={() => handleDeleteProgram(props.id, props.title)}
                     >
                         <Trash className="w-4 h-4" />
                     </button>
@@ -127,124 +94,94 @@ const QuestionsList = () => {
     ];
 
     useEffect(() => {
-        getAllQuestions();
-    }, [getAllQuestions, selectedTryoutId, selectedTryoutSectionId]);
+        getAllPrograms();
+    }, [getAllPrograms]);
 
     useEffect(() => {
         if (error) {
             toast.error(error);
         }
-        useQuestionStore.setState({ error: null });
+        useProgramStore.setState({ error: null });
     }, [error]);
 
     useEffect(() => {
         if (message) {
             toast.success(message);
         }
-        useQuestionStore.setState({ message: null });
+        useProgramStore.setState({ message: null });
     }, [message]);
 
-    useEffect(() => {
-        if (selectedTryoutId !== "") {
-            getAllAvailableTryoutSectionsByTryoutId(selectedTryoutId);
-        } else {
-            useTryoutSectionStore.setState({ availableTryoutSections: [] });
-        }
-    }, [getAllAvailableTryoutSectionsByTryoutId, selectedTryoutId]);
-
-    const handleClickCreateQuestion = () => {
+    const handleClickCreateProgram = () => {
         setIsOpenModal(true);
         setMode("create");
-        setSelectedQuestion({
-            id: "",
-            content: "",
-            tryoutSectionId: "",
-            image: "",
-            type: "multiple-choice",
-            isActive: true,
-            data: MockData,
-            createdAt: "",
-            tryoutSection: { id: "", title: "", type: "", subType: "", tryout: { id: "", title: "", type: "" } },
-        });
+        setSelectedProgram(MockProgram);
     };
 
-    const handleClickEdit = (question: Question) => {
-        setSelectedQuestion(question);
+    const handleClickEdit = (program: Program) => {
+        setSelectedProgram(program);
         setIsOpenModal(true);
         setMode("update");
     };
 
-    const handleDeleteQuestion = (id: string) => {
+    const handleDeleteProgram = (id: string, title: string) => {
         setConfirmationBox({
             isOpen: true,
-            message: `Are you sure to delete this question?`,
+            message: `Are you sure to delete program ${title}?`,
             onConfirm: async () => {
-                await deleteQuestion(id);
+                await deleteProgram(id);
                 setConfirmationBox({ ...confirmationBox, isOpen: false });
             },
             onClose: () => setConfirmationBox({ ...confirmationBox, isOpen: false }),
         });
     };
 
-    const handleSubmit = async (data: QuestionDto) => {
+    const handleSubmit = async (data: ProgramDto) => {
         if (mode === "update") {
-            await updateQuestion(selectedQuestion.id, data);
+            await updateProgram(selectedProgram.id, data);
         } else {
-            await createQuestion(data);
+            await createProgram(data);
         }
         setIsOpenModal(false);
-        setSelectedQuestion({
-            id: "",
-            content: "",
-            image: "",
-            tryoutSectionId: "",
-            type: "multiple-choice",
-            isActive: true,
-            data: MockData,
-            createdAt: "",
-            tryoutSection: { id: "", title: "", type: "", subType: "", tryout: { id: "", title: "", type: "" } },
-        });
+        setSelectedProgram(MockProgram);
         setMode("create");
     };
 
     const handlePageChange = (page: number) => {
-        useQuestionStore.setState({ offset: (page - 1) * limit });
-        getAllQuestions();
+        useProgramStore.setState({ offset: (page - 1) * limit });
+        getAllPrograms();
     };
 
     const handleLimitChange = (limit: number) => {
         setLimit(limit);
-        useQuestionStore.setState({ limit, offset: 0 });
-        getAllQuestions();
+        useProgramStore.setState({ limit, offset: 0 });
+        getAllPrograms();
     };
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
-        useQuestionStore.setState({ search: e.target.value, offset: 0 });
-        getAllQuestions();
+        useProgramStore.setState({ search: e.target.value, offset: 0 });
+        getAllPrograms();
     };
 
     return (
         <div className="flex flex-col w-full">
             <AdminSidebar />
             <main className="flex-1 ml-64 p-8 rounded">
-                <h1 className="text-2xl font-bold text-gray-800 mb-6">List Questions</h1>
-                <SelectTryout />
-                {availableTryoutSections.length > 0 && <SelectTryoutSection />}
+                <h1 className="text-2xl font-bold text-gray-800 mb-6">List Programs</h1>
                 <div className="flex items-center justify-between mb-4">
                     <button
                         className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
                         type="button"
-                        onClick={handleClickCreateQuestion}
+                        onClick={handleClickCreateProgram}
                     >
                         <Plus className="w-4 h-4 mr-1" />
-                        Create Question
+                        Create Program
                     </button>
                     <div className="w-1/3">
                         <input
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="search"
-                            placeholder="Type, Content"
+                            placeholder="Title, Description"
                             value={searchTerm}
                             onChange={handleSearchChange}
                         />
@@ -252,7 +189,7 @@ const QuestionsList = () => {
                 </div>
                 <DataTable
                     columns={columns}
-                    data={questions}
+                    data={programs}
                     progressPending={isLoading}
                     pagination
                     paginationServer
@@ -262,13 +199,13 @@ const QuestionsList = () => {
                     highlightOnHover
                     responsive={true}
                 />
-                <FormModalQuestion
+                <FormModalProgram
                     isOpen={isOpenModal}
                     onClose={() => setIsOpenModal(false)}
-                    title={mode === "update" ? "Edit Question" : "Create New Question"}
+                    title={mode === "update" ? "Edit Program" : "Create New Program"}
                     onSubmit={handleSubmit}
                     isLoading={isLoading}
-                    initialValues={selectedQuestion}
+                    initialValues={selectedProgram}
                 />
                 <ConfirmationBox {...confirmationBox} />
             </main>
@@ -276,4 +213,4 @@ const QuestionsList = () => {
     );
 };
 
-export default QuestionsList;
+export default ProgramsList;

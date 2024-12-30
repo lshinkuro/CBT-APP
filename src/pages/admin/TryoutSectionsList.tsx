@@ -8,6 +8,7 @@ import { TryoutSection, TryoutSectionDto } from "../../types/tryoutSection";
 import toast from "react-hot-toast";
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
 import useTryoutStore from "../../stores/tryoutStore";
+import { MockTryoutSection } from "../../mocks/TryoutSection";
 
 const TryoutSectionsList = () => {
     const {
@@ -21,26 +22,12 @@ const TryoutSectionsList = () => {
         error,
         message,
     } = useTryoutSectionStore();
-    const { getAllAvailableTryouts, availableTryouts } = useTryoutStore();
+    const { getAllAvailableTryouts } = useTryoutStore();
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [mode, setMode] = useState<"create" | "update">("create");
     const [limit, setLimit] = useState<number>(10);
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const [selectedTryoutSection, setSelectedTryoutSection] = useState<TryoutSection>({
-        id: "",
-        tryout: {
-            id: "",
-            title: "",
-        },
-        tryoutId: "",
-        title: "",
-        type: "",
-        subType: null,
-        duration: 0,
-        order: 0,
-        createdAt: "",
-        isActive: true,
-    });
+    const [selectedTryoutSection, setSelectedTryoutSection] = useState<TryoutSection>(MockTryoutSection);
     const [confirmationBox, setConfirmationBox] = useState<ConfirmationBoxProps>({
         isOpen: false,
         message: "",
@@ -63,6 +50,11 @@ const TryoutSectionsList = () => {
         {
             name: "Type",
             selector: (row) => row.type,
+            sortable: true,
+        },
+        {
+            name: "Code",
+            selector: (row) => row.code,
             sortable: true,
         },
         {
@@ -151,21 +143,7 @@ const TryoutSectionsList = () => {
     const handleClickCreateTryoutSection = () => {
         setIsOpenModal(true);
         setMode("create");
-        setSelectedTryoutSection({
-            id: "",
-            tryoutId: availableTryouts[0]?.id ?? "",
-            tryout: {
-                id: "",
-                title: "",
-            },
-            title: "",
-            type: "",
-            subType: null,
-            duration: 0,
-            order: 0,
-            createdAt: "",
-            isActive: true,
-        });
+        setSelectedTryoutSection(MockTryoutSection);
     };
 
     const handleClickEdit = (tryoutSection: TryoutSection) => {
@@ -193,21 +171,7 @@ const TryoutSectionsList = () => {
             await createTryoutSection(data);
         }
         setIsOpenModal(false);
-        setSelectedTryoutSection({
-            id: "",
-            tryoutId: "",
-            tryout: {
-                id: "",
-                title: "",
-            },
-            title: "",
-            type: "",
-            subType: null,
-            duration: 0,
-            order: 0,
-            createdAt: "",
-            isActive: true,
-        });
+        setSelectedTryoutSection(MockTryoutSection);
         setMode("create");
     };
 

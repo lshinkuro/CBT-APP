@@ -2,10 +2,10 @@
 import { create } from "zustand";
 import { post, get, put, del } from "../service/api/ApiConfig";
 import { QuestionDto, QuestionState } from "../types/question";
+import useTryoutStore from "./tryoutStore";
+import useTryoutSectionStore from "./tryoutSectionStore";
 
 const useQuestionStore = create<QuestionState>((set) => ({
-    selectedTryoutId: "",
-    selectedTryoutSectionId: "",
     questions: [],
     isLoading: false,
     message: null,
@@ -17,7 +17,9 @@ const useQuestionStore = create<QuestionState>((set) => ({
     getAllQuestions: async () => {
         set({ isLoading: true });
         try {
-            const { limit, offset, search, selectedTryoutId, selectedTryoutSectionId } = useQuestionStore.getState();
+            const { selectedTryoutId } = useTryoutStore.getState();
+            const { selectedTryoutSectionId } = useTryoutSectionStore.getState();
+            const { limit, offset, search } = useQuestionStore.getState();
             const params: Record<string, any> = { limit, offset };
             if (search) {
                 params.search = search;
@@ -40,7 +42,7 @@ const useQuestionStore = create<QuestionState>((set) => ({
     createQuestion: async (data: QuestionDto) => {
         set({ isLoading: true });
         try {
-            data.tryoutSectionId = useQuestionStore.getState().selectedTryoutSectionId;
+            data.tryoutSectionId = useTryoutSectionStore.getState().selectedTryoutSectionId;
             const response = await post("/api/admin/questions", data);
             if (response.message === "Success") {
                 await useQuestionStore.getState().getAllQuestions();

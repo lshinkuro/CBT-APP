@@ -3,6 +3,7 @@ import Modal from "./Modal";
 import { FormModalTryoutSectionProps } from "../../types/tryoutSection";
 import { toast } from "react-hot-toast";
 import useTryoutStore from "../../stores/tryoutStore";
+import SelectTryout from "./SelectTryout";
 
 const FormModalTryoutSection: React.FC<FormModalTryoutSectionProps> = ({
     isOpen,
@@ -12,38 +13,51 @@ const FormModalTryoutSection: React.FC<FormModalTryoutSectionProps> = ({
     isLoading,
     initialValues,
 }) => {
-    const { availableTryouts } = useTryoutStore();
-    const [tryoutId, setTryoutId] = useState<string>(initialValues?.tryoutId ?? "");
+    const { availableTryouts, selectedTryoutId } = useTryoutStore();
     const [titleSection, setTitleSection] = useState<string>(initialValues?.title ?? "");
     const [type, setType] = useState<string>(initialValues?.type ?? "");
-    const [subType, setSubType] = useState<string | null>(initialValues?.subType ?? null);
+    const [code, setCode] = useState<string>(initialValues?.code ?? "");
+    const [description, setDescription] = useState<string>(initialValues?.description ?? "");
+    const [subType, setSubType] = useState<string | null>(initialValues?.subType ?? "");
     const [duration, setDuration] = useState<number>(initialValues?.duration ?? 0);
     const [order, setOrder] = useState<number>(initialValues?.order ?? 0);
     const [isActive, setIsActive] = useState<boolean>(initialValues?.isActive ?? true);
 
     useEffect(() => {
-        setTryoutId(initialValues?.tryoutId ?? "");
         setTitleSection(initialValues?.title ?? "");
         setType(initialValues?.type ?? "");
-        setSubType(initialValues?.subType ?? null);
+        setCode(initialValues?.code ?? "");
+        setDescription(initialValues?.description ?? "");
+        setSubType(initialValues?.subType ?? "");
         setDuration(initialValues?.duration ?? 0);
         setOrder(initialValues?.order ?? 0);
         setIsActive(initialValues?.isActive ?? true);
     }, [initialValues, availableTryouts]);
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => setTitleSection(e.target.value);
+    const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => setCode(e.target.value);
+    const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value);
     const handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => setType(e.target.value);
     const handleSubTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => setSubType(e.target.value || null);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(tryoutId, titleSection, type, subType, duration, order, isActive);
-        if (!tryoutId || !titleSection || !type || duration <= 0 || order <= 0) {
+        if (selectedTryoutId === "" || !titleSection || !type || duration <= 0 || order <= 0 || !code) {
             toast.error("Missing required fields");
             return;
         }
         try {
-            await onSubmit({ tryoutId, title: titleSection, type, subType, duration, order, isActive });
+            await onSubmit({
+                tryoutId: selectedTryoutId,
+                title: titleSection,
+                type,
+                subType,
+                duration,
+                order,
+                isActive,
+                code,
+                description,
+            });
             onClose();
         } catch (error) {
             console.error(error);
@@ -66,24 +80,7 @@ const FormModalTryoutSection: React.FC<FormModalTryoutSectionProps> = ({
                         required
                     />
                 </div>
-                <div className="mb-4">
-                    <label htmlFor="tryoutId" className="block mb-1 text-xs font-medium text-gray-600">
-                        Select Tryout *
-                    </label>
-                    <select
-                        id="tryoutId"
-                        value={tryoutId}
-                        onChange={(e) => setTryoutId(e.target.value)}
-                        className="w-full px-4 py-1 text-xs border rounded-md focus:ring-2 focus:ring-blue-500"
-                        required
-                    >
-                        {availableTryouts.map((tryout) => (
-                            <option key={tryout.id} value={tryout.id}>
-                                {tryout.title}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                <SelectTryout />
                 <div className="mb-4">
                     <label htmlFor="type" className="block mb-1 text-xs font-medium text-gray-600">
                         Type *
@@ -94,6 +91,30 @@ const FormModalTryoutSection: React.FC<FormModalTryoutSectionProps> = ({
                         value={type}
                         onChange={handleTypeChange}
                         className="w-full px-4 py-1 border text-xs rounded-md focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="type" className="block mb-1 text-xs font-medium text-gray-600">
+                        Code *
+                    </label>
+                    <input
+                        id="code"
+                        type="text"
+                        value={code}
+                        onChange={handleCodeChange}
+                        className="w-full px-4 py-1 border text-xs rounded-md focus:ring-2 focus:ring-blue-500"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="description" className="block mb-1 text-xs font-medium text-gray-600">
+                        Description
+                    </label>
+                    <textarea
+                        id="description"
+                        value={description}
+                        onChange={handleDescriptionChange}
+                        className="w-full px-4 py-1 border text-xs rounded-md focus:ring-2 focus:ring-blue-500"
+                        rows={3}
                     />
                 </div>
                 <div className="mb-4">

@@ -1,5 +1,14 @@
 import { Link, useLocation } from "react-router-dom";
-import { Users, ClipboardList, ClipboardCheck, Settings, BarChart, MessageCircleQuestion } from "lucide-react";
+import {
+    Users,
+    ClipboardList,
+    ClipboardCheck,
+    Settings,
+    BarChart,
+    MessageCircleQuestion,
+    BookImage,
+    LogOut,
+} from "lucide-react";
 
 const menuItems = [
     {
@@ -11,6 +20,11 @@ const menuItems = [
         title: "Users",
         icon: Users,
         path: "/admin/users",
+    },
+    {
+        title: "Programs",
+        icon: BookImage,
+        path: "/admin/programs",
     },
     {
         title: "Try Outs",
@@ -32,6 +46,11 @@ const menuItems = [
         icon: Settings,
         path: "/admin/settings",
     },
+    {
+        title: "Logout",
+        icon: LogOut,
+        path: "/logout",
+    },
 ];
 
 export const AdminSidebar = () => {
@@ -44,18 +63,20 @@ export const AdminSidebar = () => {
             </div>
 
             <nav className="mt-6">
-                {menuItems.map((item) => (
-                    <Link
-                        key={item.path}
-                        to={item.path}
-                        className={`flex items-center px-6 py-3 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors ${
-                            location.pathname === item.path ? "bg-blue-50 text-blue-600" : ""
-                        }`}
-                    >
-                        <item.icon className="h-5 w-5 mr-3" />
-                        <span>{item.title}</span>
-                    </Link>
-                ))}
+                {menuItems.map((item) => {
+                    return (
+                        <Link
+                            key={item.path}
+                            to={item.path}
+                            className={`flex items-center px-6 py-3 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors ${
+                                location.pathname === item.path ? "bg-blue-50 text-blue-600" : ""
+                            }`}
+                        >
+                            <item.icon className="h-5 w-5 mr-3" />
+                            <span>{item.title}</span>
+                        </Link>
+                    );
+                })}
             </nav>
         </div>
     );

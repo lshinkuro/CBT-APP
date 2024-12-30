@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 export const LoginForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { login, isAuthenticated, error, isLoading } = useAuthStore();
+    const { login, isAuthenticated, error, isLoading, checkAuth } = useAuthStore();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -21,8 +21,9 @@ export const LoginForm = () => {
     useEffect(() => {
         if (isAuthenticated) {
             toast.success("Login successful!");
+            checkAuth();
         }
-    }, [isAuthenticated]);
+    }, [isAuthenticated, checkAuth]);
 
     useEffect(() => {
         if (error) {

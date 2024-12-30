@@ -1,17 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
-import Cookies from "js-cookie";
-import { login, get } from "../service/api/ApiConfig";
+import { login, get, logout } from "../service/api/ApiConfig";
 
 export type UserRole = "admin" | "student";
 interface User {
-    id: string;
     username: string;
-    displayName: string;
     email: string;
     role: UserRole;
     createdAt: string;
-    updatedAt: string;
 }
 
 interface AuthState {
@@ -21,13 +17,15 @@ interface AuthState {
     error: string | null;
     login: (email: string, password: string) => Promise<void>;
     checkAuth: () => Promise<void>;
-    logout: () => void;
+    logout: () => Promise<void>;
 }
 
 const useAuthStore = create<AuthState>((set) => {
     return {
-        user: null,
-        isAuthenticated: false,
+        user: sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr")
+            ? JSON.parse(sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "")
+            : null,
+        isAuthenticated: !!sessionStorage.getItem("isAuthenticated"),
         isLoading: false,
         error: null,
         checkAuth: async () => {
@@ -38,10 +36,10 @@ const useAuthStore = create<AuthState>((set) => {
                     set({ isAuthenticated: true });
                     set({ user: response.data });
                 }
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+                // eslint-disable-next-line @typescript-eslint/no-unused-vars
             } catch (error: any) {
                 set({ isAuthenticated: false });
-                set({ error: null});
+                set({ error: null });
             } finally {
                 set({ isLoading: false });
             }
@@ -51,15 +49,24 @@ const useAuthStore = create<AuthState>((set) => {
             try {
                 const response = await login("/api/auth/login", email, password);
                 set({ user: response.data.user, isAuthenticated: true });
+                sessionStorage.setItem("isAuthenticated", "true");
+                sessionStorage.setItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr", JSON.stringify(response.data));
             } catch (error: any) {
                 set({ error: error.response?.data?.message || "Login failed" });
             } finally {
                 set({ isLoading: false });
             }
         },
-        logout: () => {
+        logout: async () => {
             set({ user: null, isAuthenticated: false });
-            Cookies.remove(import.meta.env.VITE_APP_COOKIE_KEY);
+            sessionStorage.clear();
+            try {
+                await logout("/api/auth/logout");
+            } catch (error: any) {
+                set({ error: error.response?.data?.message || "Login failed" });
+            } finally {
+                set({ isLoading: false });
+            }
         },
     };
 });
