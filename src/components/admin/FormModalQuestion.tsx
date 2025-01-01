@@ -9,6 +9,8 @@ import SelectTryoutSection from "./SelectTryoutSection";
 import QuestionOption from "./QuestionOption";
 import { MockData } from "../../mocks/Option";
 import useTryoutStore from "../../stores/tryoutStore";
+import { Trash } from "lucide-react";
+import useQuestionStore from "../../stores/questionStore";
 
 const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
     isOpen,
@@ -17,6 +19,7 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
     onSubmit,
     isLoading,
     initialValues,
+    mode,
 }) => {
     const { availableTryoutSections } = useTryoutSectionStore();
     const { selectedTryoutId } = useTryoutStore();
@@ -24,20 +27,55 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
     const [content, setContent] = useState<string>(initialValues?.content ?? "");
     const [type, setType] = useState<string>(initialValues?.type ?? "");
     const [image, setImage] = useState<string | null>(initialValues?.image ?? null);
+    const [imageObject, setImageObject] = useState<File | null>(null);
     const [data, setData] = useState<any>(initialValues?.data ?? MockData);
     const [isActive, setIsActive] = useState<boolean>(initialValues?.isActive ?? true);
+    const [showImage, setShowImage] = useState<string | null>(initialValues?.image ?? null);
 
     useEffect(() => {
         setContent(initialValues?.content ?? "");
         setType(initialValues?.type ?? "");
         setImage(initialValues?.image ?? null);
+        setShowImage(initialValues?.image ?? null);
+        setImageObject(null);
         setData(initialValues?.data ?? MockData);
         setIsActive(initialValues?.isActive ?? true);
+        useQuestionStore.setState({ hasChangeImage: false });
     }, [initialValues]);
+
+    useEffect(() => {
+        const hasChangeImage = useQuestionStore.getState().hasChangeImage;
+        if (mode === "create") {
+            setShowImage(image);
+        } else if (mode === "update" && hasChangeImage) {
+            setShowImage(image);
+        } else {
+            setShowImage(image ? import.meta.env.VITE_APP_API_BASE_URL + image : null);
+        }
+    }, [image, mode]);
 
     const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setContent(e.target.value);
     const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => setType(e.target.value);
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => setImage(e.target.value);
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputElement = e.target as HTMLInputElement;
+        const file = inputElement.files?.[0];
+        if (file) {
+            if (file.size <= 5 * 1024 * 1024) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    setImageObject(file);
+                    setImage(event.target?.result as string);
+                    useQuestionStore.setState({ hasChangeImage: true });
+                };
+                reader.readAsDataURL(file);
+            } else {
+                toast.error("File size must be less than 5MB");
+                if (inputElement) {
+                    inputElement.value = "";
+                }
+            }
+        }
+    };
     const handleIsActiveChange = (e: React.ChangeEvent<HTMLSelectElement>) => setIsActive(e.target.value === "true");
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -47,7 +85,18 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
             return;
         }
         try {
-            await onSubmit({ content, type, image, data, isActive, tryoutSectionId: selectedTryoutSectionId });
+            await onSubmit({
+                content,
+                type,
+                image,
+                imageObject,
+                data,
+                isActive,
+                tryoutSectionId: selectedTryoutSectionId,
+            });
+            setShowImage(null);
+            setImage(null);
+            setImageObject(null);
             onClose();
         } catch (error) {
             console.error(error);
@@ -96,18 +145,40 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
                     <label htmlFor="image" className="block mb-1 text-xs font-medium text-gray-600">
                         Image
                     </label>
-                    {image && (
-                        <div className="flex items-center justify-center mb-2">
-                            <img src={image} alt="Selected" className="max-w-[50%] h-auto rounded-md" />
-                        </div>
-                    )}
-                    <input
-                        id="image"
-                        type="text"
-                        value={image ?? ""}
-                        onChange={handleImageChange}
-                        className="w-full px-4 py-1 text-xs border rounded-md focus:ring-2 focus:ring-blue-500"
-                    />
+                    <div className="flex items-center justify-center mb-2">
+                        {showImage ? (
+                            <img src={showImage} alt="Selected" className="max-w-[50%] h-auto rounded-md" />
+                        ) : (
+                            <div className="bg-gray-200 rounded-md h-[100px] w-full flex items-center justify-center">
+                                <p className="text-gray-500 text-xs">No image selected</p>
+                            </div>
+                        )}
+                    </div>
+                    <div className="flex items-center">
+                        <input
+                            id="image"
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="w-full px-4 py-1 text-xs border rounded-md focus:ring-2 focus:ring-blue-500"
+                        />
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setImage(null);
+                                setShowImage(null);
+                                setImageObject(null);
+                                useQuestionStore.setState({ hasChangeImage: true });
+                                const inputElement = document.getElementById("image") as HTMLInputElement;
+                                if (inputElement) {
+                                    inputElement.value = "";
+                                }
+                            }}
+                            className="text-red-500 hover:text-red-700 text-sm font-semibold ml-2"
+                        >
+                            <Trash className="w-4 h-4" />
+                        </button>
+                    </div>
                 </div>
                 <div className="mb-4">
                     <label htmlFor="data" className="block mb-1 text-xs font-medium text-gray-600">

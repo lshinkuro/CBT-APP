@@ -15,12 +15,14 @@ export interface Question {
     content: string;
     type: string;
     image?: string | null;
+    imageObject?: File | null;
     data: Record<string, unknown>;
     isActive: boolean;
     createdAt: string;
 }
 
 export interface QuestionState {
+    hasChangeImage: boolean;
     questions: Question[];
     isLoading: boolean;
     message: string | null;
@@ -42,6 +44,7 @@ export interface FormModalQuestionProps {
     onSubmit: (data: QuestionDto) => Promise<void>;
     isLoading?: boolean;
     initialValues?: Question;
+    mode?: "create" | "update";
 }
 
 export interface Option {

@@ -36,7 +36,11 @@ const QuestionOption: React.FC<OptionProps> = ({ data, setData }) => {
                 <div className="border p-4 rounded-md shadow-sm" key={option.key}>
                     {option.image && (
                         <div className="w-full flex justify-center mb-4">
-                            <img src={option.image} alt="option" className="max-h-40" />
+                            <img
+                                src={import.meta.env.VITE_APP_API_BASE_URL + "/" + option.image}
+                                alt="option"
+                                className="max-h-40"
+                            />
                         </div>
                     )}
                     <div className="flex flex-col space-y-2 sm:flex-row sm:items-center sm:gap-4">

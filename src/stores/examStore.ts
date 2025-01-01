@@ -6,6 +6,7 @@ import { post } from "../service/api/ApiConfig";
 interface ExamState {
     isLoading: boolean;
     isReadIstruction: boolean;
+    isProgressExam: boolean;
     message: string;
     error: string | null;
     createExam: (data: ExamDto) => Promise<void>;
@@ -30,6 +31,7 @@ interface ExamState {
 export const useExamStore = create<ExamState>((set, get) => ({
     isLoading: false,
     isReadIstruction: false,
+    isProgressExam: false,
     message: "",
     createExam: async (data: ExamDto) => {
         set({ isLoading: true });

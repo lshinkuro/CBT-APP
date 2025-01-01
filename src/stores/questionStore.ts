@@ -6,6 +6,7 @@ import useTryoutStore from "./tryoutStore";
 import useTryoutSectionStore from "./tryoutSectionStore";
 
 const useQuestionStore = create<QuestionState>((set) => ({
+    hasChangeImage: false,
     questions: [],
     isLoading: false,
     message: null,
@@ -43,7 +44,16 @@ const useQuestionStore = create<QuestionState>((set) => ({
         set({ isLoading: true });
         try {
             data.tryoutSectionId = useTryoutSectionStore.getState().selectedTryoutSectionId;
-            const response = await post("/api/admin/questions", data);
+            const formData = new FormData();
+            formData.append("content", data.content);
+            formData.append("type", data.type);
+            formData.append("image", "");
+            formData.append("data", JSON.stringify(data.data) ?? "");
+            formData.append("isActive", String(data.isActive));
+            formData.append("tryoutSectionId", String(data.tryoutSectionId));
+            formData.append("key", "create-question");
+            formData.append("imageObject", data.imageObject ?? "");
+            const response = await post("/api/admin/questions", formData);
             if (response.message === "Success") {
                 await useQuestionStore.getState().getAllQuestions();
                 set({ message: "Question created successfully" });
@@ -57,7 +67,16 @@ const useQuestionStore = create<QuestionState>((set) => ({
     updateQuestion: async (id: string, data: QuestionDto) => {
         set({ isLoading: true });
         try {
-            const response = await put(`/api/admin/questions/${id}`, data);
+            const formData = new FormData();
+            formData.append("content", data.content);
+            formData.append("type", data.type);
+            formData.append("image", useQuestionStore.getState().hasChangeImage ? "" : data.image ?? "");
+            formData.append("data", JSON.stringify(data.data) ?? "");
+            formData.append("isActive", String(data.isActive));
+            formData.append("tryoutSectionId", String(data.tryoutSectionId));
+            formData.append("key", "update-question");
+            formData.append("imageObject", data.imageObject ?? "");
+            const response = await put(`/api/admin/questions/${id}`, formData);
             if (response.message === "Success") {
                 await useQuestionStore.getState().getAllQuestions();
                 set({ message: "Question updated successfully" });

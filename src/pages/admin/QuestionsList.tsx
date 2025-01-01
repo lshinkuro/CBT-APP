@@ -11,7 +11,7 @@ import { AdminSidebar } from "../../components/admin/AdminSidebar";
 import useTryoutSectionStore from "../../stores/tryoutSectionStore";
 import SelectTryout from "../../components/admin/SelectTryout";
 import SelectTryoutSection from "../../components/admin/SelectTryoutSection";
-import { MockData } from "../../mocks/Option";
+import { MockQuestion } from "../../mocks/Question";
 import useTryoutStore from "../../stores/tryoutStore";
 
 const QuestionsList = () => {
@@ -33,17 +33,7 @@ const QuestionsList = () => {
     const [mode, setMode] = useState<"create" | "update">("create");
     const [limit, setLimit] = useState<number>(10);
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const [selectedQuestion, setSelectedQuestion] = useState<Question>({
-        id: "",
-        content: "",
-        tryoutSectionId: "",
-        image: "",
-        type: "multiple-choice",
-        isActive: true,
-        data: MockData,
-        createdAt: "",
-        tryoutSection: { id: "", title: "", type: "", subType: "", tryout: { id: "", title: "", type: "" } },
-    });
+    const [selectedQuestion, setSelectedQuestion] = useState<Question>(MockQuestion);
     const [confirmationBox, setConfirmationBox] = useState<ConfirmationBoxProps>({
         isOpen: false,
         message: "",
@@ -155,17 +145,7 @@ const QuestionsList = () => {
     const handleClickCreateQuestion = () => {
         setIsOpenModal(true);
         setMode("create");
-        setSelectedQuestion({
-            id: "",
-            content: "",
-            tryoutSectionId: "",
-            image: "",
-            type: "multiple-choice",
-            isActive: true,
-            data: MockData,
-            createdAt: "",
-            tryoutSection: { id: "", title: "", type: "", subType: "", tryout: { id: "", title: "", type: "" } },
-        });
+        setSelectedQuestion(MockQuestion);
     };
 
     const handleClickEdit = (question: Question) => {
@@ -193,17 +173,7 @@ const QuestionsList = () => {
             await createQuestion(data);
         }
         setIsOpenModal(false);
-        setSelectedQuestion({
-            id: "",
-            content: "",
-            image: "",
-            tryoutSectionId: "",
-            type: "multiple-choice",
-            isActive: true,
-            data: MockData,
-            createdAt: "",
-            tryoutSection: { id: "", title: "", type: "", subType: "", tryout: { id: "", title: "", type: "" } },
-        });
+        setSelectedQuestion(MockQuestion);
         setMode("create");
     };
 
@@ -269,6 +239,7 @@ const QuestionsList = () => {
                     onSubmit={handleSubmit}
                     isLoading={isLoading}
                     initialValues={selectedQuestion}
+                    mode={mode}
                 />
                 <ConfirmationBox {...confirmationBox} />
             </main>

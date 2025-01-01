@@ -24,9 +24,11 @@ import ProgramsList from "./pages/admin/ProgramsList";
 import Logout from "./components/auth/Logout";
 import CardTryout from "./pages/student/CardTryout";
 import NotFound from "./pages/NotFound";
+import { useExamStore } from "./stores/examStore";
 
 function App() {
     const { user, isLoading } = useAuthStore();
+    const { isProgressExam } = useExamStore();
 
     if (isLoading) {
         return <Loading />;
@@ -35,7 +37,7 @@ function App() {
         <Router>
             <Helmet>
                 <link rel="icon" href={logoPencil} />
-                <title>Tryout CPNS Polri</title>
+                <title>Platypus College</title>
             </Helmet>
             <AnimatedBackground />
             <div className="min-h-screen">
@@ -64,8 +66,8 @@ function App() {
                         path="/*"
                         element={
                             <ProtectedRoute allowedRole="student">
-                                <Navbar />
-                                <div className="pt-16">
+                                {!isProgressExam && <Navbar />}
+                                <div className={!isProgressExam ? "pt-16" : ""}>
                                     <Routes>
                                         <Route path="/dashboard" element={<StudentDashboard />} />
                                         <Route path="/tryout/:id" element={<CardTryout />} />
