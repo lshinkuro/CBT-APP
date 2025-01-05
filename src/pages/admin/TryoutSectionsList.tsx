@@ -33,6 +33,8 @@ const TryoutSectionsList = () => {
         message: "",
         onConfirm: async () => await Promise.resolve(),
         onClose: () => {},
+        useLoading: true,
+        isLoading: isLoading,
     });
 
     const columns: IDataTableProps<TryoutSection>["columns"] = [

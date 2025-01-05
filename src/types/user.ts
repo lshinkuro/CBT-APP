@@ -7,6 +7,11 @@ export interface User {
     displayName: string;
     email: string;
     isActive: boolean;
+    data: {
+        priviledges: {
+            programs: string[];
+        };
+    };
     role: "admin" | "student";
     createdAt: string;
 }

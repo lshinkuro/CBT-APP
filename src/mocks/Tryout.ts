@@ -12,6 +12,7 @@ export const MockTryout: Tryout = {
     description: "",
     startDate: "",
     endDate: "",
+    instruction: "",
     isActive: true,
     createdAt: "",
 };

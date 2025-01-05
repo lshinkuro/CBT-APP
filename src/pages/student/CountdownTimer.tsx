@@ -26,7 +26,7 @@ const CountdownTimer = () => {
         if (count === 0) {
             clearInterval(timer);
             useExamStore.setState({ isProgressExam: true });
-            navigate("/exam/cpns", { replace: true });
+            navigate("/exam/running", { replace: true });
         }
 
         return () => clearInterval(timer);

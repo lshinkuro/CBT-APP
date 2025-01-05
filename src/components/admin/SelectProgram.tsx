@@ -1,14 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import useProgramStore from "../../stores/programStore";
 import useTryoutStore from "../../stores/tryoutStore";
 
 const SelectProgram = () => {
     const { selectedProgramId } = useProgramStore();
     const { getAllAvailablePrograms, availablePrograms } = useProgramStore();
-    const { availableTryouts } = useTryoutStore()
+    const { availableTryouts } = useTryoutStore();
+    const isFirstRender = useRef(true);
 
     useEffect(() => {
-        getAllAvailablePrograms();
+        if (isFirstRender.current) {
+            getAllAvailablePrograms();
+            isFirstRender.current = false;
+        }
     }, [getAllAvailablePrograms]);
 
     useEffect(() => {
@@ -44,3 +48,4 @@ const SelectProgram = () => {
 };
 
 export default SelectProgram;
+

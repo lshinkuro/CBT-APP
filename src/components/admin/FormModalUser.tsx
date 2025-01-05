@@ -1,7 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import Modal from "./Modal";
 import { FormModalUserProps } from "../../types/user";
 import { toast } from "react-hot-toast";
+import { MultiSelect } from "react-multi-select-component";
+import useProgramStore from "../../stores/programStore";
+import { MockUser } from "../../mocks/User";
 
 const FormModalUser: React.FC<FormModalUserProps> = ({
     isOpen,
@@ -11,12 +15,35 @@ const FormModalUser: React.FC<FormModalUserProps> = ({
     isLoading,
     initialValues,
 }) => {
-    const [username, setUsername] = useState<string>("");
-    const [displayName, setDisplayName] = useState<string>("");
-    const [email, setEmail] = useState<string>("");
-    const [phoneNumber, setPhoneNumber] = useState<string>("");
-    const [role, setRole] = useState<"admin" | "student">("student");
-    const [isActive, setIsActive] = useState<boolean>(true);
+    const { availablePrograms } = useProgramStore();
+    const [username, setUsername] = useState<string>(initialValues?.username ?? "");
+    const [displayName, setDisplayName] = useState<string>(initialValues?.displayName ?? "");
+    const [email, setEmail] = useState<string>(initialValues?.email ?? "");
+    const [phoneNumber, setPhoneNumber] = useState<string>(initialValues?.phoneNumber ?? "");
+    const [role, setRole] = useState<"admin" | "student">(initialValues?.role ?? "student");
+    const [isActive, setIsActive] = useState<boolean>(initialValues?.isActive ?? true);
+    const [multiSelectOptions, setMultiSelectOptions] = useState<{ label: string; value: string }[]>([]);
+    const [multiSelectSelected, setMultiSelectSelected] = useState<{ label: string; value: string }[]>([]);
+    const [data, setData] = useState<any>(initialValues?.data ?? MockUser.data);
+
+    useEffect(() => {
+        if (availablePrograms.length > 0) {
+            setMultiSelectOptions(availablePrograms.map((program) => ({ label: program.title, value: program.id })));
+        }
+    }, [availablePrograms]);
+
+    useEffect(() => {
+        setData({ priviledges: { programs: multiSelectSelected.map((option) => option.value) } });
+    }, [multiSelectSelected]);
+
+    useEffect(() => {
+        setMultiSelectSelected(
+            initialValues?.data?.priviledges?.programs.map((programId: string) => ({
+                label: availablePrograms.find((program) => program.id === programId)?.title ?? "",
+                value: programId,
+            })) ?? []
+        );
+    }, [initialValues, availablePrograms]);
 
     useEffect(() => {
         setUsername(initialValues?.username ?? "");
@@ -25,6 +52,7 @@ const FormModalUser: React.FC<FormModalUserProps> = ({
         setPhoneNumber(initialValues?.phoneNumber ?? "");
         setRole(initialValues?.role ?? "student");
         setIsActive(initialValues?.isActive ?? true);
+        setData(initialValues?.data ?? MockUser.data);
     }, [initialValues]);
 
     const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value);
@@ -42,7 +70,7 @@ const FormModalUser: React.FC<FormModalUserProps> = ({
             return;
         }
         try {
-            await onSubmit({ username, displayName, email, phoneNumber, role, isActive });
+            await onSubmit({ username, displayName, email, phoneNumber, role, isActive, data });
             onClose();
         } catch (error) {
             console.error(error);
@@ -124,6 +152,18 @@ const FormModalUser: React.FC<FormModalUserProps> = ({
                     </select>
                 </div>
                 <div className="mb-4">
+                    <label htmlFor="programs" className="block mb-2 text-xs font-medium text-gray-600">
+                        Programs *
+                    </label>
+                    <MultiSelect
+                        options={multiSelectOptions}
+                        value={multiSelectSelected}
+                        onChange={setMultiSelectSelected}
+                        labelledBy="Select programs"
+                        className="text-xs"
+                    />
+                </div>
+                <div className="mb-4">
                     <label htmlFor="isActive" className="block mb-2 text-xs font-medium text-gray-600">
                         Active Status *
                     </label>
@@ -144,5 +184,3 @@ const FormModalUser: React.FC<FormModalUserProps> = ({
 };
 
 export default FormModalUser;
-
-

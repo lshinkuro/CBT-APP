@@ -24,6 +24,8 @@ const TryoutsList = () => {
         message: "",
         onConfirm: async () => await Promise.resolve(),
         onClose: () => {},
+        useLoading: true,
+        isLoading: isLoading,
     });
 
     const columns: IDataTableProps<Tryout>["columns"] = [

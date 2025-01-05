@@ -41,6 +41,15 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
         setData(initialValues?.data ?? MockData);
         setIsActive(initialValues?.isActive ?? true);
         useQuestionStore.setState({ hasChangeImage: false });
+        useQuestionStore.setState({
+            hasChangeImageOptions: {
+                a: false,
+                b: false,
+                c: false,
+                d: false,
+                e: false,
+            },
+        });
     }, [initialValues]);
 
     useEffect(() => {
@@ -97,6 +106,7 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
             setShowImage(null);
             setImage(null);
             setImageObject(null);
+            setData(MockData);
             onClose();
         } catch (error) {
             console.error(error);
@@ -184,7 +194,7 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
                     <label htmlFor="data" className="block mb-1 text-xs font-medium text-gray-600">
                         Data
                     </label>
-                    <QuestionOption setData={setData} data={data} />
+                    <QuestionOption setData={setData} data={data} mode={mode} />
                 </div>
                 <div className="mb-4">
                     <label htmlFor="isActive" className="block mb-1 text-xs font-medium text-gray-600">

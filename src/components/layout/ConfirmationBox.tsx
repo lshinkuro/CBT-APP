@@ -5,9 +5,18 @@ export interface ConfirmationBoxProps {
     onClose: () => void;
     onConfirm: () => Promise<void>;
     message: string;
+    useLoading?: boolean;
+    isLoading?: boolean;
 }
 
-const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({ isOpen, onClose, onConfirm, message }) => {
+const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
+    isOpen,
+    onClose,
+    onConfirm,
+    message,
+    useLoading = false,
+    isLoading = false,
+}) => {
     if (!isOpen) return null;
 
     return (
@@ -25,9 +34,14 @@ const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({ isOpen, onClose, onCo
                     </button>
                     <button
                         onClick={onConfirm}
-                        className="px-4 py-2 ml-2 text-sm font-semibold text-white bg-blue-500 rounded-md hover:bg-blue-600"
+                        className={`
+                            px-4 py-2 ml-2 text-sm font-semibold
+                            ${useLoading && isLoading ? "bg-blue-300" : "bg-blue-500"}
+                            rounded-md
+                            ${useLoading && isLoading ? "hover:bg-blue-300" : "hover:bg-blue-600"}
+                        `}
                     >
-                        OK
+                        {useLoading && isLoading ? "Submitting..." : "OK"}
                     </button>
                 </div>
             </div>

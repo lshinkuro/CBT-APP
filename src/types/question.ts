@@ -2,6 +2,7 @@ export interface Question {
     tryoutSection: {
         id: string;
         title: string;
+        code: string;
         type: string;
         subType: string | null;
         tryout: {
@@ -16,12 +17,16 @@ export interface Question {
     type: string;
     image?: string | null;
     imageObject?: File | null;
-    data: Record<string, unknown>;
+    data: { options: Option[] };
     isActive: boolean;
     createdAt: string;
 }
 
 export interface QuestionState {
+    examQuestions: { id: string; answer: string | null }[];
+    currentQuestion: number;
+    currentQuestionData: Question | null;
+    hasChangeImageOptions: { [key: string]: boolean };
     hasChangeImage: boolean;
     questions: Question[];
     isLoading: boolean;
@@ -32,6 +37,7 @@ export interface QuestionState {
     search: string;
     totalRows: number;
     getAllQuestions: () => Promise<void>;
+    getQuestionById: (id: string) => Promise<void>;
     createQuestion: (data: QuestionDto) => Promise<void>;
     updateQuestion: (id: string, data: QuestionDto) => Promise<void>;
     deleteQuestion: (id: string) => Promise<void>;
@@ -52,12 +58,14 @@ export interface Option {
     content: string;
     score: number;
     image: string | null;
+    imageObject?: File | null;
     correct: boolean;
 }
 
 export interface OptionProps {
     setData: (data: { options: Option[] }) => void;
     data: { options: Option[] };
+    mode?: "create" | "update";
 }
 
 export type QuestionDto = Omit<Question, "id" | "createdAt" | "tryoutSection">;

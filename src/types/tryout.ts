@@ -11,6 +11,8 @@ export interface Tryout {
     };
     startDate: string;
     endDate: string;
+    instruction: string;
+    duration: number;
     isActive: boolean;
     createdAt: string;
 }
@@ -25,7 +27,7 @@ export interface AvailableTryouts {
 export interface TryoutState {
     selectedTryoutId: string;
     availableTryouts: AvailableTryouts[];
-    instruction: Instruction | null;
+    instruction: string | null;
     tryouts: Tryout[];
     isLoading: boolean;
     message: string | null;
@@ -51,28 +53,5 @@ export interface FormModalTryoutProps {
     isLoading?: boolean;
     initialValues?: Tryout;
 }
-
-export type InstructionSection = {
-    id: string;
-    title: string;
-    content?: string;
-    list?: { id: string; text: string }[];
-    subsections?: {
-        id: string;
-        title: string;
-        list: { id: string; text: string }[];
-    }[];
-    steps?: {
-        id: string;
-        title: string;
-        content: string;
-    }[];
-    note?: string;
-};
-
-export type Instruction = {
-    title: string;
-    sections: InstructionSection[];
-};
 
 export type TryoutDto = Omit<Tryout, "id" | "createdAt" | "program">;

@@ -9,6 +9,8 @@ import toast from "react-hot-toast";
 import ConfirmationBox, { ConfirmationBoxProps } from "../../components/layout/ConfirmationBox";
 import { User, UserDto } from "../../types/user";
 import { ModalProfile } from "../../components/admin/ModalProfile";
+import useProgramStore from "../../stores/programStore";
+import { MockUser } from "../../mocks/User";
 
 export const UsersList = () => {
     const {
@@ -24,6 +26,7 @@ export const UsersList = () => {
         selectedUserProfile,
         getSelectedUserProfile,
     } = useUserStore();
+    const { getAllAvailablePrograms } = useProgramStore();
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [isOpenModalProfile, setIsOpenModalProfile] = useState(false);
     const [limit, setLimit] = useState<number>(10);
@@ -33,29 +36,13 @@ export const UsersList = () => {
         message: "",
         onConfirm: async () => await Promise.resolve(),
         onClose: () => {},
+        isLoading: isLoading,
+        useLoading: true,
     });
     const [mode, setMode] = useState<"create" | "update">("create");
-    const [selectedUser, setSelectedUser] = useState<User>({
-        id: "",
-        username: "",
-        phoneNumber: "",
-        displayName: "",
-        email: "",
-        role: "student",
-        createdAt: "",
-        isActive: true,
-    });
+    const [selectedUser, setSelectedUser] = useState<User>(MockUser);
 
-    const columns: IDataTableProps<{
-        id: string;
-        username: string;
-        displayName: string;
-        email: string;
-        role: "admin" | "student";
-        phoneNumber: string;
-        createdAt: string;
-        isActive: boolean;
-    }>["columns"] = [
+    const columns: IDataTableProps<User>["columns"] = [
         {
             name: "Name",
             selector: (row) => row.username,
@@ -134,7 +121,8 @@ export const UsersList = () => {
 
     useEffect(() => {
         getAllUsers();
-    }, [getAllUsers]);
+        getAllAvailablePrograms();
+    }, [getAllUsers, getAllAvailablePrograms]);
 
     useEffect(() => {
         if (error) {
@@ -152,16 +140,7 @@ export const UsersList = () => {
 
     const handleClickRegister = () => {
         setMode("create");
-        setSelectedUser({
-            id: "",
-            username: "",
-            displayName: "",
-            email: "",
-            phoneNumber: "",
-            role: "student",
-            createdAt: "",
-            isActive: true,
-        });
+        setSelectedUser(MockUser);
         setIsOpenModal(true);
     };
 
@@ -178,16 +157,7 @@ export const UsersList = () => {
             await createUser(data);
         }
         setIsOpenModal(false);
-        setSelectedUser({
-            id: "",
-            username: "",
-            displayName: "",
-            email: "",
-            phoneNumber: "",
-            role: "student",
-            createdAt: "",
-            isActive: true,
-        });
+        setSelectedUser(MockUser);
         setMode("create");
     };
 

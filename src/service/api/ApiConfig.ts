@@ -15,8 +15,10 @@ const handleRequestError = (error: AxiosError): Promise<never> => {
     if (error.response) {
         console.error("Response error:", error.response.data);
         if (error.response.status === 401) {
-            sessionStorage.clear();
-            location.href = "/";
+            if (sessionStorage.length > 0) {
+                sessionStorage.clear();
+                location.href = "/";
+            }
         }
     } else if (error.request) {
         console.error("Request error:", error.request);

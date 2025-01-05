@@ -7,6 +7,7 @@ export const MockData: { options: Option[] } = {
             content: "",
             score: 0,
             image: null,
+            imageObject: null,
             correct: false,
         },
         {
@@ -14,6 +15,7 @@ export const MockData: { options: Option[] } = {
             content: "",
             score: 0,
             image: null,
+            imageObject: null,
             correct: false,
         },
         {
@@ -21,6 +23,7 @@ export const MockData: { options: Option[] } = {
             content: "",
             score: 0,
             image: null,
+            imageObject: null,
             correct: false,
         },
         {
@@ -28,6 +31,7 @@ export const MockData: { options: Option[] } = {
             content: "",
             score: 0,
             image: null,
+            imageObject: null,
             correct: false,
         },
         {
@@ -35,6 +39,7 @@ export const MockData: { options: Option[] } = {
             content: "",
             score: 0,
             image: null,
+            imageObject: null,
             correct: false,
         },
     ],

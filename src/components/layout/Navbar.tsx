@@ -30,7 +30,7 @@ export const Navbar = () => {
                             >
                                 <Pencil className="h-8 w-8" />
                                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
-                                    Tryout CBT
+                                    Platypus College
                                 </span>
                             </Link>
                         </div>

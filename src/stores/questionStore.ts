@@ -6,6 +6,16 @@ import useTryoutStore from "./tryoutStore";
 import useTryoutSectionStore from "./tryoutSectionStore";
 
 const useQuestionStore = create<QuestionState>((set) => ({
+    examQuestions: [],
+    currentQuestionData: null,
+    currentQuestion: 0,
+    hasChangeImageOptions: {
+        a: false,
+        b: false,
+        c: false,
+        d: false,
+        e: false,
+    },
     hasChangeImage: false,
     questions: [],
     isLoading: false,
@@ -40,11 +50,27 @@ const useQuestionStore = create<QuestionState>((set) => ({
             set({ isLoading: false });
         }
     },
+    getQuestionById: async (id: string) => {
+        set({ isLoading: true });
+        try {
+            const response = await get(`/api/questions/${id}`);
+            if (response.message === "Success") {
+                set({ currentQuestionData: response.data });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to get question" });
+        } finally {
+            set({ isLoading: false });
+        }
+    },
     createQuestion: async (data: QuestionDto) => {
         set({ isLoading: true });
         try {
             data.tryoutSectionId = useTryoutSectionStore.getState().selectedTryoutSectionId;
             const formData = new FormData();
+            data.data.options.forEach((option) => {
+                option.image = "";
+            });
             formData.append("content", data.content);
             formData.append("type", data.type);
             formData.append("image", "");
@@ -53,6 +79,11 @@ const useQuestionStore = create<QuestionState>((set) => ({
             formData.append("tryoutSectionId", String(data.tryoutSectionId));
             formData.append("key", "create-question");
             formData.append("imageObject", data.imageObject ?? "");
+            data.data.options.forEach((option) => {
+                if (option.imageObject) {
+                    formData.append("imageObject-" + option.key, option.imageObject ?? "");
+                }
+            });
             const response = await post("/api/admin/questions", formData);
             if (response.message === "Success") {
                 await useQuestionStore.getState().getAllQuestions();
@@ -68,6 +99,16 @@ const useQuestionStore = create<QuestionState>((set) => ({
         set({ isLoading: true });
         try {
             const formData = new FormData();
+            const hasChangeImageOptions = useQuestionStore.getState().hasChangeImageOptions;
+            for (const key in hasChangeImageOptions) {
+                if (hasChangeImageOptions[key]) {
+                    data.data.options.forEach((option) => {
+                        if (option.key === key) {
+                            option.image = "";
+                        }
+                    });
+                }
+            }
             formData.append("content", data.content);
             formData.append("type", data.type);
             formData.append("image", useQuestionStore.getState().hasChangeImage ? "" : data.image ?? "");
@@ -76,6 +117,11 @@ const useQuestionStore = create<QuestionState>((set) => ({
             formData.append("tryoutSectionId", String(data.tryoutSectionId));
             formData.append("key", "update-question");
             formData.append("imageObject", data.imageObject ?? "");
+            data.data.options.forEach((option) => {
+                if (option.imageObject) {
+                    formData.append("imageObject-" + option.key, option.imageObject ?? "");
+                }
+            });
             const response = await put(`/api/admin/questions/${id}`, formData);
             if (response.message === "Success") {
                 await useQuestionStore.getState().getAllQuestions();

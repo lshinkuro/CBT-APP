@@ -11,7 +11,7 @@ import { StudentDashboard } from "./pages/student/StudentDashboard";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { ExamHistory } from "./pages/student/ExamHistory";
 import { IkatanDinasExam } from "./pages/student/IkatanDinasExam";
-import { CPNSExam } from "./pages/student/CPNSExam";
+import { ExamRunning } from "./pages/student/ExamRunning";
 import { Profile } from "./pages/student/Profile";
 import { Helmet } from "react-helmet-async";
 import logoPencil from "./assets/images/pencil.png";
@@ -27,10 +27,9 @@ import NotFound from "./pages/NotFound";
 import { useExamStore } from "./stores/examStore";
 
 function App() {
-    const { user, isLoading } = useAuthStore();
+    const { user, isLoading: isLoadingAuth } = useAuthStore();
     const { isProgressExam } = useExamStore();
-
-    if (isLoading) {
+    if (isLoadingAuth) {
         return <Loading />;
     }
     return (
@@ -66,13 +65,15 @@ function App() {
                         path="/*"
                         element={
                             <ProtectedRoute allowedRole="student">
-                                {!isProgressExam && <Navbar />}
-                                <div className={!isProgressExam ? "pt-16" : ""}>
+                                {location.pathname !== "/exam/running" && !isProgressExam && <Navbar />}
+                                <div
+                                    className={location.pathname !== "/exam/running" && !isProgressExam ? "pt-16" : ""}
+                                >
                                     <Routes>
                                         <Route path="/dashboard" element={<StudentDashboard />} />
                                         <Route path="/tryout/:id" element={<CardTryout />} />
                                         <Route path="/instruction/:code" element={<InstructionExam />} />
-                                        <Route path="/exam/cpns" element={<CPNSExam />} />
+                                        <Route path="/exam/running" element={<ExamRunning />} />
                                         <Route path="/exam/ikatan-dinas" element={<IkatanDinasExam />} />
                                         <Route path="/profile" element={<Profile />} />
                                         <Route path="/history" element={<ExamHistory />} />

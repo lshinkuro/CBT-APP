@@ -1,44 +1,89 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
-import { Question, SubType, SubSubType, ExamDto } from "../types/exam";
-import { post } from "../service/api/ApiConfig";
+import { ExamDto, AnswerDto } from "../types/exam";
+import { get, post, put } from "../service/api/ApiConfig";
+import useQuestionStore from "./questionStore";
 
 interface ExamState {
+    exams: any;
     isLoading: boolean;
     isReadIstruction: boolean;
     isProgressExam: boolean;
     message: string;
+    currentExam: any;
+    currentSection: string | null;
     error: string | null;
+    getAllExams: ({ limit, offset, search }: { limit: number; offset: number; search: string | null }) => Promise<void>;
     createExam: (data: ExamDto) => Promise<void>;
-    currentQuestion: number;
-    questions: Question[];
-    answers: Record<string, string>;
-    scores: Record<SubSubType, number>;
+    getCurrentExamByStudentId: () => Promise<void>;
     isExamComplete: boolean;
-    setAnswer: (questionId: string, answerId: string) => void;
-    nextQuestion: () => void;
+    setAnswer: (data: AnswerDto) => Promise<void>;
+    nextQuestion: () => Promise<void>;
     previousQuestion: () => void;
     goToQuestion: (index: number) => void;
-    calculateScore: () => {
-        TIU: number;
-        TKP: number;
-        TWK: number;
-        total: number;
-    };
-    resetExam: () => void;
+    checkCurrentProgressExam: () => Promise<void>;
+    limit: number;
+    offset: number;
+    search: string | null;
+    totalRows: number;
 }
 
-export const useExamStore = create<ExamState>((set, get) => ({
+export const useExamStore = create<ExamState>((set) => ({
+    exams: [],
     isLoading: false,
     isReadIstruction: false,
     isProgressExam: false,
     message: "",
+    currentExam: null,
+    currentSection: null,
+    error: null,
+    isExamComplete: false,
+    limit: 10,
+    offset: 0,
+    search: "",
+    totalRows: 0,
+    getAllExams: async ({
+        limit,
+        offset,
+        search,
+    }: { limit?: number; offset?: number; search?: string | null } = {}) => {
+        set({ isLoading: true });
+        try {
+            const params: Record<string, any> = { limit, offset };
+            if (search) {
+                params.search = search;
+            }
+            const response = await get("/api/exams", params);
+            if (response.message === "Success") {
+                set({ message: "Tryout list!", exams: response.data.exams, totalRows: response.data.count });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to get exams" });
+        } finally {
+            set({ isLoading: false });
+        }
+    },
+    checkCurrentProgressExam: async () => {
+        set({ isLoading: true });
+        try {
+            const response = await get(`/api/student/exams/check`);
+            if (response.message === "Success") {
+                set({ message: "Tryout progress!", isProgressExam: response.data });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to check exam" });
+        } finally {
+            set({ isLoading: false });
+        }
+    },
     createExam: async (data: ExamDto) => {
         set({ isLoading: true });
         try {
             const response = await post("/api/exams", data);
             if (response.message === "Success") {
-                set({ message: "Tryout started!" });
+                set({ message: "Tryout started!", currentExam: response.data });
+                const questions = response?.data?.data?.questions;
+                useQuestionStore.setState({ examQuestions: questions });
             }
         } catch (error: any) {
             set({ error: error.response?.data?.message || "Failed to start Tryout" });
@@ -46,151 +91,69 @@ export const useExamStore = create<ExamState>((set, get) => ({
             set({ isLoading: false });
         }
     },
-    currentQuestion: 0,
-    questions: [
-        {
-            id: "1",
-            text: "Dalam sebuah barisan aritmatika, suku pertama adalah 3 dan suku ketiga adalah 9. Berapakah suku kelima dari barisan tersebut?",
-            options: [
-                { id: "a", text: "12", weight: 0 },
-                { id: "b", text: "15", weight: 5 },
-                { id: "c", text: "18", weight: 0 },
-                { id: "d", text: "21", weight: 0 },
-            ],
-            subSubType: "TIU",
-            explanation:
-                "Beda = (suku ketiga - suku pertama) / 2 = (9-3)/2 = 3. Suku kelima = suku pertama + 4(beda) = 3 + 4(3) = 15",
-        },
-        {
-            id: "2",
-            text: "Jika 2x + 3y = 12 dan 3x - 2y = 4, maka nilai x adalah...",
-            options: [
-                { id: "a", text: "2", weight: 0 },
-                { id: "b", text: "3", weight: 5 },
-                { id: "c", text: "4", weight: 0 },
-                { id: "d", text: "5", weight: 0 },
-            ],
-            subSubType: "TIU",
-            explanation:
-                "Menggunakan metode eliminasi: \n2x + 3y = 12 | ×3 | 6x + 9y = 36\n3x - 2y = 4  | ×2 | 6x - 4y = 8\nKurangkan persamaan: 13y = 28\ny = 2.15\nSubstitusi ke persamaan pertama:\n2x + 3(2.15) = 12\n2x + 6.45 = 12\n2x = 5.55\nx = 3",
-        },
-
-        // TWK Questions
-        {
-            id: "3",
-            text: "Pancasila sila ke-3 berbunyi...",
-            options: [
-                { id: "a", text: "Kemanusiaan yang adil dan beradab", weight: 0 },
-                { id: "b", text: "Persatuan Indonesia", weight: 5 },
-                { id: "c", text: "Keadilan sosial bagi seluruh rakyat Indonesia", weight: 0 },
-                { id: "d", text: "Ketuhanan Yang Maha Esa", weight: 0 },
-            ],
-            subSubType: "TWK",
-            explanation:
-                "Sila-sila Pancasila:\n1. Ketuhanan Yang Maha Esa\n2. Kemanusiaan yang adil dan beradab\n3. Persatuan Indonesia\n4. Kerakyatan yang dipimpin oleh hikmat kebijaksanaan dalam permusyawaratan/perwakilan\n5. Keadilan sosial bagi seluruh rakyat Indonesia",
-        },
-
-        // TKP Questions
-        {
-            id: "4",
-            text: "Ketika Anda mendapati rekan kerja melakukan kesalahan dalam pekerjaan, apa yang akan Anda lakukan?",
-            options: [
-                { id: "a", text: "Membiarkannya karena bukan urusan saya", weight: 1 },
-                { id: "b", text: "Melaporkan langsung ke atasan", weight: 3 },
-                { id: "c", text: "Menegur dan membantu memperbaiki kesalahannya", weight: 5 },
-                { id: "d", text: "Menyebarkan kesalahannya ke rekan kerja lain", weight: 2 },
-            ],
-            subSubType: "TKP",
-            explanation:
-                "Jawaban terbaik adalah menegur dan membantu memperbaiki kesalahan karena menunjukkan sikap kooperatif dan profesional dalam bekerja",
-        },
-    ],
-    answers: {},
-    scores: {
-        TIU: 0,
-        TKP: 0,
-        TWK: 0,
-        MTK: 0,
-        WK: 0,
-        BI: 0,
-        PU: 0,
-        IQ: 0,
-        EQ: 0,
-        KECERMATAN: 0,
-    },
-    isExamComplete: false,
-
-    setAnswer: (questionId, answerId) =>
-        set((state) => ({
-            answers: { ...state.answers, [questionId]: answerId },
-        })),
-
-    nextQuestion: () => {
-        const state = get();
-        const nextIndex = state.currentQuestion + 1;
-
-        if (nextIndex >= state.questions.length) {
-            set({ isExamComplete: true });
-        } else {
-            set({ currentQuestion: nextIndex });
-        }
-    },
-
-    previousQuestion: () => {
-        const state = get();
-        const prevIndex = state.currentQuestion - 1;
-
-        if (prevIndex >= 0) {
-            set({ currentQuestion: prevIndex });
-        }
-    },
-
-    goToQuestion: (index) => {
-        if (index >= 0 && index < get().questions.length) {
-            set({ currentQuestion: index });
-        }
-    },
-
-    calculateScore: () => {
-        const state = get();
-        let scores = {
-            TIU: 0,
-            TKP: 0,
-            TWK: 0,
-            total: 0,
-        };
-
-        state.questions.forEach((question) => {
-            const answer = state.answers[question.id];
-            if (answer) {
-                const option = question.options.find((opt) => opt.id === answer);
-                if (option) {
-                    scores[question.subSubType as keyof typeof scores] += option.weight;
+    getCurrentExamByStudentId: async () => {
+        set({ isLoading: true });
+        try {
+            const response = await get(`/api/student/exams`);
+            if (response.message === "Success") {
+                set({ message: "Tryout progress!", currentExam: response.data });
+                if (response?.data?.status === "progress") {
+                    set({ isProgressExam: true, isExamComplete: false });
+                } else if (response?.data?.status === "completed") {
+                    set({ isProgressExam: false, isExamComplete: true });
                 }
+                const questions = response?.data?.data?.questions;
+                useQuestionStore.setState({ examQuestions: questions, currentQuestion: 0 });
             }
-        });
-
-        scores.total = scores.TIU + scores.TKP + scores.TWK;
-        return scores;
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to start Tryout" });
+        } finally {
+            set({ isLoading: false });
+        }
     },
-
-    resetExam: () => {
-        set({
-            currentQuestion: 0,
-            answers: {},
-            scores: {
-                TIU: 0,
-                TKP: 0,
-                TWK: 0,
-                MTK: 0,
-                WK: 0,
-                BI: 0,
-                PU: 0,
-                IQ: 0,
-                EQ: 0,
-                KECERMATAN: 0,
-            },
-            isExamComplete: false,
-        });
+    setAnswer: async (data: AnswerDto) => {
+        set({ isLoading: true });
+        try {
+            const { currentExam } = useExamStore.getState();
+            const response = await put(`/api/student/exams/${currentExam?.id}`, data);
+            if (response.message === "Success") {
+                set({ message: "Tryout progress!", currentExam: response.data });
+                const questions = response?.data?.data?.questions;
+                useQuestionStore.setState({ examQuestions: questions });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to set answer" });
+        } finally {
+            set({ isLoading: false });
+        }
     },
+    nextQuestion: async () => {
+        set({ isLoading: true });
+        try {
+            const nextIndex = useQuestionStore.getState().currentQuestion + 1;
+            if (nextIndex >= useQuestionStore.getState().examQuestions.length) {
+                const response = await get(`/api/student/exams/${useExamStore.getState().currentExam?.id}/complete`);
+                set({ message: "Tryout completed!", currentExam: response.data });
+                set({ isExamComplete: true, isProgressExam: false });
+            } else {
+                useQuestionStore.setState({ currentQuestion: nextIndex });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to go next question" });
+        } finally {
+            set({ isLoading: false });
+        }
+    },
+    previousQuestion: () => {
+        const prevIndex = useQuestionStore.getState().currentQuestion - 1;
+        if (prevIndex >= 0) {
+            useQuestionStore.setState({ currentQuestion: prevIndex });
+        }
+    },
+    goToQuestion: (index) => {
+        if (index >= 0 && index < useQuestionStore.getState().examQuestions.length) {
+            useQuestionStore.setState({ currentQuestion: index });
+        }
+    },
+    currentQuestion: 0,
 }));

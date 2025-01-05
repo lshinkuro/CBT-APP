@@ -1,9 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import Modal from "./Modal";
 import { FormModalTryoutProps } from "../../types/tryout";
 import { toast } from "react-hot-toast";
 import useProgramStore from "../../stores/programStore";
 import SelectProgram from "./SelectProgram";
+import { useQuill } from "react-quilljs";
+import "quill/dist/quill.snow.css";
 
 const FormModalTryout: React.FC<FormModalTryoutProps> = ({
     isOpen,
@@ -19,7 +22,9 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
     const [code, setCode] = useState<string>(initialValues?.code ?? "");
     const [titleTryout, setTitleTryout] = useState<string>(initialValues?.title ?? "");
     const [description, setDescription] = useState<string>(initialValues?.description ?? "");
+    const [instruction, setInstruction] = useState<string>(initialValues?.instruction ?? "");
     const [isActive, setIsActive] = useState<boolean>(initialValues?.isActive ?? true);
+    const [duration, setDuration] = useState<number>(initialValues?.duration ?? 0);
 
     useEffect(() => {
         setStartDate(initialValues?.startDate ?? "");
@@ -27,7 +32,9 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
         setCode(initialValues?.code ?? "");
         setTitleTryout(initialValues?.title ?? "");
         setDescription(initialValues?.description ?? "");
+        setInstruction(initialValues?.instruction ?? "");
         setIsActive(initialValues?.isActive ?? true);
+        setDuration(initialValues?.duration ?? 0);
     }, [initialValues]);
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => setTitleTryout(e.target.value);
@@ -39,12 +46,22 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!titleTryout || !startDate || !endDate || !code || selectedProgramId === "") {
+        if (!titleTryout || !startDate || !endDate || !code || selectedProgramId === "" || duration <= 0) {
             toast.error("Missing required fields");
             return;
         }
         try {
-            await onSubmit({ startDate, endDate, code, title: titleTryout, description, isActive, programId: selectedProgramId });
+            await onSubmit({
+                startDate,
+                endDate,
+                code,
+                title: titleTryout,
+                description,
+                isActive,
+                programId: selectedProgramId,
+                instruction,
+                duration,
+            });
             onClose();
         } catch (error) {
             console.error(error);
@@ -52,7 +69,14 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
     };
 
     return (
-        <Modal isOpen={isOpen} onClose={onClose} title={title} isLoading={isLoading} onSubmit={handleSubmit}>
+        <Modal
+            isOpen={isOpen}
+            onClose={onClose}
+            title={title}
+            isLoading={isLoading}
+            onSubmit={handleSubmit}
+            maxWidth="max-w-4xl"
+        >
             <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                     <label htmlFor="title" className="block mb-1 text-xs font-medium text-gray-600">
@@ -119,6 +143,20 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
                     />
                 </div>
                 <div className="mb-4">
+                    <label htmlFor="duration" className="block mb-1 text-xs font-medium text-gray-600">
+                        Duration (minutes) *
+                    </label>
+                    <input
+                        id="duration"
+                        type="number"
+                        value={duration === 0 ? "" : duration}
+                        onChange={(e) => setDuration(e.target.value === "" ? 0 : Number(e.target.value))}
+                        className="w-full px-4 py-1 text-xs border rounded-md focus:ring-2 focus:ring-blue-500"
+                        required
+                    />
+                </div>
+                <SectionInstruction instruction={instruction} setInstruction={setInstruction} />
+                <div className="mb-4">
                     <label htmlFor="isActive" className="block mb-1 text-xs font-medium text-gray-600">
                         Active Status *
                     </label>
@@ -134,6 +172,57 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
                 </div>
             </form>
         </Modal>
+    );
+};
+
+interface SectionInstructionProps {
+    instruction: string;
+    setInstruction: (value: string) => void;
+}
+
+const SectionInstruction: React.FC<SectionInstructionProps> = ({ instruction, setInstruction }) => {
+    const { quill, quillRef } = useQuill({ theme: "snow" });
+
+    useEffect(() => {
+        const quillToolbar = document.querySelectorAll(".ql-toolbar");
+        if (quillToolbar.length > 1) {
+            Array.from(quillToolbar)
+                .slice(0, -1)
+                .forEach((el) => el.remove());
+        }
+    }, []);
+
+    useEffect(() => {
+        if (quill) {
+            const imageButton = document.querySelector(".ql-image");
+            const videoButton = document.querySelector(".ql-video");
+            if (imageButton) {
+                imageButton.remove();
+            }
+            if (videoButton) {
+                videoButton.remove();
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [quill]);
+
+    useEffect(() => {
+        if (quill) {
+            quill.clipboard.dangerouslyPasteHTML(instruction);
+            quill.on("text-change", () => {
+                setInstruction(quill.root.innerHTML);
+            });
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [quill]);
+
+    return (
+        <div className="mb-4">
+            <label htmlFor="instruction" className="block mb-1 text-xs font-medium text-gray-600">
+                Instruction *
+            </label>
+            <div className="w-full" ref={quillRef} />
+        </div>
     );
 };
 

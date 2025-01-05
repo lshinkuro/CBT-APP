@@ -43,3 +43,8 @@ export interface ExamResult {
 export interface ExamDto {
     code: string;
 }
+
+export interface AnswerDto {
+    questionId: string | undefined;
+    optionKey: string;
+}
