@@ -25,7 +25,7 @@ export const QuestionView = () => {
             questionId: currentQuestionData?.id,
             optionKey,
         });
-        nextQuestion();
+        // nextQuestion();
     };
 
     if (
