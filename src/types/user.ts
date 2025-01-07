@@ -12,7 +12,7 @@ export interface User {
             programs: string[];
         };
     };
-    role: "admin" | "student";
+    role: "admin" | "student" | "sysadmin";
     createdAt: string;
 }
 

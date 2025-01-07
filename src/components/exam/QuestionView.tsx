@@ -27,8 +27,14 @@ export const QuestionView = () => {
                 (option: string) => option !== optionKey
             );
         } else {
-            if (answers.length >= Number(currentQuestionData?.data?.numberOfCorrectAnswers)) return;
-            answers.push(optionKey);
+            if (answers.length < 2) {
+                if (answers.length >= Number(currentQuestionData?.data?.numberOfCorrectAnswers)) {
+                    answers = [];
+                    answers.push(optionKey);
+                } else {
+                    answers.push(optionKey);
+                }
+            } else if (answers.length >= Number(currentQuestionData?.data?.numberOfCorrectAnswers)) return;
         }
         setAnswer({
             questionId: currentQuestionData?.id,

@@ -2,7 +2,7 @@
 import { create } from "zustand";
 import { login, get, logout } from "../service/api/ApiConfig";
 
-export type UserRole = "admin" | "student";
+export type UserRole = "admin" | "student" | "sysadmin";
 interface User {
     username: string;
     email: string;

@@ -6,7 +6,7 @@ export const ProtectedRoute = ({
     allowedRole,
 }: {
     children: React.ReactNode;
-    allowedRole?: "admin" | "student";
+    allowedRole: string[];
 }) => {
     const { isAuthenticated, user } = useAuthStore();
 
@@ -14,8 +14,13 @@ export const ProtectedRoute = ({
         return <Navigate to="/" replace />;
     }
 
-    if (allowedRole && user?.role !== allowedRole) {
-        return <Navigate to={user?.role === "admin" ? "/admin/dashboard" : "/dashboard"} replace />;
+    if (allowedRole.length > 0 && !allowedRole.includes(user?.role ?? "")) {
+        return (
+            <Navigate
+                to={user?.role === "admin" || user?.role === "sysadmin" ? "/admin/dashboard" : "/dashboard"}
+                replace
+            />
+        );
     }
 
     return <>{children}</>;

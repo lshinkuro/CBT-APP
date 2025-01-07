@@ -37,6 +37,10 @@ const TryoutSectionsList = () => {
         isLoading: isLoading,
     });
 
+    const usr =
+        sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") &&
+        JSON.parse(sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "");
+
     const columns: IDataTableProps<TryoutSection>["columns"] = [
         {
             name: "Title",
@@ -111,12 +115,14 @@ const TryoutSectionsList = () => {
                     >
                         <Pencil className="w-4 h-4" />
                     </button>
-                    <button
-                        className="bg-red-500 hover:bg-red-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
-                        onClick={() => handleDeleteTryoutSection(props.id, props.title)}
-                    >
-                        <Trash className="w-4 h-4" />
-                    </button>
+                    {usr.role === "sysadmin" && (
+                        <button
+                            className="bg-red-500 hover:bg-red-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
+                            onClick={() => handleDeleteTryoutSection(props.id, props.title)}
+                        >
+                            <Trash className="w-4 h-4" />
+                        </button>
+                    )}
                 </div>
             ),
             sortable: false,
@@ -201,14 +207,16 @@ const TryoutSectionsList = () => {
             <main className="flex-1 ml-64 p-8 rounded">
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">List Tryout Sections</h1>
                 <div className="flex items-center justify-between mb-4">
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
-                        type="button"
-                        onClick={handleClickCreateTryoutSection}
-                    >
-                        <Plus className="w-4 h-4 mr-1" />
-                        Create Tryout Section
-                    </button>
+                    {usr.role === "sysadmin" && (
+                        <button
+                            className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
+                            type="button"
+                            onClick={handleClickCreateTryoutSection}
+                        >
+                            <Plus className="w-4 h-4 mr-1" />
+                            Create Tryout Section
+                        </button>
+                    )}
                     <div className="w-1/3">
                         <input
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

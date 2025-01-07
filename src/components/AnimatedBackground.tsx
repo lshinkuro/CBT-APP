@@ -4,7 +4,7 @@ export const AnimatedBackground = () => {
   return (
     <div className="fixed inset-0 -z-10 overflow-hidden">
       <motion.div
-        className="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-100"
+        className="absolute inset-0 bg-gradient-to-br from-white to-yellow-100"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}

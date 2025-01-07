@@ -46,7 +46,7 @@ function App() {
                     <Route
                         path="/admin/*"
                         element={
-                            <ProtectedRoute allowedRole="admin">
+                            <ProtectedRoute allowedRole={["admin", "sysadmin"]}>
                                 <Routes>
                                     <Route path="dashboard" element={<AdminDashboard />} />
                                     <Route path="users" element={<UsersList />} />
@@ -64,7 +64,7 @@ function App() {
                     <Route
                         path="/*"
                         element={
-                            <ProtectedRoute allowedRole="student">
+                            <ProtectedRoute allowedRole={["student"]}>
                                 {location.pathname !== "/exam/running" && !isProgressExam && <Navbar />}
                                 <div
                                     className={location.pathname !== "/exam/running" && !isProgressExam ? "pt-16" : ""}
