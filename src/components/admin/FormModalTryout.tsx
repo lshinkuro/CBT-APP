@@ -185,11 +185,9 @@ const SectionInstruction: React.FC<SectionInstructionProps> = ({ instruction, se
 
     useEffect(() => {
         const quillToolbar = document.querySelectorAll(".ql-toolbar");
-        if (quillToolbar.length > 1) {
-            Array.from(quillToolbar)
-                .slice(0, -1)
-                .forEach((el) => el.remove());
-        }
+        Array.from(quillToolbar)
+            .slice(0, -1)
+            .forEach((el) => el.remove());
     }, []);
 
     useEffect(() => {

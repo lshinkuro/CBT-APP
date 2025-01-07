@@ -14,7 +14,7 @@ import { IkatanDinasExam } from "./pages/student/IkatanDinasExam";
 import { ExamRunning } from "./pages/student/ExamRunning";
 import { Profile } from "./pages/student/Profile";
 import { Helmet } from "react-helmet-async";
-import logoPencil from "./assets/images/pencil.png";
+import logoPlatypusCollege from "./assets/images/platypus-college.png";
 import TryoutsList from "./pages/admin/TryoutsList";
 import TryoutSectionsList from "./pages/admin/TryoutSectionsList";
 import QuestionsList from "./pages/admin/QuestionsList";
@@ -35,7 +35,7 @@ function App() {
     return (
         <Router>
             <Helmet>
-                <link rel="icon" href={logoPencil} />
+                <link rel="icon" href={logoPlatypusCollege} />
                 <title>Platypus College</title>
             </Helmet>
             <AnimatedBackground />

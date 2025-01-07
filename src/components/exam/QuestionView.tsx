@@ -21,11 +21,13 @@ export const QuestionView = () => {
     }, [currentQuestion, examQuestions, getQuestionById]);
 
     const handleOptionSelect = (optionKey: string) => {
+        if (currentExam?.data?.questions[currentQuestion]["answer"] === optionKey) {
+            optionKey = "";
+        }
         setAnswer({
             questionId: currentQuestionData?.id,
             optionKey,
         });
-        // nextQuestion();
     };
 
     if (

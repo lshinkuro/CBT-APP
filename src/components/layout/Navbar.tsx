@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { User, History, LogOut, Menu, X, Home, Pencil } from "lucide-react";
 import useAuthStore from "../../stores/authStore";
+import logoPlatypusCollege from "../../assets/images/platypus-college.png";
 
 export const Navbar = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -28,8 +29,8 @@ export const Navbar = () => {
                                 to="/dashboard"
                                 className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
                             >
-                                <Pencil className="h-8 w-8" />
-                                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+                                <img src={logoPlatypusCollege} alt="Logo Platypus College" className="h-8 w-8" />
+                                <span className="text-xl font-bold bg-gradient-to-r from-black to-blue-800 bg-clip-text text-transparent">
                                     Platypus College
                                 </span>
                             </Link>
