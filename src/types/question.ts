@@ -17,13 +17,13 @@ export interface Question {
     type: string;
     image?: string | null;
     imageObject?: File | null;
-    data: { options: Option[] };
+    data: { numberOfCorrectAnswers?: string; options: Option[] };
     isActive: boolean;
     createdAt: string;
 }
 
 export interface QuestionState {
-    examQuestions: { id: string; answer: string | null }[];
+    examQuestions: { id: string; answers: string[], numberOfCorrectAnswers: number }[];
     currentQuestion: number;
     currentQuestionData: Question | null;
     hasChangeImageOptions: { [key: string]: boolean };

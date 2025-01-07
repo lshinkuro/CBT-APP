@@ -12,7 +12,7 @@ export interface Tryout {
     startDate: string;
     endDate: string;
     instruction: string;
-    duration: number;
+    duration: string;
     isActive: boolean;
     createdAt: string;
 }

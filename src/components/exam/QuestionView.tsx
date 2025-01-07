@@ -21,12 +21,18 @@ export const QuestionView = () => {
     }, [currentQuestion, examQuestions, getQuestionById]);
 
     const handleOptionSelect = (optionKey: string) => {
-        if (currentExam?.data?.questions[currentQuestion]["answer"] === optionKey) {
-            optionKey = "";
+        let answers = currentExam?.data?.questions[currentQuestion]["answers"];
+        if (currentExam?.data?.questions[currentQuestion]["answers"].includes(optionKey)) {
+            answers = currentExam?.data?.questions[currentQuestion]["answers"].filter(
+                (option: string) => option !== optionKey
+            );
+        } else {
+            if (answers.length >= Number(currentQuestionData?.data?.numberOfCorrectAnswers)) return;
+            answers.push(optionKey);
         }
         setAnswer({
             questionId: currentQuestionData?.id,
-            optionKey,
+            answers,
         });
     };
 
@@ -70,7 +76,7 @@ export const QuestionView = () => {
                                 key={option.key}
                                 onClick={() => handleOptionSelect(option.key)}
                                 className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
-                                    currentExam?.data?.questions[currentQuestion]["answer"] === option.key
+                                    currentExam?.data?.questions[currentQuestion]["answers"].includes(option.key)
                                         ? "border-blue-500 bg-blue-50"
                                         : "border-gray-200 hover:border-gray-300"
                                 }`}

@@ -24,7 +24,7 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
     const [description, setDescription] = useState<string>(initialValues?.description ?? "");
     const [instruction, setInstruction] = useState<string>(initialValues?.instruction ?? "");
     const [isActive, setIsActive] = useState<boolean>(initialValues?.isActive ?? true);
-    const [duration, setDuration] = useState<number>(initialValues?.duration ?? 0);
+    const [duration, setDuration] = useState<string>(initialValues?.duration ?? "");
 
     useEffect(() => {
         setStartDate(initialValues?.startDate ?? "");
@@ -34,7 +34,7 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
         setDescription(initialValues?.description ?? "");
         setInstruction(initialValues?.instruction ?? "");
         setIsActive(initialValues?.isActive ?? true);
-        setDuration(initialValues?.duration ?? 0);
+        setDuration(initialValues?.duration ?? "");
     }, [initialValues]);
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => setTitleTryout(e.target.value);
@@ -46,7 +46,7 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!titleTryout || !startDate || !endDate || !code || selectedProgramId === "" || duration <= 0) {
+        if (!titleTryout || !startDate || !endDate || !code || selectedProgramId === "" || Number(duration) <= 0) {
             toast.error("Missing required fields");
             return;
         }
@@ -65,6 +65,20 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
             onClose();
         } catch (error) {
             console.error(error);
+        }
+    };
+
+    const handleDurationChange = (e: { target: { value: any } }) => {
+        const inputValue = e.target.value;
+        const regex = /^\d*\.?\d*$/;
+        if (regex.test(inputValue)) {
+            setDuration(inputValue);
+        }
+    };
+
+    const handleBlur = () => {
+        if (duration === "") {
+            setDuration("0");
         }
     };
 
@@ -149,8 +163,9 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
                     <input
                         id="duration"
                         type="number"
-                        value={duration === 0 ? "" : duration}
-                        onChange={(e) => setDuration(e.target.value === "" ? 0 : Number(e.target.value))}
+                        onBlur={handleBlur}
+                        value={duration}
+                        onChange={handleDurationChange}
                         className="w-full px-4 py-1 text-xs border rounded-md focus:ring-2 focus:ring-blue-500"
                         required
                     />
@@ -184,10 +199,15 @@ const SectionInstruction: React.FC<SectionInstructionProps> = ({ instruction, se
     const { quill, quillRef } = useQuill({ theme: "snow" });
 
     useEffect(() => {
-        const quillToolbar = document.querySelectorAll(".ql-toolbar");
-        Array.from(quillToolbar)
-            .slice(0, -1)
-            .forEach((el) => el.remove());
+        const interval = setInterval(() => {
+            const quillToolbar = document.querySelectorAll(".ql-toolbar");
+            if (quillToolbar.length > 1) {
+                Array.from(quillToolbar)
+                    .slice(0, -1)
+                    .forEach((el) => el.remove());
+            }
+        }, 100);
+        return () => clearInterval(interval);
     }, []);
 
     useEffect(() => {

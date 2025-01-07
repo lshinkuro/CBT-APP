@@ -1,6 +1,6 @@
 import { Option } from "../types/question";
 
-export const MockData: { options: Option[] } = {
+export const MockData: { numberOfCorrectAnswers: string; options: Option[] } = {
     options: [
         {
             key: "a",
@@ -43,4 +43,5 @@ export const MockData: { options: Option[] } = {
             correct: false,
         },
     ],
+    numberOfCorrectAnswers: ""
 };

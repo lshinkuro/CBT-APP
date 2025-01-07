@@ -25,7 +25,7 @@ export const QuestionGrid = () => {
                     h-10 w-10 rounded-lg flex items-center justify-center text-sm font-medium
                     transition-all
                     ${currentQuestion === index ? "ring-2 ring-blue-500" : ""}
-                    ${examQuestion.answer ? "bg-green-500 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}
+                    ${examQuestion.answers.length >= Number(examQuestion?.numberOfCorrectAnswers) ? "bg-green-500 text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}
                 `}
                         >
                             {index + 1}

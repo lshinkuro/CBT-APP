@@ -46,5 +46,5 @@ export interface ExamDto {
 
 export interface AnswerDto {
     questionId: string | undefined;
-    optionKey: string;
+    answers: string[];
 }

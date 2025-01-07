@@ -31,6 +31,9 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
     const [data, setData] = useState<any>(initialValues?.data ?? MockData);
     const [isActive, setIsActive] = useState<boolean>(initialValues?.isActive ?? true);
     const [showImage, setShowImage] = useState<string | null>(initialValues?.image ?? null);
+    const [numberOfCorrectAnswers, setNumberOfCorrectAnswers] = useState<string>(
+        initialValues?.data?.numberOfCorrectAnswers ?? "1"
+    );
 
     useEffect(() => {
         setContent(initialValues?.content ?? "");
@@ -40,6 +43,7 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
         setImageObject(null);
         setData(initialValues?.data ?? MockData);
         setIsActive(initialValues?.isActive ?? true);
+        setNumberOfCorrectAnswers(initialValues?.data?.numberOfCorrectAnswers ?? "1");
         useQuestionStore.setState({ hasChangeImage: false });
         useQuestionStore.setState({
             hasChangeImageOptions: {
@@ -110,6 +114,20 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
             onClose();
         } catch (error) {
             console.error(error);
+        }
+    };
+
+    const handleChangeNumberOfCorrectAnswers = (e: { target: { value: any } }) => {
+        const inputValue = e.target.value;
+        const regex = /^\d*\.?\d*$/;
+        if (regex.test(inputValue)) {
+            setData((prevState: any) => ({ ...prevState, numberOfCorrectAnswers: inputValue }));
+        }
+    };
+
+    const handleBlur = () => {
+        if (numberOfCorrectAnswers === "") {
+            setNumberOfCorrectAnswers("0");
         }
     };
 
@@ -189,6 +207,20 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
                             <Trash className="w-4 h-4" />
                         </button>
                     </div>
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="numberOfCorrectAnswer" className="block mb-1 text-xs font-medium text-gray-600">
+                        Number of Correct Answer *
+                    </label>
+                    <input
+                        id="numberOfCorrectAnswer"
+                        type="number"
+                        value={data?.numberOfCorrectAnswers ?? ""}
+                        onBlur={handleBlur}
+                        onChange={handleChangeNumberOfCorrectAnswers}
+                        className="w-full px-4 py-1 text-xs border rounded-md focus:ring-2 focus:ring-blue-500"
+                        required
+                    />
                 </div>
                 <div className="mb-4">
                     <label htmlFor="data" className="block mb-1 text-xs font-medium text-gray-600">
