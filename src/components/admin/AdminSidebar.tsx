@@ -8,7 +8,10 @@ import {
     MessageCircleQuestion,
     BookImage,
     LogOut,
+    Menu,
+    X,
 } from "lucide-react";
+import { useState } from "react";
 
 const menuItems = [
     {
@@ -55,16 +58,51 @@ const menuItems = [
 
 export const AdminSidebar = () => {
     const location = useLocation();
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleMenu = () => {
+        setIsOpen(!isOpen);
+    };
 
     return (
-        <div className="w-64 h-screen bg-white border-r border-gray-200 fixed left-0 top-0">
-            <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-800">Admin Panel</h2>
+        <div>
+            {/* Mobile Navigation Bar */}
+            <div className="md:hidden bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-10">
+                <div className="flex items-center justify-between p-4">
+                    <h2 className="text-xl font-bold text-gray-800">Admin Panel</h2>
+                    <button onClick={toggleMenu} aria-label="Toggle Menu">
+                        {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                    </button>
+                </div>
+                {isOpen && (
+                    <nav className="bg-white shadow-lg">
+                        {menuItems.map((item) => (
+                            <Link
+                                key={item.path}
+                                to={item.path}
+                                onClick={() => setIsOpen(false)}
+                                className={`block px-6 py-3 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-colors ${
+                                    location.pathname === item.path ? "bg-blue-50 text-blue-600" : ""
+                                }`}
+                            >
+                                <div className="flex items-center">
+                                    <item.icon className="h-5 w-5 mr-3" />
+                                    <span>{item.title}</span>
+                                </div>
+                            </Link>
+                        ))}
+                    </nav>
+                )}
             </div>
 
-            <nav className="mt-6">
-                {menuItems.map((item) => {
-                    return (
+            {/* Desktop Sidebar */}
+            <div className="hidden md:block w-64 h-screen bg-white border-r border-gray-200 fixed left-0 top-0">
+                <div className="p-6">
+                    <h2 className="text-xl font-bold text-gray-800">Admin Panel</h2>
+                </div>
+
+                <nav className="mt-6">
+                    {menuItems.map((item) => (
                         <Link
                             key={item.path}
                             to={item.path}
@@ -75,9 +113,9 @@ export const AdminSidebar = () => {
                             <item.icon className="h-5 w-5 mr-3" />
                             <span>{item.title}</span>
                         </Link>
-                    );
-                })}
-            </nav>
+                    ))}
+                </nav>
+            </div>
         </div>
     );
 };

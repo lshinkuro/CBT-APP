@@ -5,7 +5,7 @@ export const AdminDashboard = () => {
     return (
         <div className="flex">
             <AdminSidebar />
-            <main className="flex-1 ml-64 p-8">
+            <main className="flex-1 md:ml-64 p-8">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
