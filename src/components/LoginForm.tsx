@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Lock, Mail } from "lucide-react";
+import { Lock, Mail, Eye, EyeOff } from "lucide-react";
 import useAuthStore from "../stores/authStore";
 import { toast } from "react-hot-toast";
 import logoPlatypusCollege from "../assets/images/platypus-college.png";
@@ -8,6 +8,7 @@ import logoPlatypusCollege from "../assets/images/platypus-college.png";
 export const LoginForm = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const { login, isAuthenticated, error, isLoading, checkAuth } = useAuthStore();
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -40,7 +41,9 @@ export const LoginForm = () => {
                 className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg"
             >
                 <img src={logoPlatypusCollege} alt="Logo Platypus College" className="w-32 h-32 mx-auto mb-8" />
-                <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">Login to <span className="text-yellow-900">Platypus College</span></h2>
+                <h2 className="text-2xl font-bold text-center text-gray-800 mb-8">
+                    Login to <span className="text-yellow-900">Platypus College</span>
+                </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -66,7 +69,7 @@ export const LoginForm = () => {
                         <div className="mt-1 relative">
                             <input
                                 id="password"
-                                type="password"
+                                type={showPassword ? "text" : "password"}
                                 name="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
@@ -74,6 +77,17 @@ export const LoginForm = () => {
                                 required
                             />
                             <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                            {showPassword ? (
+                                <EyeOff
+                                    className="absolute right-3 top-2.5 h-5 w-5 text-gray-400 cursor-pointer"
+                                    onClick={() => setShowPassword(false)}
+                                />
+                            ) : (
+                                <Eye
+                                    className="absolute right-3 top-2.5 h-5 w-5 text-gray-400 cursor-pointer"
+                                    onClick={() => setShowPassword(true)}
+                                />
+                            )}
                         </div>
                     </div>
                     <button
@@ -84,6 +98,12 @@ export const LoginForm = () => {
                     >
                         {isLoading ? "Signing In..." : "Sign In"}
                     </button>
+                    <div className="text-center w-full py-2 px-4 bg-white text-gray-700 rounded-md transition-colors">
+                        Forget Password?{" "}
+                        <a href="/forgot-password" className="underline">
+                            Click here
+                        </a>
+                    </div>
                 </form>
             </motion.div>
         </div>

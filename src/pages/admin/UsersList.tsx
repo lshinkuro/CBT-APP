@@ -2,7 +2,7 @@
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
 import DataTable, { IDataTableProps } from "react-data-table-component";
 import { useEffect, useState } from "react";
-import { Pencil, Trash, Plus, UserRound } from "lucide-react";
+import { Pencil, Trash, Plus, UserRound, Mail } from "lucide-react";
 import useUserStore from "../../stores/userStore";
 import FormModalUser from "../../components/admin/FormModalUser";
 import toast from "react-hot-toast";
@@ -11,6 +11,7 @@ import { User, UserDto } from "../../types/user";
 import { ModalProfile } from "../../components/admin/ModalProfile";
 import useProgramStore from "../../stores/programStore";
 import { MockUser } from "../../mocks/User";
+import useAuthStore from "../../stores/authStore";
 
 export const UsersList = () => {
     const {
@@ -26,6 +27,7 @@ export const UsersList = () => {
         selectedUserProfile,
         getSelectedUserProfile,
     } = useUserStore();
+    const { forgotPassword, message: messageResetPassword } = useAuthStore();
     const { getAllAvailablePrograms } = useProgramStore();
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [isOpenModalProfile, setIsOpenModalProfile] = useState(false);
@@ -98,6 +100,22 @@ export const UsersList = () => {
             cell: (props) => (
                 <div className="flex items-center justify-end space-x-2">
                     <button
+                        className="bg-green-500 hover:bg-green-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
+                        onClick={() => {
+                            setConfirmationBox({
+                                isOpen: true,
+                                message: `Are you sure you want to send reset password email to ${props.username}?`,
+                                onConfirm: async () => {
+                                    await forgotPassword({ email: props.email });
+                                    setConfirmationBox({ ...confirmationBox, isOpen: false });
+                                },
+                                onClose: () => setConfirmationBox({ ...confirmationBox, isOpen: false }),
+                            });
+                        }}
+                    >
+                        <Mail className="w-4 h-4" />
+                    </button>
+                    <button
                         className="bg-blue-500 hover:bg-blue-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
                         onClick={() => {
                             getSelectedUserProfile(props.id);
@@ -143,6 +161,13 @@ export const UsersList = () => {
         }
         useUserStore.setState({ message: null });
     }, [message]);
+
+    useEffect(() => {
+        if (messageResetPassword) {
+            toast.success(messageResetPassword);
+        }
+        useAuthStore.setState({ message: messageResetPassword });
+    }, [messageResetPassword]);
 
     const handleClickRegister = () => {
         setMode("create");

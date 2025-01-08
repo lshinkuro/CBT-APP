@@ -10,8 +10,10 @@ import {
     LogOut,
     Menu,
     X,
+    Crosshair,
 } from "lucide-react";
 import { useState } from "react";
+import logoPlatypusCollege from "../../assets/images/platypus-college.png";
 
 const menuItems = [
     {
@@ -45,6 +47,11 @@ const menuItems = [
         path: "/admin/questions",
     },
     {
+        title: "Accuracy Test",
+        icon: Crosshair,
+        path: "/admin/accuracy-test",
+    },
+    {
         title: "Settings",
         icon: Settings,
         path: "/admin/settings",
@@ -69,7 +76,10 @@ export const AdminSidebar = () => {
             {/* Mobile Navigation Bar */}
             <div className="md:hidden bg-white border-b border-gray-200 fixed top-0 left-0 right-0 z-10">
                 <div className="flex items-center justify-between p-4">
-                    <h2 className="text-xl font-bold text-gray-800">Admin Panel</h2>
+                    <div className="flex items-center">
+                        <img src={logoPlatypusCollege} alt="Logo Platypus College" className="h-12 w-12 mr-3" />
+                        <span className="text-lg font-semibold text-yellow-900">Platypus College</span>
+                    </div>
                     <button onClick={toggleMenu} aria-label="Toggle Menu">
                         {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </button>
@@ -97,10 +107,10 @@ export const AdminSidebar = () => {
 
             {/* Desktop Sidebar */}
             <div className="hidden md:block w-64 h-screen bg-white border-r border-gray-200 fixed left-0 top-0">
-                <div className="p-6">
-                    <h2 className="text-xl font-bold text-gray-800">Admin Panel</h2>
+                <div className="flex items-center p-6">
+                    <img src={logoPlatypusCollege} alt="Logo Platypus College" className="h-12 w-12 mr-3" />
+                    <span className="text-lg font-semibold text-yellow-900">Platypus College</span>
                 </div>
-
                 <nav className="mt-6">
                     {menuItems.map((item) => (
                         <Link

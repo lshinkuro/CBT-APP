@@ -25,6 +25,8 @@ import Logout from "./components/auth/Logout";
 import CardTryout from "./pages/student/CardTryout";
 import NotFound from "./pages/NotFound";
 import { useExamStore } from "./stores/examStore";
+import ResetPassword from "./components/auth/ResetPassword";
+import ForgotPassword from "./components/auth/ForgotPassword";
 
 function App() {
     const { user, isLoading: isLoadingAuth } = useAuthStore();
@@ -85,6 +87,8 @@ function App() {
                         }
                     />
                     <Route path="/logout" element={<Logout />} />
+                    <Route path="/forgot-password" element={<ForgotPassword />} />
+                    <Route path="/reset-password" element={<ResetPassword />} />
                 </Routes>
             </div>
         </Router>

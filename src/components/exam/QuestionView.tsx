@@ -69,11 +69,13 @@ export const QuestionView = () => {
                     <div className="text-gray-800 text-lg">{currentQuestionData?.content}</div>
 
                     {currentQuestionData?.image && (
-                        <img
-                            src={currentQuestionData.image}
-                            alt="Question illustration"
-                            className="max-w-full rounded-lg"
-                        />
+                        <div className="flex items-center justify-center">
+                            <img
+                                src={import.meta.env.VITE_APP_API_BASE_URL + currentQuestionData.image}
+                                alt="Question illustration"
+                                className="w-96 rounded-lg"
+                            />
+                        </div>
                     )}
 
                     <div className="space-y-3">
@@ -88,9 +90,16 @@ export const QuestionView = () => {
                                 }`}
                             >
                                 <div className="flex items-center space-x-3">
-                                    <span className="w-8 h-8 flex items-center justify-center rounded-full border-2 border-current text-sm font-medium">
+                                    <span className="flex items-center justify-center font-bold text-lg">
                                         {option.key.toUpperCase()}
                                     </span>
+                                    {option.image && (
+                                        <img
+                                            src={import.meta.env.VITE_APP_API_BASE_URL + option.image}
+                                            alt="answer illustration"
+                                            className="w-64 rounded-lg"
+                                        />
+                                    )}
                                     <span>{option.content}</span>
                                 </div>
                             </button>
