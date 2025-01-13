@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
 import useTryoutStore from "../../stores/tryoutStore";
 import { MockTryoutSection } from "../../mocks/TryoutSection";
+import { customStylesTable } from "../style/customStylesTable";
 
 const TryoutSectionsList = () => {
     const {
@@ -248,6 +249,7 @@ const TryoutSectionsList = () => {
                     onChangeRowsPerPage={handleLimitChange}
                     highlightOnHover
                     responsive={true}
+                    customStyles={customStylesTable}
                 />
                 <FormModalTryoutSection
                     isOpen={isOpenModal}

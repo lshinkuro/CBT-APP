@@ -8,6 +8,7 @@ import { Symbol, SymbolDto } from "../../types/symbol";
 import toast from "react-hot-toast";
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
 import { MockSymbol } from "../../mocks/Symbol";
+import { customStylesTable } from "../style/customStylesTable";
 
 const SymbolsList = () => {
     const { symbols, isLoading, getAllSymbols, createSymbol, updateSymbol, totalRows, deleteSymbol, error, message } =
@@ -213,6 +214,7 @@ const SymbolsList = () => {
                     onChangeRowsPerPage={handleLimitChange}
                     highlightOnHover
                     responsive={true}
+                    customStyles={customStylesTable}
                 />
                 <FormModalSymbol
                     isOpen={isOpenModal}

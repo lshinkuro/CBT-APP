@@ -8,6 +8,7 @@ import { Program, ProgramDto } from "../../types/program";
 import toast from "react-hot-toast";
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
 import { MockProgram } from "../../mocks/Program";
+import { customStylesTable } from "../style/customStylesTable";
 
 const ProgramsList = () => {
     const {
@@ -81,7 +82,7 @@ const ProgramsList = () => {
                     </span>
                 ),
             sortable: true,
-            grow: 0.2,
+            grow: 0.4,
         },
         {
             name: "Actions",
@@ -218,6 +219,7 @@ const ProgramsList = () => {
                     onChangeRowsPerPage={handleLimitChange}
                     highlightOnHover
                     responsive={true}
+                    customStyles={customStylesTable}
                 />
                 <FormModalProgram
                     isOpen={isOpenModal}

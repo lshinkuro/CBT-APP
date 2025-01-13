@@ -13,6 +13,7 @@ import SelectTryout from "../../components/admin/SelectTryout";
 import SelectTryoutSection from "../../components/admin/SelectTryoutSection";
 import { MockQuestion } from "../../mocks/Question";
 import useTryoutStore from "../../stores/tryoutStore";
+import { customStylesTable } from "../style/customStylesTable";
 
 const QuestionsList = () => {
     const {
@@ -243,6 +244,7 @@ const QuestionsList = () => {
                     onChangeRowsPerPage={handleLimitChange}
                     highlightOnHover
                     responsive={true}
+                    customStyles={customStylesTable}
                 />
                 <FormModalQuestion
                     isOpen={isOpenModal}

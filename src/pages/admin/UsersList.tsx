@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
-import DataTable, { IDataTableProps } from "react-data-table-component";
+import DataTable, { IDataTableProps, TableStyles } from "react-data-table-component";
 import { useEffect, useState } from "react";
 import { Pencil, Trash, Plus, UserRound, Mail } from "lucide-react";
 import useUserStore from "../../stores/userStore";
@@ -12,6 +12,9 @@ import { ModalProfile } from "../../components/admin/ModalProfile";
 import useProgramStore from "../../stores/programStore";
 import { MockUser } from "../../mocks/User";
 import useAuthStore from "../../stores/authStore";
+import { color } from "framer-motion";
+import SearchInput from "../../components/layout/SearchInput";
+import { customStylesTable } from "../style/customStylesTable";
 
 export const UsersList = () => {
     const {
@@ -53,57 +56,88 @@ export const UsersList = () => {
         sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") &&
         JSON.parse(sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "");
 
-    const columns: IDataTableProps<User>["columns"] = [
-        {
-            name: "Name",
-            selector: (row) => row.username,
-            sortable: true,
-            grow: 0.2,
-        },
-        {
-            name: "Email",
-            selector: (row) => row.email,
-            sortable: true,
-        },
-        {
-            name: "Role",
-            selector: (row) => row.role,
-            sortable: true,
-            grow: 0.2,
-        },
-        {
-            name: "Created At",
-            selector: (row) =>
-                new Date(row.createdAt).toLocaleString("en-US", {
+    // Updated columns definition with Tailwind classes
+const columns: IDataTableProps<User>["columns"] = [
+    {
+        name: "Name",
+        selector: (row) => row.username,
+        sortable: true,
+       
+        cell: row => (
+            <div className="flex items-center gap-3 py-2">
+                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                    <span className="text-blue-600 font-medium">
+                        {row.username.charAt(0).toUpperCase()}
+                    </span>
+                </div>
+                <span className="font-medium text-gray-900">{row.username}</span>
+            </div>
+        )
+    },
+    {
+        name: "Email",
+        selector: (row) => row.email,
+        sortable: true,
+        cell: row => (
+            <span className="text-gray-600">{row.email}</span>
+        )
+    },
+    {
+        name: "Role",
+        selector: (row) => row.role,
+        sortable: true,
+       
+        cell: row => (
+            <span className="px-3 py-1 rounded-full text-xs font-medium capitalize bg-blue-50 text-blue-700">
+                {row.role}
+            </span>
+        )
+    },
+    {
+        name: "Created At",
+        selector: (row) =>
+            new Date(row.createdAt).toLocaleString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+            }),
+        sortable: true,
+       
+        cell: row => (
+            <span className="text-gray-600">
+                {new Date(row.createdAt).toLocaleString("en-US", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
                     hour: "2-digit",
                     minute: "2-digit",
-                }),
-            sortable: true,
-            grow: 1.5,
-            sortFunction: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-        },
-        {
-            name: "Active",
-            cell: (props) =>
-                props.isActive ? (
-                    <span className="inline-block px-2 py-1 text-xs font-semibold leading-none text-white rounded-full bg-green-500 items-center justify-center">
-                        Active
-                    </span>
-                ) : (
-                    <span className="inline-block px-2 py-1 text-xs font-semibold leading-none text-white rounded-full bg-red-500 items-center justify-center">
-                        Inactive
-                    </span>
-                ),
-            sortable: true,
-            grow: 0.2,
-        },
-        {
-            name: "Action",
-            cell: (props) => (
-                <div className="flex items-center justify-end space-x-2">
+                })}
+            </span>
+        ),
+        sortFunction: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+    },
+    {
+        name: "Active",
+        cell: (row) =>
+            row.isActive ? (
+                <span className="inline-block px-2 py-1 text-xs font-semibold leading-none text-white rounded-full bg-green-500 items-center justify-center">
+                    Active
+                </span>
+            ) : (
+                <span className="inline-block px-2 py-1 text-xs font-semibold leading-none text-white rounded-full bg-red-500 items-center justify-center">
+                    Inactive
+                </span>
+            ),
+        sortable: true,
+        grow: 0.7,
+       
+    },
+    {
+        name: "Action",
+        cell: (props) => (
+            <div className="flex items-center justify-end space-x-2">
                     <button
                         className="bg-green-500 hover:bg-green-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
                         onClick={() => {
@@ -144,8 +178,8 @@ export const UsersList = () => {
                         </button>
                     )}
                 </div>
-            ),
-        },
+        ),
+    },  
     ];
 
     useEffect(() => {
@@ -226,6 +260,7 @@ export const UsersList = () => {
         getAllUsers();
     };
 
+  
     return (
         <div className="flex flex-col w-full">
             <AdminSidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
@@ -245,15 +280,11 @@ export const UsersList = () => {
                         </button>
                     )}
 
-                    <div className="w-1/3">
-                        <input
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            type="search"
-                            placeholder="Username, Display Name, Email, Phone Number"
-                            value={searchTerm}
-                            onChange={handleSearchChange}
-                        />
-                    </div>
+                <SearchInput
+                value={searchTerm}
+                onChange={handleSearchChange}
+                placeholder="Username, Display Name, Email, Phone Number"
+                />
                 </div>
                 <DataTable
                     columns={columns}
@@ -266,6 +297,7 @@ export const UsersList = () => {
                     highlightOnHover
                     progressPending={isLoading}
                     responsive={true}
+                    customStyles={customStylesTable}
                 />
             </main>
             <FormModalUser

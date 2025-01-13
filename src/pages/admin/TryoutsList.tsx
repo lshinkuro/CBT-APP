@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
 import { MockTryout } from "../../mocks/Tryout";
 import useProgramStore from "../../stores/programStore";
+import { customStylesTable } from "../style/customStylesTable";
 
 const TryoutsList = () => {
     const { tryouts, isLoading, getAllTryouts, createTryout, updateTryout, totalRows, deleteTryout, error, message } =
@@ -74,7 +75,7 @@ const TryoutsList = () => {
                     </span>
                 ),
             sortable: true,
-            grow: 0.2,
+            grow: 0.4,
         },
         {
             name: "Actions",
@@ -213,6 +214,7 @@ const TryoutsList = () => {
                     onChangeRowsPerPage={handleLimitChange}
                     highlightOnHover
                     responsive={true}
+                    customStyles={customStylesTable}
                 />
                 <FormModalTryout
                     isOpen={isOpenModal}
