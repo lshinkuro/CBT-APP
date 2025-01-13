@@ -27,6 +27,8 @@ import NotFound from "./pages/NotFound";
 import { useExamStore } from "./stores/examStore";
 import ResetPassword from "./components/auth/ResetPassword";
 import ForgotPassword from "./components/auth/ForgotPassword";
+import SymbolsList from "./pages/admin/SymbolsList";
+import AccuracyTestsList from "./pages/admin/AccuracyTestsList";
 
 function App() {
     const { user, isLoading: isLoadingAuth } = useAuthStore();
@@ -56,6 +58,8 @@ function App() {
                                     <Route path="tryouts" element={<TryoutsList />} />
                                     <Route path="tryout-sections" element={<TryoutSectionsList />} />
                                     <Route path="questions" element={<QuestionsList />} />
+                                    <Route path="symbols" element={<SymbolsList />} />
+                                    <Route path="accuracy-tests" element={<AccuracyTestsList />} />
                                     <Route path="settings" element={<AdminSettings />} />
                                     <Route path="*" element={<NotFound />} />
                                 </Routes>
@@ -79,7 +83,7 @@ function App() {
                                         <Route path="/exam/ikatan-dinas" element={<IkatanDinasExam />} />
                                         <Route path="/profile" element={<Profile />} />
                                         <Route path="/history" element={<ExamHistory />} />
-                                        <Route path="/starting-exam/:code" element={<CountdownTimer />} />
+                                        <Route path="/starting-exam" element={<CountdownTimer />} />
                                         <Route path="*" element={<NotFound />} />
                                     </Routes>
                                 </div>

@@ -20,7 +20,7 @@ export const ExamComplete = () => {
             <p className="text-gray-600 mb-8">Terima kasih telah mengikuti ujian ini. Hasil akan segera diproses.</p>
             <div className="bg-gray-50 rounded-lg p-6 mb-8 md:mx-52">
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">Ringkasan Nilai</h3>
-                <div className="space-y-5">
+                <div className="space-y-5 overflow-y-scroll max-h-64 p-5">
                     {Object.keys(currentExam?.data?.totalScores).map((key) => (
                         <div key={key} className="flex justify-between">
                             <span>{currentExam.data.totalScores[key]['title']}</span>

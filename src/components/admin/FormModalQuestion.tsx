@@ -21,9 +21,8 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
     initialValues,
     mode,
 }) => {
-    const { availableTryoutSections } = useTryoutSectionStore();
     const { selectedTryoutId } = useTryoutStore();
-    const { selectedTryoutSectionId } = useTryoutSectionStore();
+    const { selectedTryoutSectionId, availableTryoutSections } = useTryoutSectionStore();
     const [content, setContent] = useState<string>(initialValues?.content ?? "");
     const [type, setType] = useState<string>(initialValues?.type ?? "");
     const [image, setImage] = useState<string | null>(initialValues?.image ?? null);

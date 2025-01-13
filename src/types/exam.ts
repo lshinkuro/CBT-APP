@@ -42,6 +42,7 @@ export interface ExamResult {
 
 export interface ExamDto {
     code: string;
+    mode: string;
 }
 
 export interface AnswerDto {

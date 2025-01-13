@@ -1,11 +1,12 @@
 import { useEffect, useRef } from "react";
-import { ExamHeader } from "../../components/exam/ExamHeader";
-import { QuestionView } from "../../components/exam/QuestionView";
 import { useExamStore } from "../../stores/examStore";
 import { ExamComplete } from "../../components/exam/ExamComplete";
+import NormalExam from "./running-exams/NormalExam";
+import AccuracySymbolExam from "./running-exams/AccuracySymbolExam";
+import ErrorPage from "../../components/error/ErrorPage";
 
 export const ExamRunning = () => {
-    const { currentExam, getCurrentExamByStudentId, isExamComplete } = useExamStore();
+    const { currentExam, getCurrentExamByStudentId, isExamComplete, mode, error } = useExamStore();
     const hasFetchedExam = useRef(false);
 
     useEffect(() => {
@@ -15,18 +16,25 @@ export const ExamRunning = () => {
         }
     }, [currentExam, getCurrentExamByStudentId]);
 
+    if (error) return <ErrorPage error={error} />;
+
     if (isExamComplete) return <ExamComplete />;
 
-    return (
-        <div className="min-h-screen bg-yellow-50 py-8">
-            <div className="max-w-4xl mx-auto px-4">
-                <ExamHeader title={currentExam?.title} examId={currentExam?.id} />
-                <div className="mt-6">
-                    <div className="mt-6">
-                        <QuestionView />
-                    </div>
+    if (mode === "normal")
+        return (
+            <div className="min-h-screen bg-yellow-50 py-8">
+                <div className="max-w-4xl mx-auto px-4">
+                    <NormalExam currentExam={currentExam} />
                 </div>
             </div>
-        </div>
-    );
+        );
+    else if (mode === "accuracy") {
+        return (
+            <div className="min-h-screen bg-yellow-50 py-8">
+                <div className="max-w-4xl mx-auto px-4">
+                    <AccuracySymbolExam currentExam={currentExam} />
+                </div>
+            </div>
+        );
+    }
 };

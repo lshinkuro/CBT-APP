@@ -5,6 +5,8 @@ import { TryoutDto, TryoutState } from "../types/tryout";
 
 const useTryoutStore = create<TryoutState>((set) => ({
     selectedTryoutId: "",
+    hasAccuracyTest: false,
+    questionsCount: 0,
     availableTryouts: [],
     instruction: null,
     tryouts: [],
@@ -19,9 +21,12 @@ const useTryoutStore = create<TryoutState>((set) => ({
         set({ isLoading: true });
         try {
             const response = await get(`/api/tryouts/instruction/${code}`);
+            console.log(response);
             if (response.message === "Success") {
                 set({
-                    instruction: response.data,
+                    instruction: response.data.instruction,
+                    hasAccuracyTest: response.data.hasAccuracyTest,
+                    questionsCount: response.data.questionsCount,
                 });
             }
         } catch (error: any) {

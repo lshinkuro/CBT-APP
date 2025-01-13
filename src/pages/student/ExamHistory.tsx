@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useExamStore } from "../../stores/examStore";
+import { Rocket } from "lucide-react";
 
 export const ExamHistory = () => {
     const { getAllExams, exams, limit, offset, search } = useExamStore();
@@ -45,38 +46,80 @@ export const ExamHistory = () => {
                 </div>
                 <div className="space-y-6">
                     {filteredExams.length > 0 ? (
-                        filteredExams.map((exam: { id: string; code: string; type: string; data: any, title: string }) => (
-                            <motion.div
-                                key={exam.id}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="bg-white rounded-lg shadow-lg p-6"
-                            >
-                                <div className="flex justify-between items-start">
-                                    <div>
-                                        <h3 className="text-xl font-semibold text-gray-800">{exam.title}</h3>
-                                        <p className="text-sm text-gray-500 mt-1">
-                                            Waktu Submit : {new Intl.DateTimeFormat("id-ID", {
-                                                year: "numeric",
-                                                month: "2-digit",
-                                                day: "2-digit",
-                                                hour: "2-digit",
-                                                minute: "2-digit",
-                                                second: "2-digit",
-                                            }).format(new Date(exam.data.submitTime))}
-                                        </p>
-                                    </div>
-
-                                    {/* Score */}
-                                    <div className="text-right">
-                                        <div className="text-3xl font-bold text-blue-600">
-                                            {exam.data.allTotalScores}
+                        filteredExams.map(
+                            (exam: { id: string; code: string; type: string; data: any; title: string }) => (
+                                <motion.div
+                                    key={exam.id}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="bg-white rounded-lg shadow-lg p-6"
+                                >
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <h3 className="text-xl font-semibold text-gray-800">{exam.title}</h3>
+                                            <p className="text-sm text-gray-500 mt-1">
+                                                Waktu Submit :{" "}
+                                                {new Intl.DateTimeFormat("id-ID", {
+                                                    year: "numeric",
+                                                    month: "2-digit",
+                                                    day: "2-digit",
+                                                    hour: "2-digit",
+                                                    minute: "2-digit",
+                                                    second: "2-digit",
+                                                }).format(new Date(exam.data.submitTime))}
+                                            </p>
+                                            {Object.keys(exam.data.totalScores).map((key) => (
+                                                <p key={key} className="text-sm text-gray-500">
+                                                    {exam.data.totalScores[key].title +
+                                                        " : " +
+                                                        exam.data.totalScores[key].score}
+                                                </p>
+                                            ))}
                                         </div>
-                                        <p className="text-sm text-gray-500">Nilai Total</p>
+
+                                        {/* Score */}
+                                        <div className="text-right">
+                                            <div className="text-3xl font-bold text-blue-600">
+                                                {exam.data.allTotalScores}
+                                            </div>
+                                            <p className="text-sm text-gray-500">Nilai Total</p>
+                                        </div>
                                     </div>
-                                </div>
-                            </motion.div>
-                        ))
+                                    <div className="flex justify-end mt-4">
+                                        {exam.data.normalTestsStatus && exam.data.normalTestsStatus === "progress" && (
+                                            <button
+                                                className="px-6 py-2 text-sm font-medium flex items-center rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                                                onClick={() => window.open(`/student/exam/${exam.code}`, "_blank")}
+                                            >
+                                                <Rocket className="mr-2" />
+                                                Mulai Ujian Normal
+                                            </button>
+                                        )}
+                                        {exam.data.accuracyTestsStatus &&
+                                            exam.data.accuracyTestsStatus === "progress" && (
+                                                <button
+                                                    className="px-6 py-2 text-sm font-medium flex items-center rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                                                    onClick={() => window.open(`/student/exam/${exam.code}`, "_blank")}
+                                                >
+                                                    <Rocket className="mr-2" />
+                                                    Mulai Ujian Akurasi
+                                                </button>
+                                            )}
+                                        {exam.data.accuracyTestsStatus &&
+                                            exam.data.accuracyTestsStatus === "completed" &&
+                                            exam.data.normalTestsStatus &&
+                                            exam.data.normalTestsStatus === "completed" && (
+                                                <button
+                                                    className="px-6 py-2 text-sm font-medium rounded-md text-white bg-gray-600"
+                                                    disabled
+                                                >
+                                                    Ujian Berakhir
+                                                </button>
+                                            )}
+                                    </div>
+                                </motion.div>
+                            )
+                        )
                     ) : (
                         <p className="text-center text-gray-600">Tidak ada data ujian yang ditemukan.</p>
                     )}

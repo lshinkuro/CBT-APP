@@ -11,6 +11,7 @@ import {
     Menu,
     X,
     Crosshair,
+    Component,
 } from "lucide-react";
 import { useState } from "react";
 import logoPlatypusCollege from "../../assets/images/platypus-college.png";
@@ -47,9 +48,14 @@ const menuItems = [
         path: "/admin/questions",
     },
     {
-        title: "Accuracy Test",
+        title: "Symbols",
+        icon: Component,
+        path: "/admin/symbols",
+    },
+    {
+        title: "Accuracy Tests",
         icon: Crosshair,
-        path: "/admin/accuracy-test",
+        path: "/admin/accuracy-tests",
     },
     {
         title: "Settings",

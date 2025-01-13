@@ -1,39 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useEffect } from "react";
 import DataTable, { IDataTableProps } from "react-data-table-component";
-import useQuestionStore from "../../stores/questionStore";
-import FormModalQuestion from "../../components/admin/FormModalQuestion";
+import useSymbolStore from "../../stores/symbolStore";
+import FormModalSymbol from "../../components/admin/FormModalSymbol";
 import ConfirmationBox, { ConfirmationBoxProps } from "../../components/layout/ConfirmationBox";
 import { Pencil, Trash, Plus } from "lucide-react";
-import { Question, QuestionDto } from "../../types/question";
+import { Symbol, SymbolDto } from "../../types/symbol";
 import toast from "react-hot-toast";
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
-import useTryoutSectionStore from "../../stores/tryoutSectionStore";
-import SelectTryout from "../../components/admin/SelectTryout";
-import SelectTryoutSection from "../../components/admin/SelectTryoutSection";
-import { MockQuestion } from "../../mocks/Question";
-import useTryoutStore from "../../stores/tryoutStore";
+import { MockSymbol } from "../../mocks/Symbol";
 
-const QuestionsList = () => {
-    const {
-        questions,
-        isLoading,
-        getAllQuestions,
-        createQuestion,
-        updateQuestion,
-        deleteQuestion,
-        error,
-        message,
-        totalRows,
-    } = useQuestionStore();
-    const { selectedTryoutId } = useTryoutStore();
-    const { getAllAvailableTryoutSectionsByTryoutId, availableTryoutSections, selectedTryoutSectionId } =
-        useTryoutSectionStore();
+const SymbolsList = () => {
+    const { symbols, isLoading, getAllSymbols, createSymbol, updateSymbol, totalRows, deleteSymbol, error, message } =
+        useSymbolStore();
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [mode, setMode] = useState<"create" | "update">("create");
-    const [limit, setLimit] = useState<number>(10);
     const [searchTerm, setSearchTerm] = useState<string>("");
-    const [selectedQuestion, setSelectedQuestion] = useState<Question>(MockQuestion);
+    const [limit, setLimit] = useState<number>(10);
+    const [selectedSymbol, setSelectedSymbol] = useState<Symbol>(MockSymbol);
     const [confirmationBox, setConfirmationBox] = useState<ConfirmationBoxProps>({
         isOpen: false,
         message: "",
@@ -43,30 +26,24 @@ const QuestionsList = () => {
         isLoading: isLoading,
     });
 
-    const columns: IDataTableProps<Question>["columns"] = [
+    const usr =
+        sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") &&
+        JSON.parse(sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "");
+
+    const columns: IDataTableProps<Symbol>["columns"] = [
         {
-            name: "Content",
-            selector: (row) => row.content,
+            name: "Name",
+            selector: (row) => row.name,
             sortable: true,
         },
         {
-            name: "Tryout",
-            selector: (row) => row.tryoutSection.tryout.title,
+            name: "Code",
+            selector: (row) => row.code,
             sortable: true,
         },
         {
-            name: "Tryout Section",
-            selector: (row) => row.tryoutSection.type,
-            sortable: true,
-        },
-        {
-            name: "Sub Type",
-            selector: (row) => row.tryoutSection.subType ?? "-",
-            sortable: true,
-        },
-        {
-            name: "Type",
-            selector: (row) => row.type,
+            name: "Characters",
+            selector: (row) => row.characters,
             sortable: true,
         },
         {
@@ -106,12 +83,14 @@ const QuestionsList = () => {
                     >
                         <Pencil className="w-4 h-4" />
                     </button>
-                    <button
-                        className="bg-red-500 hover:bg-red-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
-                        onClick={() => handleDeleteQuestion(props.id)}
-                    >
-                        <Trash className="w-4 h-4" />
-                    </button>
+                    {usr.role === "sysadmin" && (
+                        <button
+                            className="bg-red-500 hover:bg-red-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
+                            onClick={() => handleDeleteSymbol(props.id, props.name)}
+                        >
+                            <Trash className="w-4 h-4" />
+                        </button>
+                    )}
                 </div>
             ),
             sortable: false,
@@ -119,104 +98,96 @@ const QuestionsList = () => {
     ];
 
     useEffect(() => {
-        getAllQuestions();
-    }, [getAllQuestions, selectedTryoutId, selectedTryoutSectionId]);
+        getAllSymbols();
+    }, [getAllSymbols]);
 
     useEffect(() => {
         if (error) {
             toast.error(error);
         }
-        useQuestionStore.setState({ error: null });
+        useSymbolStore.setState({ error: null });
     }, [error]);
 
     useEffect(() => {
         if (message) {
             toast.success(message);
         }
-        useQuestionStore.setState({ message: null });
+        useSymbolStore.setState({ message: null });
     }, [message]);
 
-    useEffect(() => {
-        if (selectedTryoutId !== "") {
-            getAllAvailableTryoutSectionsByTryoutId(selectedTryoutId);
-        } else {
-            useTryoutSectionStore.setState({ availableTryoutSections: [] });
-        }
-    }, [getAllAvailableTryoutSectionsByTryoutId, selectedTryoutId]);
-
-    const handleClickCreateQuestion = () => {
+    const handleClickCreateSymbol = () => {
         setIsOpenModal(true);
         setMode("create");
-        setSelectedQuestion(MockQuestion);
+        setSelectedSymbol(MockSymbol);
     };
 
-    const handleClickEdit = (question: Question) => {
-        setSelectedQuestion(question);
+    const handleClickEdit = (symbol: Symbol) => {
+        setSelectedSymbol(symbol);
         setIsOpenModal(true);
         setMode("update");
     };
 
-    const handleDeleteQuestion = (id: string) => {
+    const handleDeleteSymbol = (id: string, name: string) => {
         setConfirmationBox({
             isOpen: true,
-            message: `Are you sure to delete this question?`,
+            message: `Are you sure to delete symbol ${name}?`,
             onConfirm: async () => {
-                await deleteQuestion(id);
+                await deleteSymbol(id);
                 setConfirmationBox({ ...confirmationBox, isOpen: false });
             },
             onClose: () => setConfirmationBox({ ...confirmationBox, isOpen: false }),
         });
     };
 
-    const handleSubmit = async (data: QuestionDto) => {
+    const handleSubmit = async (data: SymbolDto) => {
         if (mode === "update") {
-            await updateQuestion(selectedQuestion.id, data);
+            await updateSymbol(selectedSymbol.id, data);
         } else {
-            await createQuestion(data);
+            await createSymbol(data);
         }
         setIsOpenModal(false);
-        setSelectedQuestion(MockQuestion);
+        setSelectedSymbol(MockSymbol);
         setMode("create");
     };
 
     const handlePageChange = (page: number) => {
-        useQuestionStore.setState({ offset: (page - 1) * limit });
-        getAllQuestions();
+        useSymbolStore.setState({ offset: (page - 1) * limit });
+        getAllSymbols();
     };
 
     const handleLimitChange = (limit: number) => {
         setLimit(limit);
-        useQuestionStore.setState({ limit, offset: 0 });
-        getAllQuestions();
+        useSymbolStore.setState({ limit, offset: 0 });
+        getAllSymbols();
     };
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSearchTerm(e.target.value);
-        useQuestionStore.setState({ search: e.target.value, offset: 0 });
-        getAllQuestions();
+        useSymbolStore.setState({ search: e.target.value, offset: 0 });
+        getAllSymbols();
     };
 
     return (
         <div className="flex flex-col w-full">
             <AdminSidebar />
             <main className="flex-1 md:ml-64 p-8 rounded">
-                <h1 className="text-2xl font-bold text-gray-800 mb-6">List Questions</h1>
-                <SelectTryout />
-                {availableTryoutSections.length > 0 && <SelectTryoutSection />}
+                <h1 className="text-2xl font-bold text-gray-800 mb-6">List Symbols</h1>
                 <div className="flex items-center justify-between mb-4">
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
-                        type="button"
-                        onClick={handleClickCreateQuestion}
-                    >
-                        <Plus className="w-4 h-4 mr-1" />
-                        Create Question
-                    </button>
+                    {usr.role === "sysadmin" && (
+                        <button
+                            className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
+                            type="button"
+                            onClick={handleClickCreateSymbol}
+                        >
+                            <Plus className="w-4 h-4 mr-1" />
+                            Create Symbol
+                        </button>
+                    )}
                     <div className="w-1/3">
                         <input
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             type="search"
-                            placeholder="Type, Content"
+                            placeholder="Symbol, Name, Code"
                             value={searchTerm}
                             onChange={handleSearchChange}
                         />
@@ -224,7 +195,7 @@ const QuestionsList = () => {
                 </div>
                 <DataTable
                     columns={columns}
-                    data={questions}
+                    data={symbols}
                     progressPending={isLoading}
                     pagination
                     paginationServer
@@ -234,14 +205,13 @@ const QuestionsList = () => {
                     highlightOnHover
                     responsive={true}
                 />
-                <FormModalQuestion
+                <FormModalSymbol
                     isOpen={isOpenModal}
                     onClose={() => setIsOpenModal(false)}
-                    title={mode === "update" ? "Edit Question" : "Create New Question"}
+                    title={mode === "update" ? "Edit Symbol" : "Create New Symbol"}
                     onSubmit={handleSubmit}
                     isLoading={isLoading}
-                    initialValues={selectedQuestion}
-                    mode={mode}
+                    initialValues={selectedSymbol}
                 />
                 <ConfirmationBox {...confirmationBox} />
             </main>
@@ -249,4 +219,4 @@ const QuestionsList = () => {
     );
 };
 
-export default QuestionsList;
+export default SymbolsList;

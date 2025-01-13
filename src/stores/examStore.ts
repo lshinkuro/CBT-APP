@@ -26,6 +26,7 @@ interface ExamState {
     offset: number;
     search: string | null;
     totalRows: number;
+    mode: string;
 }
 
 export const useExamStore = create<ExamState>((set) => ({
@@ -38,6 +39,7 @@ export const useExamStore = create<ExamState>((set) => ({
     currentSection: null,
     error: null,
     isExamComplete: false,
+    mode: "normal",
     limit: 10,
     offset: 0,
     search: "",

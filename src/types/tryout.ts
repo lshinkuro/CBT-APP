@@ -29,6 +29,8 @@ export interface TryoutState {
     availableTryouts: AvailableTryouts[];
     instruction: string | null;
     tryouts: Tryout[];
+    hasAccuracyTest: boolean;
+    questionsCount: number;
     isLoading: boolean;
     message: string | null;
     error: string | null;

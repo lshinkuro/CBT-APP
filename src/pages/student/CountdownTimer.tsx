@@ -1,21 +1,23 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import Loading from "../../components/loading/Loading";
 import { useExamStore } from "../../stores/examStore";
 
 const CountdownTimer = () => {
-    const { code = "" } = useParams<{ code: string }>();
+    const [searchParams] = useSearchParams();
+    const code = searchParams.get("code") ?? "";
+    const mode = searchParams.get("mode") ?? "";
     const { isReadIstruction, createExam } = useExamStore();
-    const [count, setCount] = useState(5);
+    const [count, setCount] = useState(3);
     const navigate = useNavigate();
     const hasCreatedExam = useRef(false);
 
     useEffect(() => {
         if (code !== "" && !hasCreatedExam.current) {
-            createExam({ code });
+            createExam({ code, mode });
             hasCreatedExam.current = true;
         }
-    }, [createExam, code]);
+    }, [createExam, code, mode]);
 
     useEffect(() => {
         if (!isReadIstruction) navigate("/dashboard");

@@ -39,7 +39,9 @@ const ConfirmationBox: React.FC<ConfirmationBoxProps> = ({
                             ${useLoading && isLoading ? "bg-blue-300" : "bg-blue-500"}
                             rounded-md
                             ${useLoading && isLoading ? "hover:bg-blue-300" : "hover:bg-blue-600"}
+                            ${useLoading && isLoading ? "cursor-not-allowed opacity-50" : ""}
                         `}
+                        disabled={useLoading && isLoading}
                     >
                         {useLoading && isLoading ? "Submitting..." : "OK"}
                     </button>
