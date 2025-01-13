@@ -15,7 +15,7 @@ export const ExamComplete = () => {
                 <Trophy className="h-16 w-16 text-yellow-500" />
             </div>
             <h2 className="text-2xl font-bold text-gray-800 mb-4">
-                Selamat! Anda telah menyelesaikan Ujian {currentExam?.data?.title}
+                Selamat! Anda telah menyelesaikan Ujian
             </h2>
             <p className="text-gray-600 mb-8">Terima kasih telah mengikuti ujian ini. Hasil akan segera diproses.</p>
             <div className="bg-gray-50 rounded-lg p-6 mb-8 md:mx-52">

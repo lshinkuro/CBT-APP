@@ -3,8 +3,11 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useExamStore } from "../../stores/examStore";
 import { Rocket } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import useQuestionStore from "../../stores/questionStore";
 
 export const ExamHistory = () => {
+    const navigate = useNavigate();
     const { getAllExams, exams, limit, offset, search } = useExamStore();
     const [filteredExams, setFilteredExams] = useState(exams);
 
@@ -47,17 +50,29 @@ export const ExamHistory = () => {
                 <div className="space-y-6">
                     {filteredExams.length > 0 ? (
                         filteredExams.map(
-                            (exam: { id: string; code: string; type: string; data: any; title: string }) => (
+                            (exam: {
+                                tryout: any;
+                                id: string;
+                                code: string;
+                                type: string;
+                                data: any;
+                                title: string;
+                            }) => (
                                 <motion.div
                                     key={exam.id}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    className="bg-white rounded-lg shadow-lg p-6"
+                                    className={`bg-white rounded-lg shadow-lg p-6 ${
+                                        exam.data.normalTestsStatus === "progress" ||
+                                        exam.data.accuracyTestsStatus === "progress"
+                                            ? "bg-blue-200"
+                                            : ""
+                                    }`}
                                 >
-                                    <div className="flex justify-between items-start">
+                                    <div className="flex justify-between items-start font-bold">
                                         <div>
-                                            <h3 className="text-xl font-semibold text-gray-800">{exam.title}</h3>
-                                            <p className="text-sm text-gray-500 mt-1">
+                                            <h3 className="text-xl font-semibold text-black">{exam.title}</h3>
+                                            <p className="text-md text-black mt-1">
                                                 Waktu Submit :{" "}
                                                 {new Intl.DateTimeFormat("id-ID", {
                                                     year: "numeric",
@@ -69,7 +84,7 @@ export const ExamHistory = () => {
                                                 }).format(new Date(exam.data.submitTime))}
                                             </p>
                                             {Object.keys(exam.data.totalScores).map((key) => (
-                                                <p key={key} className="text-sm text-gray-500">
+                                                <p key={key} className="text-sm text-black">
                                                     {exam.data.totalScores[key].title +
                                                         " : " +
                                                         exam.data.totalScores[key].score}
@@ -82,14 +97,23 @@ export const ExamHistory = () => {
                                             <div className="text-3xl font-bold text-blue-600">
                                                 {exam.data.allTotalScores}
                                             </div>
-                                            <p className="text-sm text-gray-500">Nilai Total</p>
+                                            <p className="text-sm text-black">Nilai Total</p>
                                         </div>
                                     </div>
                                     <div className="flex justify-end mt-4">
                                         {exam.data.normalTestsStatus && exam.data.normalTestsStatus === "progress" && (
                                             <button
                                                 className="px-6 py-2 text-sm font-medium flex items-center rounded-md text-white bg-blue-600 hover:bg-blue-700"
-                                                onClick={() => window.open(`/student/exam/${exam.code}`, "_blank")}
+                                                onClick={() => {
+                                                    useExamStore.setState({
+                                                        isReadIstruction: true,
+                                                        mode: "normal",
+                                                        isContinueExam: true,
+                                                        currentExam: exam,
+                                                    });
+                                                    useQuestionStore.setState({ examQuestions: exam.data.questions });
+                                                    navigate(`/starting-exam?code=${exam.tryout.code}&mode=normal`);
+                                                }}
                                             >
                                                 <Rocket className="mr-2" />
                                                 Mulai Ujian Normal
@@ -99,21 +123,23 @@ export const ExamHistory = () => {
                                             exam.data.accuracyTestsStatus === "progress" && (
                                                 <button
                                                     className="px-6 py-2 text-sm font-medium flex items-center rounded-md text-white bg-blue-600 hover:bg-blue-700"
-                                                    onClick={() => window.open(`/student/exam/${exam.code}`, "_blank")}
+                                                    onClick={() => {
+                                                        useExamStore.setState({
+                                                            isReadIstruction: true,
+                                                            mode: "accuracy",
+                                                            isContinueExam: true,
+                                                            currentExam: exam,
+                                                        });
+                                                        useQuestionStore.setState({
+                                                            examQuestions: exam.data.questions,
+                                                        });
+                                                        navigate(
+                                                            `/starting-exam?code=${exam.tryout.code}&mode=accuracy`
+                                                        );
+                                                    }}
                                                 >
                                                     <Rocket className="mr-2" />
                                                     Mulai Ujian Akurasi
-                                                </button>
-                                            )}
-                                        {exam.data.accuracyTestsStatus &&
-                                            exam.data.accuracyTestsStatus === "completed" &&
-                                            exam.data.normalTestsStatus &&
-                                            exam.data.normalTestsStatus === "completed" && (
-                                                <button
-                                                    className="px-6 py-2 text-sm font-medium rounded-md text-white bg-gray-600"
-                                                    disabled
-                                                >
-                                                    Ujian Berakhir
                                                 </button>
                                             )}
                                     </div>
@@ -121,7 +147,7 @@ export const ExamHistory = () => {
                             )
                         )
                     ) : (
-                        <p className="text-center text-gray-600">Tidak ada data ujian yang ditemukan.</p>
+                        <p className="text-center text-black">Tidak ada data ujian yang ditemukan.</p>
                     )}
                 </div>
                 <div className="flex justify-between items-center mt-8">
@@ -129,7 +155,7 @@ export const ExamHistory = () => {
                         className={`px-6 py-2 text-sm font-medium rounded-md ${
                             offset > 0
                                 ? "text-white bg-blue-600 hover:bg-blue-700"
-                                : "text-gray-400 bg-gray-200 cursor-not-allowed"
+                                : "text-black bg-gray-200 cursor-not-allowed"
                         }`}
                         onClick={() => handlePagination("prev")}
                         disabled={offset <= 0}

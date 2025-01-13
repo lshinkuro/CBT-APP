@@ -7,17 +7,19 @@ const CountdownTimer = () => {
     const [searchParams] = useSearchParams();
     const code = searchParams.get("code") ?? "";
     const mode = searchParams.get("mode") ?? "";
-    const { isReadIstruction, createExam } = useExamStore();
+    const { isReadIstruction, createExam, isContinueExam, continueExam } = useExamStore();
     const [count, setCount] = useState(3);
     const navigate = useNavigate();
     const hasCreatedExam = useRef(false);
 
     useEffect(() => {
-        if (code !== "" && !hasCreatedExam.current) {
+        if (code !== "" && !hasCreatedExam.current && !isContinueExam) {
             createExam({ code, mode });
             hasCreatedExam.current = true;
+        } else if (isContinueExam) {
+            continueExam({ code, mode });
         }
-    }, [createExam, code, mode]);
+    }, [createExam, code, mode, isContinueExam, continueExam]);
 
     useEffect(() => {
         if (!isReadIstruction) navigate("/dashboard");

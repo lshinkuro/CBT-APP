@@ -58,8 +58,6 @@ const CardTryout = () => {
                             key={exam.title}
                             {...exam}
                             delay={index * 0.1}
-                            className="transition-transform transform hover:-translate-y-2 hover:shadow-lg"
-
                         />
                     ))}
                 </div>

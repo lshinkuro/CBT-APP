@@ -113,7 +113,11 @@ function Options({
                             whileTap={{ scale: 0.95 }}
                             className="flex flex-col items-center justify-center m-2 cursor-pointer"
                             onClick={() => handleAnswer(data.symbol)}
-                            style={duration < 2 ? { pointerEvents: "none", opacity: 0.5, cursor: "not-allowed" } : undefined}
+                            style={
+                                duration < 2
+                                    ? { pointerEvents: "none", opacity: 0.5, cursor: "not-allowed" }
+                                    : undefined
+                            }
                         >
                             <div className="bg-gray-200 rounded-full p-4 text-6xl">{data.symbol}</div>
                             <div className="text-center mt-2">

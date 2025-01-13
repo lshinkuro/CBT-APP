@@ -10,7 +10,6 @@ import Loading from "./components/loading/Loading";
 import { StudentDashboard } from "./pages/student/StudentDashboard";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { ExamHistory } from "./pages/student/ExamHistory";
-import { IkatanDinasExam } from "./pages/student/IkatanDinasExam";
 import { ExamRunning } from "./pages/student/ExamRunning";
 import { Profile } from "./pages/student/Profile";
 import { Helmet } from "react-helmet-async";
@@ -80,7 +79,6 @@ function App() {
                                         <Route path="/tryout/:id" element={<CardTryout />} />
                                         <Route path="/instruction/:code" element={<InstructionExam />} />
                                         <Route path="/exam/running" element={<ExamRunning />} />
-                                        <Route path="/exam/ikatan-dinas" element={<IkatanDinasExam />} />
                                         <Route path="/profile" element={<Profile />} />
                                         <Route path="/history" element={<ExamHistory />} />
                                         <Route path="/starting-exam" element={<CountdownTimer />} />

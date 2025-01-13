@@ -27,10 +27,13 @@ interface ExamState {
     search: string | null;
     totalRows: number;
     mode: string;
+    isContinueExam: boolean;
+    continueExam: (data: ExamDto) => Promise<void>;
 }
 
 export const useExamStore = create<ExamState>((set) => ({
     exams: [],
+    isContinueExam: false,
     isLoading: false,
     isReadIstruction: false,
     isProgressExam: false,
@@ -44,6 +47,21 @@ export const useExamStore = create<ExamState>((set) => ({
     offset: 0,
     search: "",
     totalRows: 0,
+    continueExam: async (data: ExamDto) => {
+        set({ isLoading: true });
+        try {
+            const response = await post(`/api/student/exams/continue`, data);
+            if (response.message === "Success") {
+                set({ message: "Tryout started!", currentExam: response.data });
+                const questions = response?.data?.data?.questions;
+                useQuestionStore.setState({ examQuestions: questions });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to get exams" });
+        } finally {
+            set({ isLoading: false });
+        }
+    },
     getAllExams: async ({
         limit,
         offset,
@@ -68,7 +86,7 @@ export const useExamStore = create<ExamState>((set) => ({
     checkCurrentProgressExam: async () => {
         set({ isLoading: true });
         try {
-            const response = await get(`/api/student/exams/check`);
+            const response = await get(`/api/student/exams/check?mode=${useExamStore.getState().mode}`);
             if (response.message === "Success") {
                 set({ message: "Tryout progress!", isProgressExam: response.data });
             }
@@ -99,9 +117,17 @@ export const useExamStore = create<ExamState>((set) => ({
             const response = await get(`/api/student/exams`);
             if (response.message === "Success") {
                 set({ message: "Tryout progress!", currentExam: response.data });
-                if (response?.data?.status === "progress") {
+                set({ mode: response?.data?.data?.mode });
+                const mode = useExamStore.getState().mode;
+                if (
+                    (response?.data?.data.normalTestsStatus === "progress" && mode === "normal") ||
+                    (response?.data?.data.accuracyTestsStatus === "progress" && mode === "accuracy")
+                ) {
                     set({ isProgressExam: true, isExamComplete: false });
-                } else if (response?.data?.status === "completed") {
+                } else if (
+                    (response?.data?.data.normalTestsStatus === "completed" && mode === "normal") ||
+                    (response?.data?.data.accuracyTestsStatus === "completed" && mode === "accuracy")
+                ) {
                     set({ isProgressExam: false, isExamComplete: true });
                 }
                 const questions = response?.data?.data?.questions;

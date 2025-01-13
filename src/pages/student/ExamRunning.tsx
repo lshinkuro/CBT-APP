@@ -4,6 +4,7 @@ import { ExamComplete } from "../../components/exam/ExamComplete";
 import NormalExam from "./running-exams/NormalExam";
 import AccuracySymbolExam from "./running-exams/AccuracySymbolExam";
 import ErrorPage from "../../components/error/ErrorPage";
+import PauliExam from "./running-exams/PauliExam";
 
 export const ExamRunning = () => {
     const { currentExam, getCurrentExamByStudentId, isExamComplete, mode, error } = useExamStore();
@@ -33,6 +34,14 @@ export const ExamRunning = () => {
             <div className="min-h-screen bg-yellow-50 py-8">
                 <div className="max-w-4xl mx-auto px-4">
                     <AccuracySymbolExam currentExam={currentExam} />
+                </div>
+            </div>
+        );
+    } else if (mode === "pauli") {
+        return (
+            <div className="min-h-screen bg-yellow-50 py-8">
+                <div className="max-w-4xl mx-auto px-4">
+                    <PauliExam currentExam={currentExam} />
                 </div>
             </div>
         );
