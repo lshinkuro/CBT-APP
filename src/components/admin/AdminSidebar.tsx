@@ -13,6 +13,7 @@ import {
     Crosshair,
     ChevronsLeft,
     ChevronsRight,
+    Component,
 } from "lucide-react";
 import { useState } from "react";
 import logoPlatypusCollege from "../../assets/images/platypus-college.png";

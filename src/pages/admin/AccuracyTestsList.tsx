@@ -42,6 +42,12 @@ const AccuracyTestsList = () => {
         isLoading: isLoading,
     });
 
+    const [isMinimized, setIsMinimized] = useState(false);
+
+    const toggleSidebar = () => {
+        setIsMinimized(!isMinimized);
+    };
+
     const columns: IDataTableProps<AccuracyTest>["columns"] = [
         {
             name: "Title",
@@ -207,8 +213,10 @@ const AccuracyTestsList = () => {
 
     return (
         <div className="flex flex-col w-full">
-            <AdminSidebar />
-            <main className="flex-1 md:ml-64 p-8 rounded">
+            <AdminSidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
+            <main
+                className={`flex-1 p-8 transition-all duration-300 ${isMinimized ? "ml-2 md:ml-20" : "ml-2 md:ml-64"}`}
+            >
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">List Accuracy Tests</h1>
                 <SelectTryout />
                 {availableTryoutSections.length > 0 && <SelectTryoutSection />}
