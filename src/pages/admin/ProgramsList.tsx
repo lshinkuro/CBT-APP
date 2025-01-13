@@ -35,6 +35,12 @@ const ProgramsList = () => {
         isLoading: isLoading,
     });
 
+    const [isMinimized, setIsMinimized] = useState(false);
+
+    const toggleSidebar = () => {
+        setIsMinimized(!isMinimized);
+    };
+
     const usr =
         sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") &&
         JSON.parse(sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "");
@@ -173,8 +179,14 @@ const ProgramsList = () => {
 
     return (
         <div className="flex flex-col w-full">
-            <AdminSidebar />
-            <main className="flex-1 md:ml-64 p-8 rounded">
+            <AdminSidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
+
+            {/* Main Content */}
+            <main
+                className={`flex-1 p-8 transition-all duration-300 ${
+                    isMinimized ? "ml-20" : "ml-64"
+                }`}
+            >
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">List Programs</h1>
                 <div className="flex items-center justify-between mb-4">
                     {usr.role === "sysadmin" && (
