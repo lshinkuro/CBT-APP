@@ -40,19 +40,34 @@ const CardTryout = () => {
     if (isLoading) return <Loading />;
 
     return (
-        <div className="min-h-screen p-8 bg-yellow-100 mt-100">
-            <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Pilih Jenis Tryout</h1>
-            <ExamSearch onSearch={setSearchQuery} />
+        <div className="min-h-screen py-12 px-6 bg-gradient-to-b from-yellow-100 via-white to-yellow-50">
+            <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-12">
+                Pilih Jenis Tryout
+            </h1>
+
+            {/* Komponen Pencarian */}
+            <div className="max-w-3xl mx-auto mb-8">
+                <ExamSearch onSearch={setSearchQuery} />
+            </div>
+
+            {/* Daftar Ujian */}
             {filteredExams.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
                     {filteredExams.map((exam, index) => (
-                        <ExamCard key={exam.title} {...exam} delay={index * 0.1} />
+                        <ExamCard
+                            key={exam.title}
+                            {...exam}
+                            delay={index * 0.1}
+                            className="transition-transform transform hover:-translate-y-2 hover:shadow-lg"
+
+                        />
                     ))}
                 </div>
             ) : (
                 <EmptyResource />
             )}
         </div>
+
     );
 };
 
