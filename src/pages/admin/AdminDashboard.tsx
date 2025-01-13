@@ -1,11 +1,24 @@
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
 export const AdminDashboard = () => {
+
+    const [isMinimized, setIsMinimized] = useState(false);
+
+    const toggleSidebar = () => {
+        setIsMinimized(!isMinimized);
+    };
     return (
         <div className="flex">
-            <AdminSidebar />
-            <main className="flex-1 md:ml-64 p-8">
+             <AdminSidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
+
+            {/* Main Content */}
+            <main
+                className={`flex-1 p-8 transition-all duration-300 ${
+                    isMinimized ? "ml-20" : "ml-64"
+                }`}
+            >
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}

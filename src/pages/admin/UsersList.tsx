@@ -30,6 +30,7 @@ export const UsersList = () => {
     const { forgotPassword, message: messageResetPassword } = useAuthStore();
     const { getAllAvailablePrograms } = useProgramStore();
     const [isOpenModal, setIsOpenModal] = useState(false);
+    const [isMinimized, setIsMinimized] = useState(false);
     const [isOpenModalProfile, setIsOpenModalProfile] = useState(false);
     const [limit, setLimit] = useState<number>(10);
     const [searchTerm, setSearchTerm] = useState<string>("");
@@ -43,6 +44,10 @@ export const UsersList = () => {
     });
     const [mode, setMode] = useState<"create" | "update">("create");
     const [selectedUser, setSelectedUser] = useState<User>(MockUser);
+
+    const toggleSidebar = () => {
+        setIsMinimized(!isMinimized);
+    };
 
     const usr =
         sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") &&
@@ -223,8 +228,12 @@ export const UsersList = () => {
 
     return (
         <div className="flex flex-col w-full">
-            <AdminSidebar />
-            <main className="flex-1 md:ml-64 p-8 rounded">
+            <AdminSidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar}  />
+            <main
+                className={`flex-1 p-8 transition-all duration-300 ${
+                    isMinimized ? "ml-20" : "ml-64"
+                }`}
+            >
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">List Users</h1>
                 <div className="flex items-center justify-between mb-4">
                     {usr.role === "sysadmin" && (

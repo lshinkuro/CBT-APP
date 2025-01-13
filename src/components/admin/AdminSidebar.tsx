@@ -11,6 +11,8 @@ import {
     Menu,
     X,
     Crosshair,
+    ChevronsLeft,
+    ChevronsRight,
 } from "lucide-react";
 import { useState } from "react";
 import logoPlatypusCollege from "../../assets/images/platypus-college.png";
@@ -63,13 +65,19 @@ const menuItems = [
     },
 ];
 
-export const AdminSidebar = () => {
+// Props untuk komponen AdminSidebar
+interface AdminSidebarProps {
+    isMinimized: boolean;
+    toggleSidebar: () => void;
+}
+
+export const AdminSidebar: React.FC<AdminSidebarProps>  = ({ isMinimized, toggleSidebar }) => {
     const location = useLocation();
     const [isOpen, setIsOpen] = useState(false);
+    // const [isMinimized, setIsMinimized] = useState(false);
 
-    const toggleMenu = () => {
-        setIsOpen(!isOpen);
-    };
+    const toggleMenu = () => setIsOpen(!isOpen);
+    // const toggleSidebar = () => setIsMinimized(!isMinimized);
 
     return (
         <div>
@@ -106,10 +114,27 @@ export const AdminSidebar = () => {
             </div>
 
             {/* Desktop Sidebar */}
-            <div className="hidden md:block w-64 h-screen bg-white border-r border-gray-200 fixed left-0 top-0">
-                <div className="flex items-center p-6">
-                    <img src={logoPlatypusCollege} alt="Logo Platypus College" className="h-12 w-12 mr-3" />
-                    <span className="text-lg font-semibold text-yellow-900">Platypus College</span>
+            <div
+                className={`hidden md:block h-screen bg-white border-r border-gray-200 fixed top-0 transition-all duration-300 ${
+                    isMinimized ? "w-20" : "w-64"
+                }`}
+            >
+                <div className="flex items-center justify-between p-6">
+                    <div className="flex items-center">
+                        {!isMinimized && (
+                            <>
+                                <img src={logoPlatypusCollege} alt="Logo Platypus College" className="h-12 w-12 mr-3" />
+                                <span className="text-lg font-semibold text-yellow-900">Platypus College</span>
+                            </>
+                        )}
+                    </div>
+                    <button onClick={toggleSidebar} aria-label="Toggle Sidebar">
+                        {isMinimized ? (
+                            <ChevronsRight className="w-6 h-6 text-gray-600" />
+                        ) : (
+                            <ChevronsLeft className="w-6 h-6 text-gray-600" />
+                        )}
+                    </button>
                 </div>
                 <nav className="mt-6">
                     {menuItems.map((item) => (
@@ -121,7 +146,7 @@ export const AdminSidebar = () => {
                             }`}
                         >
                             <item.icon className="h-5 w-5 mr-3" />
-                            <span>{item.title}</span>
+                            {!isMinimized && <span>{item.title}</span>}
                         </Link>
                     ))}
                 </nav>
