@@ -43,7 +43,7 @@ export const StudentDashboard = () => {
     if (isLoading) return <Loading />;
 
     return (
-        <div className="min-h-screen p-8 bg-yellow-100 mt-100">
+        <div className="min-h-screen p-8 bg-gray-50 mt-100">
             <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Pilih Program</h1>
             <ExamSearch onSearch={setSearchQuery} />
             {filteredExams.length > 0 ? (
