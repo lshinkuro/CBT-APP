@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
 import { MockProgram } from "../../mocks/Program";
 import { customStylesTable } from "../style/customStylesTable";
+import SearchInput from "../../components/layout/SearchInput";
 
 const ProgramsList = () => {
     const {
@@ -198,15 +199,13 @@ const ProgramsList = () => {
                             Create Program
                         </button>
                     )}
-                    <div className="w-1/3">
-                        <input
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            type="search"
-                            placeholder="Title, Description"
-                            value={searchTerm}
-                            onChange={handleSearchChange}
-                        />
-                    </div>
+    
+
+                    <SearchInput
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    placeholder="Title, Description"
+                    />
                 </div>
                 <DataTable
                     columns={columns}

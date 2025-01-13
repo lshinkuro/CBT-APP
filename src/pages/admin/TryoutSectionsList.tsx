@@ -10,6 +10,7 @@ import { AdminSidebar } from "../../components/admin/AdminSidebar";
 import useTryoutStore from "../../stores/tryoutStore";
 import { MockTryoutSection } from "../../mocks/TryoutSection";
 import { customStylesTable } from "../style/customStylesTable";
+import SearchInput from "../../components/layout/SearchInput";
 
 const TryoutSectionsList = () => {
     const {
@@ -228,15 +229,12 @@ const TryoutSectionsList = () => {
                             Create Tryout Section
                         </button>
                     )}
-                    <div className="w-1/3">
-                        <input
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            type="search"
-                            placeholder="Title, Type, Sub Type"
-                            value={searchTerm}
-                            onChange={handleSearchChange}
-                        />
-                    </div>
+                  
+                    <SearchInput
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        placeholder="Title, Type, Sub Type"
+                    />
                 </div>
                 <DataTable
                     columns={columns}

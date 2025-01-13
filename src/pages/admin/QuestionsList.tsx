@@ -14,6 +14,7 @@ import SelectTryoutSection from "../../components/admin/SelectTryoutSection";
 import { MockQuestion } from "../../mocks/Question";
 import useTryoutStore from "../../stores/tryoutStore";
 import { customStylesTable } from "../style/customStylesTable";
+import SearchInput from "../../components/layout/SearchInput";
 
 const QuestionsList = () => {
     const {
@@ -223,15 +224,12 @@ const QuestionsList = () => {
                         <Plus className="w-4 h-4 mr-1" />
                         Create Question
                     </button>
-                    <div className="w-1/3">
-                        <input
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            type="search"
-                            placeholder="Type, Content"
-                            value={searchTerm}
-                            onChange={handleSearchChange}
-                        />
-                    </div>
+                 
+                    <SearchInput
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        placeholder="Type, Content"
+                    />
                 </div>
                 <DataTable
                     columns={columns}

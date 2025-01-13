@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import { AdminSidebar } from "../../components/admin/AdminSidebar";
 import { MockSymbol } from "../../mocks/Symbol";
 import { customStylesTable } from "../style/customStylesTable";
+import SearchInput from "../../components/layout/SearchInput";
 
 const SymbolsList = () => {
     const { symbols, isLoading, getAllSymbols, createSymbol, updateSymbol, totalRows, deleteSymbol, error, message } =
@@ -193,15 +194,12 @@ const SymbolsList = () => {
                             Create Symbol
                         </button>
                     )}
-                    <div className="w-1/3">
-                        <input
-                            className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            type="search"
-                            placeholder="Symbol, Name, Code"
-                            value={searchTerm}
-                            onChange={handleSearchChange}
-                        />
-                    </div>
+       
+                    <SearchInput
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        placeholder="Symbol, Name, Code"
+                    />
                 </div>
                 <DataTable
                     columns={columns}
