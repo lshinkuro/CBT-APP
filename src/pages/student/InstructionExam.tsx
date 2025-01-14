@@ -10,7 +10,15 @@ import { motion } from "framer-motion";
 
 const InstructionExam = () => {
     const { code = "" } = useParams<{ code: string }>();
-    const { instruction, getInstructionByCode, isLoading, hasAccuracyTest, questionsCount } = useTryoutStore();
+    const {
+        instruction,
+        getInstructionByCode,
+        isLoading,
+        hasAccuracyTest,
+        questionsCount,
+        targetAccuracyTestType,
+        testTypes,
+    } = useTryoutStore();
     const navigate = useNavigate();
     const hasGenerateInstruction = useRef(false);
 
@@ -46,12 +54,15 @@ const InstructionExam = () => {
                                         <button
                                             type="button"
                                             onClick={() => {
-                                                useExamStore.setState({ isReadIstruction: true, mode: "accuracy" });
-                                                navigate(`/starting-exam?code=${code}&mode=accuracy`);
+                                                useExamStore.setState({
+                                                    isReadIstruction: true,
+                                                    mode: targetAccuracyTestType,
+                                                });
+                                                navigate(`/starting-exam?code=${code}&mode=${targetAccuracyTestType}`);
                                             }}
                                             className="w-full flex items-center justify-center text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 px-4 py-2 rounded-md"
                                         >
-                                            <Rocket className="mr-2" /> Mulai Ujian Akurasi
+                                            <Rocket className="mr-2" /> Mulai Ujian {testTypes[targetAccuracyTestType]}
                                         </button>
                                         <button
                                             type="button"
@@ -81,12 +92,15 @@ const InstructionExam = () => {
                                     <button
                                         type="button"
                                         onClick={() => {
-                                            useExamStore.setState({ isReadIstruction: true, mode: "accuracy" });
-                                            navigate(`/starting-exam?code=${code}&mode=accuracy`);
+                                            useExamStore.setState({
+                                                isReadIstruction: true,
+                                                mode: targetAccuracyTestType,
+                                            });
+                                            navigate(`/starting-exam?code=${code}&mode=${targetAccuracyTestType}`);
                                         }}
                                         className="w-full flex items-center justify-center text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 px-4 py-2 rounded-md"
                                     >
-                                        <Rocket className="mr-2" /> Mulai Ujian Akurasi
+                                        <Rocket className="mr-2" /> Mulai Ujian {testTypes[targetAccuracyTestType]}
                                     </button>
                                 )}
                             </div>

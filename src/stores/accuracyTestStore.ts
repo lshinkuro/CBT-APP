@@ -4,6 +4,7 @@ import { get, post, put, del } from "../service/api/ApiConfig";
 import { AccuracyTest, AccuracyTestDto } from "../types/accuracyTest";
 import useTryoutStore from "./tryoutStore";
 import useTryoutSectionStore from "./tryoutSectionStore";
+import { useExamStore } from "./examStore";
 
 interface AccuracyTestState {
     accuracyTests: AccuracyTest[];
@@ -18,6 +19,10 @@ interface AccuracyTestState {
     createAccuracyTest: (data: AccuracyTestDto) => Promise<void>;
     updateAccuracyTest: (id: string, data: AccuracyTestDto) => Promise<void>;
     deleteAccuracyTest: (id: string) => Promise<void>;
+    moveToNextSessionAccuracySymbol: () => Promise<void>;
+    setAnswerAccuracySymbol: (data: { character: string; code: string }) => Promise<void>;
+    moveToNextSessionArithmeticPauli: () => Promise<void>;
+    setAnswerArithmeticPauli: (data: { number: string; code: string }) => Promise<void>;
 }
 
 const useAccuracyTestStore = create<AccuracyTestState>((set) => {
@@ -30,6 +35,76 @@ const useAccuracyTestStore = create<AccuracyTestState>((set) => {
         offset: 0,
         search: "",
         totalRows: 0,
+        moveToNextSessionArithmeticPauli: async () => {
+            set({ isLoading: true });
+            try {
+                const id = useExamStore.getState().currentExam?.id;
+                const response = await get(`/api/pauli/exams/next-session/${id}`);
+                if (response.message === "Success") {
+                    if (response.data) {
+                        useExamStore.setState({ currentExam: response.data });
+                    } else {
+                        const response = await get(`/api/student/exams/${id}/complete`);
+                        useExamStore.setState({ message: "Tryout completed!", currentExam: response.data });
+                        useExamStore.setState({ isExamComplete: true, isProgressExam: false });
+                    }
+                    useExamStore.setState({ timeUp: false });
+                }
+            } catch (error: any) {
+                set({ error: error.response?.data?.message || "Failed to move to next session" });
+            } finally {
+                set({ isLoading: false });
+            }
+        },
+        setAnswerArithmeticPauli: async (data: { number: string; code: string }) => {
+            set({ isLoading: true });
+            try {
+                const id = useExamStore.getState().currentExam?.id;
+                const response = await put(`/api/pauli/exams/${id}`, data);
+                if (response.message === "Success") {
+                    useExamStore.setState({ currentExam: response.data });
+                }
+            } catch (error: any) {
+                set({ error: error.response?.data?.message || "Failed to update pauli" });
+            } finally {
+                set({ isLoading: false });
+            }
+        },
+        moveToNextSessionAccuracySymbol: async () => {
+            set({ isLoading: true });
+            try {
+                const id = useExamStore.getState().currentExam?.id;
+                const response = await get(`/api/symbols/exams/next-session/${id}`);
+                if (response.message === "Success") {
+                    if (response.data) {
+                        useExamStore.setState({ currentExam: response.data });
+                    } else {
+                        const response = await get(`/api/student/exams/${id}/complete`);
+                        useExamStore.setState({ message: "Tryout completed!", currentExam: response.data });
+                        useExamStore.setState({ isExamComplete: true, isProgressExam: false });
+                    }
+                    useExamStore.setState({ timeUp: false });
+                }
+            } catch (error: any) {
+                set({ error: error.response?.data?.message || "Failed to move to next session" });
+            } finally {
+                set({ isLoading: false });
+            }
+        },
+        setAnswerAccuracySymbol: async (data: { character: string; code: string }) => {
+            set({ isLoading: true });
+            try {
+                const id = useExamStore.getState().currentExam?.id;
+                const response = await put(`/api/symbols/exams/${id}`, data);
+                if (response.message === "Success") {
+                    useExamStore.setState({ currentExam: response.data });
+                }
+            } catch (error: any) {
+                set({ error: error.response?.data?.message || "Failed to update symbol" });
+            } finally {
+                set({ isLoading: false });
+            }
+        },
         getAllAccuracyTests: async () => {
             set({ isLoading: true });
             try {

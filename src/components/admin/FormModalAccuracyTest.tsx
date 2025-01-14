@@ -38,7 +38,7 @@ const FormModalAccuracyTest: React.FC<FormModalAccuracyTestProps> = ({
 
     const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => setCode(e.target.value);
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value);
-    const handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => setType(e.target.value);
+    const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => setType(e.target.value);
     const handleIsActiveChange = (e: React.ChangeEvent<HTMLSelectElement>) => setIsActive(e.target.value === "true");
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -136,13 +136,16 @@ const FormModalAccuracyTest: React.FC<FormModalAccuracyTestProps> = ({
                     <label htmlFor="type" className="block mb-1 text-xs font-medium text-gray-600">
                         Type *
                     </label>
-                    <input
+                    <select
                         id="type"
-                        type="text"
                         value={type}
                         onChange={handleTypeChange}
                         className="w-full px-4 py-1 border text-xs rounded-md focus:ring-2 focus:ring-blue-500"
-                    />
+                    >
+                        <option value="">Select Type</option>
+                        <option value="arithmetic_pauli">Arithmetic Pauli</option>
+                        <option value="accuracy_symbol">Accuracy Symbol</option>
+                    </select>
                 </div>
                 <div className="mb-4">
                     <label htmlFor="numberOfSessions" className="block mb-1 text-xs font-medium text-gray-600">

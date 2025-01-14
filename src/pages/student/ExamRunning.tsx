@@ -29,7 +29,7 @@ export const ExamRunning = () => {
                 </div>
             </div>
         );
-    else if (mode === "accuracy") {
+    else if (mode === "accuracy_symbol") {
         return (
             <div className="min-h-screen bg-yellow-50 py-8">
                 <div className="max-w-4xl mx-auto px-4">
@@ -37,7 +37,7 @@ export const ExamRunning = () => {
                 </div>
             </div>
         );
-    } else if (mode === "pauli") {
+    } else if (mode === "arithmetic_pauli") {
         return (
             <div className="min-h-screen bg-yellow-50 py-8">
                 <div className="max-w-4xl mx-auto px-4">

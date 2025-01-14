@@ -4,7 +4,13 @@ import { post, get, put, del } from "../service/api/ApiConfig";
 import { TryoutDto, TryoutState } from "../types/tryout";
 
 const useTryoutStore = create<TryoutState>((set) => ({
+    testTypes: {
+        normal: "Normal",
+        accuracy_symbol: "Akurasi",
+        arithmetic_pauli: "Aritmatika",
+    },
     selectedTryoutId: "",
+    targetAccuracyTestType: "normal",
     hasAccuracyTest: false,
     questionsCount: 0,
     availableTryouts: [],
@@ -21,12 +27,15 @@ const useTryoutStore = create<TryoutState>((set) => ({
         set({ isLoading: true });
         try {
             const response = await get(`/api/tryouts/instruction/${code}`);
-            console.log(response);
             if (response.message === "Success") {
                 set({
                     instruction: response.data.instruction,
                     hasAccuracyTest: response.data.hasAccuracyTest,
                     questionsCount: response.data.questionsCount,
+                    targetAccuracyTestType:
+                        response.data.targetAccuracyTestTypes.length > 0
+                            ? response.data.targetAccuracyTestTypes[0]
+                            : "normal",
                 });
             }
         } catch (error: any) {

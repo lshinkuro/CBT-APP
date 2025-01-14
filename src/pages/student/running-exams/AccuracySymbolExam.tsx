@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import useSymbolStore from "../../../stores/symbolStore";
 import { motion } from "framer-motion";
 import Loading from "../../../components/loading/Loading";
 import { ExamTimer } from "../../../components/exam/ExamTimer";
 import { useCallback } from "react";
 import { useExamStore } from "../../../stores/examStore";
+import useAccuracyTestStore from "../../../stores/accuracyTestStore";
 
 export default function AccuracySymbolExam({ currentExam }: any) {
-    const { setAnswerAccuracySymbol, moveToNextSessionAccuracySymbol, isLoading, timeUp } = useSymbolStore();
-    const { isExamComplete } = useExamStore();
+    const { isExamComplete, timeUp } = useExamStore();
+    const { setAnswerAccuracySymbol, moveToNextSessionAccuracySymbol, isLoading } = useAccuracyTestStore();
 
     if (isExamComplete) {
         location.reload();
@@ -32,7 +32,7 @@ export default function AccuracySymbolExam({ currentExam }: any) {
 
     const handleTimeUp = useCallback(() => {
         if (!timeUp) {
-            useSymbolStore.setState({ timeUp: true });
+            useExamStore.setState({ timeUp: true });
             moveToNextSessionAccuracySymbol();
         }
     }, [timeUp, moveToNextSessionAccuracySymbol]);

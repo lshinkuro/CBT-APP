@@ -2,7 +2,6 @@
 import { create } from "zustand";
 import { get, post, put, del } from "../service/api/ApiConfig";
 import { Symbol, SymbolDto } from "../types/symbol";
-import { useExamStore } from "./examStore";
 
 interface SymbolState {
     currentSymbol: Symbol | null;
@@ -14,20 +13,15 @@ interface SymbolState {
     offset: number;
     search: string;
     totalRows: number;
-    timeUp: boolean;
     getAllSymbols: () => Promise<void>;
-    getRandomSymbol: () => Promise<void>;
     createSymbol: (data: SymbolDto) => Promise<void>;
     updateSymbol: (id: string, data: SymbolDto) => Promise<void>;
     deleteSymbol: (id: string) => Promise<void>;
-    setAnswerAccuracySymbol: (data: { character: string; code: string }) => Promise<void>;
-    moveToNextSessionAccuracySymbol: () => Promise<void>;
 }
 
 const useSymbolStore = create<SymbolState>((set) => {
     return {
         currentSymbol: null,
-        timeUp: false,
         symbols: [],
         isLoading: false,
         error: null,
@@ -36,54 +30,6 @@ const useSymbolStore = create<SymbolState>((set) => {
         offset: 0,
         search: "",
         totalRows: 0,
-        moveToNextSessionAccuracySymbol: async () => {
-            set({ isLoading: true });
-            try {
-                const id = useExamStore.getState().currentExam?.id;
-                const response = await get(`/api/symbols/exams/next-session/${id}`);
-                if (response.message === "Success") {
-                    if (response.data) {
-                        useExamStore.setState({ currentExam: response.data });
-                    } else {
-                        const response = await get(`/api/student/exams/${id}/complete`);
-                        useExamStore.setState({ message: "Tryout completed!", currentExam: response.data });
-                        useExamStore.setState({ isExamComplete: true, isProgressExam: false });
-                    }
-                    set({ timeUp: false });
-                }
-            } catch (error: any) {
-                set({ error: error.response?.data?.message || "Failed to move to next session" });
-            } finally {
-                set({ isLoading: false });
-            }
-        },
-        setAnswerAccuracySymbol: async (data: { character: string; code: string }) => {
-            set({ isLoading: true });
-            try {
-                const id = useExamStore.getState().currentExam?.id;
-                const response = await put(`/api/symbols/exams/${id}`, data);
-                if (response.message === "Success") {
-                    useExamStore.setState({ currentExam: response.data });
-                }
-            } catch (error: any) {
-                set({ error: error.response?.data?.message || "Failed to update symbol" });
-            } finally {
-                set({ isLoading: false });
-            }
-        },
-        getRandomSymbol: async () => {
-            set({ isLoading: true });
-            try {
-                const response = await get("/api/symbols/random");
-                if (response.message === "Success") {
-                    set({ currentSymbol: response.data });
-                }
-            } catch (error: any) {
-                set({ error: error.response?.data?.message || "Failed to get random symbol" });
-            } finally {
-                set({ isLoading: false });
-            }
-        },
         getAllSymbols: async () => {
             set({ isLoading: true });
             try {

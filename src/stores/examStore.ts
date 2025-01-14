@@ -29,9 +29,11 @@ interface ExamState {
     mode: string;
     isContinueExam: boolean;
     continueExam: (data: ExamDto) => Promise<void>;
+    timeUp: boolean;
 }
 
 export const useExamStore = create<ExamState>((set) => ({
+    timeUp: false,
     exams: [],
     isContinueExam: false,
     isLoading: false,
@@ -121,12 +123,14 @@ export const useExamStore = create<ExamState>((set) => ({
                 const mode = useExamStore.getState().mode;
                 if (
                     (response?.data?.data.normalTestsStatus === "progress" && mode === "normal") ||
-                    (response?.data?.data.accuracyTestsStatus === "progress" && mode === "accuracy")
+                    (response?.data?.data.symbolTestsStatus === "progress" && mode === "accuracy_symbol") ||
+                    (response?.data?.data.pauliTestsStatus === "progress" && mode === "arithmetic_pauli")
                 ) {
                     set({ isProgressExam: true, isExamComplete: false });
                 } else if (
                     (response?.data?.data.normalTestsStatus === "completed" && mode === "normal") ||
-                    (response?.data?.data.accuracyTestsStatus === "completed" && mode === "accuracy")
+                    (response?.data?.data.symbolTestsStatus === "completed" && mode === "accuracy_symbol") ||
+                    (response?.data?.data.pauliTestsStatus === "completed" && mode === "arithmetic_pauli")
                 ) {
                     set({ isProgressExam: false, isExamComplete: true });
                 }

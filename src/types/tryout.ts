@@ -25,6 +25,8 @@ export interface AvailableTryouts {
 }
 
 export interface TryoutState {
+    testTypes: { [key: string]: string };
+    targetAccuracyTestType: string;
     selectedTryoutId: string;
     availableTryouts: AvailableTryouts[];
     instruction: string | null;

@@ -64,7 +64,7 @@ export const ExamHistory = () => {
                                     animate={{ opacity: 1, y: 0 }}
                                     className={`bg-white rounded-lg shadow-lg p-6 ${
                                         exam.data.normalTestsStatus === "progress" ||
-                                        exam.data.accuracyTestsStatus === "progress"
+                                        exam.data.symbolTestsStatus === "progress"
                                             ? "bg-blue-200"
                                             : ""
                                     }`}
@@ -119,14 +119,14 @@ export const ExamHistory = () => {
                                                 Mulai Ujian Normal
                                             </button>
                                         )}
-                                        {exam.data.accuracyTestsStatus &&
-                                            exam.data.accuracyTestsStatus === "progress" && (
+                                        {exam.data.symbolTestsStatus &&
+                                            exam.data.symbolTestsStatus === "progress" && (
                                                 <button
                                                     className="px-6 py-2 text-sm font-medium flex items-center rounded-md text-white bg-blue-600 hover:bg-blue-700"
                                                     onClick={() => {
                                                         useExamStore.setState({
                                                             isReadIstruction: true,
-                                                            mode: "accuracy",
+                                                            mode: "accuracy_symbol",
                                                             isContinueExam: true,
                                                             currentExam: exam,
                                                         });
@@ -134,12 +134,35 @@ export const ExamHistory = () => {
                                                             examQuestions: exam.data.questions,
                                                         });
                                                         navigate(
-                                                            `/starting-exam?code=${exam.tryout.code}&mode=accuracy`
+                                                            `/starting-exam?code=${exam.tryout.code}&mode=accuracy_symbol`
                                                         );
                                                     }}
                                                 >
                                                     <Rocket className="mr-2" />
                                                     Mulai Ujian Akurasi
+                                                </button>
+                                            )}
+                                        {exam.data.pauliTestsStatus &&
+                                            exam.data.pauliTestsStatus === "progress" && (
+                                                <button
+                                                    className="px-6 py-2 text-sm font-medium flex items-center rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                                                    onClick={() => {
+                                                        useExamStore.setState({
+                                                            isReadIstruction: true,
+                                                            mode: "arithmetic_pauli",
+                                                            isContinueExam: true,
+                                                            currentExam: exam,
+                                                        });
+                                                        useQuestionStore.setState({
+                                                            examQuestions: exam.data.questions,
+                                                        });
+                                                        navigate(
+                                                            `/starting-exam?code=${exam.tryout.code}&mode=arithmetic_pauli`
+                                                        );
+                                                    }}
+                                                >
+                                                    <Rocket className="mr-2" />
+                                                    Mulai Ujian Aritmatika
                                                 </button>
                                             )}
                                     </div>
