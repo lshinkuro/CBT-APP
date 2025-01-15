@@ -21,7 +21,7 @@ export const Profile = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12">
+    <div className="min-h-screen bg-gradient-to-b from-emerald-400 to-blue-500 py-12">
       <div className="max-w-4xl mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

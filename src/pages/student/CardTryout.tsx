@@ -40,8 +40,8 @@ const CardTryout = () => {
     if (isLoading) return <Loading />;
 
     return (
-        <div className="min-h-screen py-12 px-6 bg-gradient-to-b from-yellow-100 via-white to-yellow-50">
-            <h1 className="text-4xl font-extrabold text-center text-gray-900 mb-12">
+        <div className="min-h-screen py-12 px-6 bg-gradient-to-b from-emerald-400 to-blue-500">
+            <h1 className="text-4xl font-extrabold text-center text-white mb-12">
                 Pilih Jenis Tryout
             </h1>
 
