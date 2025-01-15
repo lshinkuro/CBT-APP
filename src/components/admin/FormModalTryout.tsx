@@ -206,12 +206,6 @@ const SectionInstruction: React.FC<SectionInstructionProps> = ({ instruction, se
                     .slice(0, -1)
                     .forEach((el) => el.remove());
             }
-        }, 100);
-        return () => clearInterval(interval);
-    }, []);
-
-    useEffect(() => {
-        if (quill) {
             const imageButton = document.querySelector(".ql-image");
             const videoButton = document.querySelector(".ql-video");
             if (imageButton) {
@@ -220,9 +214,9 @@ const SectionInstruction: React.FC<SectionInstructionProps> = ({ instruction, se
             if (videoButton) {
                 videoButton.remove();
             }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [quill]);
+        }, 100);
+        return () => clearInterval(interval);
+    }, []);
 
     useEffect(() => {
         if (quill) {

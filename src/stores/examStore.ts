@@ -9,11 +9,19 @@ interface ExamState {
     isLoading: boolean;
     isReadIstruction: boolean;
     isProgressExam: boolean;
-    message: string;
+    message: string | null;
     currentExam: any;
     currentSection: string | null;
     error: string | null;
-    getAllExams: ({ limit, offset, search }: { limit: number; offset: number; search: string | null }) => Promise<void>;
+    getAllExamsByStudentId: ({
+        limit,
+        offset,
+        search,
+    }: {
+        limit: number;
+        offset: number;
+        search: string | null;
+    }) => Promise<void>;
     createExam: (data: ExamDto) => Promise<void>;
     getCurrentExamByStudentId: () => Promise<void>;
     isExamComplete: boolean;
@@ -30,16 +38,17 @@ interface ExamState {
     isContinueExam: boolean;
     continueExam: (data: ExamDto) => Promise<void>;
     timeUp: boolean;
+    getAllExams: () => Promise<void>;
 }
 
-export const useExamStore = create<ExamState>((set) => ({
+const useExamStore = create<ExamState>((set) => ({
     timeUp: false,
     exams: [],
     isContinueExam: false,
     isLoading: false,
     isReadIstruction: false,
     isProgressExam: false,
-    message: "",
+    message: null,
     currentExam: null,
     currentSection: null,
     error: null,
@@ -64,7 +73,25 @@ export const useExamStore = create<ExamState>((set) => ({
             set({ isLoading: false });
         }
     },
-    getAllExams: async ({
+    getAllExams: async () => {
+        set({ isLoading: true });
+        try {
+            const { limit, offset, search } = useExamStore.getState();
+            const params: Record<string, any> = { limit, offset };
+            if (search) {
+                params.search = search;
+            }
+            const response = await get("/api/admin/exams", params);
+            if (response.message === "Success") {
+                set({ message: "Tryout list!", exams: response.data.exams, totalRows: response.data.count });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to get exams" });
+        } finally {
+            set({ isLoading: false });
+        }
+    },
+    getAllExamsByStudentId: async ({
         limit,
         offset,
         search,
@@ -189,3 +216,5 @@ export const useExamStore = create<ExamState>((set) => ({
     },
     currentQuestion: 0,
 }));
+
+export default useExamStore;

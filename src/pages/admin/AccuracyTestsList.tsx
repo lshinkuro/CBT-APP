@@ -12,6 +12,7 @@ import useTryoutStore from "../../stores/tryoutStore";
 import useTryoutSectionStore from "../../stores/tryoutSectionStore";
 import SelectTryout from "../../components/admin/SelectTryout";
 import SelectTryoutSection from "../../components/admin/SelectTryoutSection";
+import { customStylesTable } from "../style/customStylesTable";
 
 const AccuracyTestsList = () => {
     const {
@@ -250,6 +251,7 @@ const AccuracyTestsList = () => {
                     onChangeRowsPerPage={handleLimitChange}
                     highlightOnHover
                     responsive={true}
+                    customStyles={customStylesTable}
                 />
                 <FormModalAccuracyTest
                     isOpen={isOpenModal}

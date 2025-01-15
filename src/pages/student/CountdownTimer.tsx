@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import Loading from "../../components/loading/Loading";
-import { useExamStore } from "../../stores/examStore";
+import useExamStore from "../../stores/examStore";
 
 const CountdownTimer = () => {
     const [searchParams] = useSearchParams();

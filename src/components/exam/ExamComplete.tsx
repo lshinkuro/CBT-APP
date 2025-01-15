@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Trophy } from "lucide-react";
-import { useExamStore } from "../../stores/examStore";
+import useExamStore from "../../stores/examStore";
 
 export const ExamComplete = () => {
     const { currentExam } = useExamStore();

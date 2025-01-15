@@ -23,11 +23,12 @@ import ProgramsList from "./pages/admin/ProgramsList";
 import Logout from "./components/auth/Logout";
 import CardTryout from "./pages/student/CardTryout";
 import NotFound from "./pages/NotFound";
-import { useExamStore } from "./stores/examStore";
+import useExamStore from "./stores/examStore";
 import ResetPassword from "./components/auth/ResetPassword";
 import ForgotPassword from "./components/auth/ForgotPassword";
 import SymbolsList from "./pages/admin/SymbolsList";
 import AccuracyTestsList from "./pages/admin/AccuracyTestsList";
+import ExamsList from "./pages/admin/ExamsList";
 
 function App() {
     const { user, isLoading: isLoadingAuth } = useAuthStore();
@@ -59,6 +60,7 @@ function App() {
                                     <Route path="questions" element={<QuestionsList />} />
                                     <Route path="symbols" element={<SymbolsList />} />
                                     <Route path="accuracy-tests" element={<AccuracyTestsList />} />
+                                    <Route path="exams" element={<ExamsList />} />
                                     <Route path="settings" element={<AdminSettings />} />
                                     <Route path="*" element={<NotFound />} />
                                 </Routes>

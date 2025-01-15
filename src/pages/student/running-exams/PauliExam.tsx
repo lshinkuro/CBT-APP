@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ExamTimer } from "../../../components/exam/ExamTimer";
 import { useCallback } from "react";
 import Loading from "../../../components/loading/Loading";
-import { useExamStore } from "../../../stores/examStore";
+import useExamStore from "../../../stores/examStore";
 import useAccuracyTestStore from "../../../stores/accuracyTestStore";
 
 export default function PauliExam({ currentExam }: any) {

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useExamStore } from "../../stores/examStore";
+import useExamStore from "../../stores/examStore";
 import { QuestionGrid } from "./QuestionGrid";
 import useQuestionStore from "../../stores/questionStore";
 import { useEffect } from "react";

@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useExamStore } from "../../stores/examStore";
+import useExamStore from "../../stores/examStore";
 import useQuestionStore from "../../stores/questionStore";
 
 export const QuestionGrid = () => {

@@ -14,6 +14,7 @@ import {
     ChevronsLeft,
     ChevronsRight,
     Component,
+    BookOpenCheck,
 } from "lucide-react";
 import { useState } from "react";
 import logoPlatypusCollege from "../../assets/images/platypus-college.png";
@@ -60,6 +61,11 @@ const menuItems = [
         path: "/admin/accuracy-tests",
     },
     {
+        title: "Exams",
+        icon: BookOpenCheck,
+        path: "/admin/exams",
+    },
+    {
         title: "Settings",
         icon: Settings,
         path: "/admin/settings",
@@ -80,10 +86,7 @@ interface AdminSidebarProps {
 export const AdminSidebar: React.FC<AdminSidebarProps>  = ({ isMinimized, toggleSidebar }) => {
     const location = useLocation();
     const [isOpen, setIsOpen] = useState(false);
-    // const [isMinimized, setIsMinimized] = useState(false);
-
     const toggleMenu = () => setIsOpen(!isOpen);
-    // const toggleSidebar = () => setIsMinimized(!isMinimized);
 
     return (
         <div>

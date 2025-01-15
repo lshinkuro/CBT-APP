@@ -2,7 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import useTryoutStore from "../../stores/tryoutStore";
 import { useEffect, useRef } from "react";
 import Loading from "../../components/loading/Loading";
-import { useExamStore } from "../../stores/examStore";
+import useExamStore from "../../stores/examStore";
 import EmptyResource from "./EmptyResource";
 import { Rocket } from "lucide-react";
 import "quill/dist/quill.snow.css";
