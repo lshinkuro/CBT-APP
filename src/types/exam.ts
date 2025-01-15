@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type ExamType = "CPNS" | "IKATAN_DINAS" | "TNI_POLRI";
 
 export type SubType = "SKD" | "SKB" | "AKADEMIK" | "PSIKOTES" | "KECERMATAN";
@@ -20,13 +21,14 @@ export interface Question {
 }
 
 export interface Exam {
+    tryout: any;
     id: string;
-    type: ExamType;
-    subType: SubType;
+    code: string;
+    type: string;
+    data: any;
     title: string;
-    description: string;
-    questions: Question[];
-    totalDuration: number;
+    createdAt: string;
+    studentName: string;
 }
 
 export interface ExamResult {
@@ -48,4 +50,13 @@ export interface ExamDto {
 export interface AnswerDto {
     questionId: string | undefined;
     answers: string[];
+}
+
+export interface FormModalExamProps {
+    isOpen: boolean;
+    onClose: () => void;
+    title: string;
+    onSubmit: () => void;
+    isLoading?: boolean;
+    initialValues?: Exam;
 }

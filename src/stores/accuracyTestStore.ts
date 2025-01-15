@@ -4,7 +4,7 @@ import { get, post, put, del } from "../service/api/ApiConfig";
 import { AccuracyTest, AccuracyTestDto } from "../types/accuracyTest";
 import useTryoutStore from "./tryoutStore";
 import useTryoutSectionStore from "./tryoutSectionStore";
-import { useExamStore } from "./examStore";
+import useExamStore from "./examStore";
 
 interface AccuracyTestState {
     accuracyTests: AccuracyTest[];

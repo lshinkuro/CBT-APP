@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { ExamTimer } from "./ExamTimer";
-import { useExamStore } from "../../stores/examStore";
+import useExamStore from "../../stores/examStore";
 import Loading from "../loading/Loading";
 import useQuestionStore from "../../stores/questionStore";
 

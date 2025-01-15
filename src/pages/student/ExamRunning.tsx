@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useExamStore } from "../../stores/examStore";
+import useExamStore from "../../stores/examStore";
 import { ExamComplete } from "../../components/exam/ExamComplete";
 import NormalExam from "./running-exams/NormalExam";
 import AccuracySymbolExam from "./running-exams/AccuracySymbolExam";

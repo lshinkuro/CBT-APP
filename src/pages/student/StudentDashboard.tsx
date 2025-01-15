@@ -4,7 +4,7 @@ import { ExamCard } from "../../components/ExamCard";
 import useProgramStore from "../../stores/programStore";
 import EmptyResource from "./EmptyResource";
 import Loading from "../../components/loading/Loading";
-import { useExamStore } from "../../stores/examStore";
+import useExamStore from "../../stores/examStore";
 import { Link } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 
