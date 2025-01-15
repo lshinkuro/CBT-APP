@@ -43,22 +43,34 @@ export const StudentDashboard = () => {
     if (isLoading) return <Loading />;
 
     return (
-        <div className="min-h-screen p-8 bg-gray-50 mt-100">
-            <h1 className="text-3xl font-bold text-center text-gray-800 mb-8">Pilih Program</h1>
+        <div className="min-h-screen bg-gradient-to-b from-emerald-400 to-blue-500 py-8 px-6">
+            <h1 className="text-3xl font-bold text-center text-white mb-8">Pilih Program</h1>
             <ExamSearch onSearch={setSearchQuery} />
             {filteredExams.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 max-w-7xl mx-auto">
                     {isProgressExam && (
-                        <div className="bg-green-100 p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                            <h3 className="text-2xl font-bold text-gray-900 mb-3">Ada ujian yang sedang berlangsung</h3>
-                            <p className="text-gray-600 mb-4">Anda memiliki ujian yang sedang berlangsung.</p>
-                            <Link to="/exam/running" className="inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium text-sm rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                        <div className="bg-white rounded-lg shadow-lg p-6 text-center">
+                            <h3 className="text-lg font-bold text-gray-800 mb-4">
+                                Ada ujian yang sedang berlangsung
+                            </h3>
+                            <p className="text-sm text-gray-600 mb-6">
+                                Anda memiliki ujian yang sedang berlangsung.
+                            </p>
+                            <Link
+                                to="/exam/running"
+                                className="inline-flex items-center justify-center px-4 py-2 bg-emerald-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-emerald-600 transition"
+                            >
                                 Lanjutkan <ChevronRight className="ml-1 h-4 w-4" />
                             </Link>
                         </div>
                     )}
                     {filteredExams.map((exam, index) => (
-                        <ExamCard key={exam.title} {...exam} delay={index * 0.1} textButton="Select Program" />
+                        <ExamCard
+                            key={exam.title}
+                            {...exam}
+                            delay={index * 0.1}
+                            textButton="Select Program"
+                        />
                     ))}
                 </div>
             ) : (

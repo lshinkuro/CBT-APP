@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { User, History, LogOut, Menu, X, Home, Pencil } from "lucide-react";
+import { 
+    LayoutDashboard, // Better icon for dashboard
+    ClipboardList, // Better icon for exam history
+    UserCircle, // Better icon for profile
+    LogOut,
+    Menu,
+    X,
+    GraduationCap // Better icon for the mobile sidebar
+} from "lucide-react";
 import useAuthStore from "../../stores/authStore";
 import logoPlatypusCollege from "../../assets/images/platypus-college.png";
 
@@ -11,9 +19,9 @@ export const Navbar = () => {
     const location = useLocation();
 
     const navItems = [
-        { to: "/dashboard", icon: Home, label: "Dashboard" },
-        { to: "/history", icon: History, label: "Riwayat Ujian" },
-        { to: "/profile", icon: User, label: "Profil" },
+        { to: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+        { to: "/history", icon: ClipboardList, label: "Riwayat Ujian" },
+        { to: "/profile", icon: UserCircle, label: "Profil" },
     ];
 
     const isActiveLink = (path: string): boolean => location.pathname === path;
@@ -101,7 +109,7 @@ export const Navbar = () => {
                                 <div className="p-4 border-b border-gray-100">
                                     <div className="flex justify-between items-center">
                                         <div className="flex items-center space-x-2">
-                                            <Pencil className="h-8 w-8" />
+                                            <GraduationCap className="h-8 w-8" />
                                             <span className="text-lg font-bold bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
                                                 Tryout CBT
                                             </span>
@@ -123,7 +131,7 @@ export const Navbar = () => {
                                                 className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 
                         flex items-center justify-center text-white"
                                             >
-                                                <User className="h-6 w-6" />
+                                                <UserCircle className="h-6 w-6" />
                                             </div>
                                             <div>
                                                 <div className="font-medium text-gray-900">{user?.username}</div>

@@ -36,9 +36,9 @@ export const ExamHistory = () => {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 py-8">
+        <div className="min-h-screen bg-gradient-to-b from-emerald-400 to-blue-500 py-8">
             <div className="max-w-5xl mx-auto px-6 lg:px-8">
-                <h2 className="text-3xl font-extrabold text-gray-900 mb-8">Riwayat Ujian</h2>
+                <h2 className="text-3xl font-extrabold text-white mb-8">Riwayat Ujian</h2>
                 <div className="mb-6">
                     <input
                         type="text"
