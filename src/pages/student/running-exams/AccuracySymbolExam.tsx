@@ -51,7 +51,7 @@ export default function AccuracySymbolExam({ currentExam }: any) {
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="bg-white rounded-lg shadow-md p-6 mb-6"
+                className="bg-white rounded-lg shadow-md p-3 mb-2"
             >
                 <div className="flex justify-between items-center">
                     <div>
@@ -64,8 +64,9 @@ export default function AccuracySymbolExam({ currentExam }: any) {
                     <ExamTimer key={duration} duration={duration} onTimeUp={handleTimeUp} />
                 </div>
             </motion.div>
+            <Options currentSymbolOption={currentSymbolOption} />
             <Question currentSymbolQuestion={currentSymbolQuestion} />
-            <Options duration={duration} currentSymbolOption={currentSymbolOption} handleAnswer={handleAnswer} />
+            <OptionLetters currentSymbolOption={currentSymbolOption} duration={duration} handleAnswer={handleAnswer} />
         </>
     );
 }
@@ -75,10 +76,10 @@ function Question({ currentSymbolQuestion }: Readonly<{ currentSymbolQuestion: s
         <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-lg shadow-md p-6 flex flex-wrap justify-center"
+            className="bg-white rounded-lg shadow-md p-3 flex flex-wrap justify-center"
         >
             {currentSymbolQuestion.map((symbol) => (
-                <motion.div key={symbol + "q"} className="flex flex-col items-center justify-center m-2 cursor-pointer">
+                <motion.div key={symbol + "q"} className="flex flex-col items-center justify-center m-2">
                     <div className="bg-gray-200 rounded-full p-4 text-6xl">{symbol}</div>
                 </motion.div>
             ))}
@@ -88,41 +89,60 @@ function Question({ currentSymbolQuestion }: Readonly<{ currentSymbolQuestion: s
 
 function Options({
     currentSymbolOption,
-    handleAnswer,
-    duration,
 }: Readonly<{
     currentSymbolOption: string[];
-    handleAnswer: (symbol: string) => void;
-    duration: number;
 }>) {
     return (
         <motion.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white rounded-lg shadow-md p-6 mt-5"
+            className="bg-white rounded-lg shadow-md"
         >
-            <p className="text-center text-gray-800 text-2xl font-semibold mb-3">Carilah simbol yang hilang</p>
+            <p className="text-center text-gray-800 text-2xl font-semibold m-3">Carilah simbol yang hilang</p>
             <div className="flex flex-wrap justify-center">
                 {currentSymbolOption
                     .map((symbol) => ({ symbol, sort: Math.random() }))
                     .sort((a, b) => a.sort - b.sort)
-                    .map((data) => (
+                    .map((data, index) => (
                         <motion.div
                             key={data.symbol + "a"}
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
-                            className="flex flex-col items-center justify-center m-2 cursor-pointer"
+                            className="flex flex-col items-center justify-center m-2"
+                        >
+                            <div className="bg-gray-200 rounded-full p-4 text-6xl">{data.symbol}</div>
+                            <div className="text-center mt-2">{String.fromCharCode(97 + index)}</div>
+                        </motion.div>
+                    ))}
+            </div>
+        </motion.div>
+    );
+}
+
+function OptionLetters({ currentSymbolOption, handleAnswer, duration }: Readonly<{ currentSymbolOption: string[]; handleAnswer: (symbol: string) => void; duration: number }>) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-lg shadow-md flex flex-wrap justify-center"
+        >
+            <div className="flex flex-wrap justify-center">
+                {currentSymbolOption
+                    .map((symbol) => ({ symbol, sort: Math.random() }))
+                    .sort((a, b) => a.sort - b.sort)
+                    .map((data, index) => (
+                        <motion.div
+                            key={data.symbol + "a"}
+                            whileHover={{ backgroundColor: "#f5f5f5" }}
                             onClick={() => handleAnswer(data.symbol)}
                             style={
                                 duration < 2
                                     ? { pointerEvents: "none", opacity: 0.5, cursor: "not-allowed" }
                                     : undefined
                             }
+                            className="flex flex-col items-center justify-center m-5 p-3 border-2 border-gray-300 rounded-lg cursor-pointer"
                         >
-                            <div className="bg-gray-200 rounded-full p-4 text-6xl">{data.symbol}</div>
-                            <div className="text-center mt-2">
-                                {["a", "b", "c", "d", "e"][Math.floor(Math.random() * 5)]}
-                            </div>
+                            <div className="text-center text-5xl font-bold">{String.fromCharCode(97 + index)}</div>
                         </motion.div>
                     ))}
             </div>

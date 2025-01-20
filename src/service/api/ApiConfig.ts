@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
+import { encryptPayload } from "../forge/ForgeConfig";
 
 const API_BASE_URL: string = import.meta.env.VITE_APP_API_BASE_URL || "http://localhost:8080";
 
@@ -33,6 +34,7 @@ export const get = async (
     params: Record<string, any> = {},
     withCredentials: boolean = true
 ): Promise<{
+    ___unknown_session: string;
     totalRows: number | undefined;
     message: string;
     status: number;
@@ -67,7 +69,12 @@ export const post = async (
             },
             withCredentials,
         };
-        const response: AxiosResponse = await axiosInstance.post(endpoint, data, config);
+        const session = await get("/api/auth/session");
+        const response: AxiosResponse = await axiosInstance.post(
+            endpoint,
+            isFormData ? data : encryptPayload(data, session.___unknown_session),
+            config
+        );
         return response.data;
     } catch (error) {
         return handleRequestError(error as AxiosError);
@@ -91,7 +98,12 @@ export const put = async (
             },
             withCredentials,
         };
-        const response: AxiosResponse = await axiosInstance.put(endpoint, data, config);
+        const session = await get("/api/auth/session");
+        const response: AxiosResponse = await axiosInstance.put(
+            endpoint,
+            isFormData ? data : encryptPayload(data, session.___unknown_session),
+            config
+        );
         return response.data;
     } catch (error) {
         return handleRequestError(error as AxiosError);
@@ -125,12 +137,16 @@ export const login = async (
     data: any;
 }> => {
     try {
+        const session = await get("/api/auth/session");
         const response: AxiosResponse<{ data: any }> = await axiosInstance.post(
             endpoint,
-            {
-                email,
-                password,
-            },
+            encryptPayload(
+                {
+                    email,
+                    password,
+                },
+                session.___unknown_session
+            ),
             {
                 withCredentials: true,
             }
@@ -143,9 +159,10 @@ export const login = async (
 
 export const logout = async (endpoint: string): Promise<void> => {
     try {
+        const session = await get("/api/auth/session");
         const response: AxiosResponse = await axiosInstance.post(
             endpoint,
-            {},
+            encryptPayload({}, session.___unknown_session),
             {
                 withCredentials: true,
             }
