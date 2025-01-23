@@ -18,8 +18,6 @@ const FormModalTryoutSection: React.FC<FormModalTryoutSectionProps> = ({
     const [type, setType] = useState<string>(initialValues?.type ?? "");
     const [code, setCode] = useState<string>(initialValues?.code ?? "");
     const [description, setDescription] = useState<string>(initialValues?.description ?? "");
-    const [subType, setSubType] = useState<string | null>(initialValues?.subType ?? "");
-    const [duration, setDuration] = useState<number>(initialValues?.duration ?? 0);
     const [order, setOrder] = useState<number>(initialValues?.order ?? 0);
     const [isActive, setIsActive] = useState<boolean>(initialValues?.isActive ?? true);
 
@@ -28,8 +26,6 @@ const FormModalTryoutSection: React.FC<FormModalTryoutSectionProps> = ({
         setType(initialValues?.type ?? "");
         setCode(initialValues?.code ?? "");
         setDescription(initialValues?.description ?? "");
-        setSubType(initialValues?.subType ?? "");
-        setDuration(initialValues?.duration ?? 0);
         setOrder(initialValues?.order ?? 0);
         setIsActive(initialValues?.isActive ?? true);
     }, [initialValues, availableTryouts]);
@@ -38,11 +34,10 @@ const FormModalTryoutSection: React.FC<FormModalTryoutSectionProps> = ({
     const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => setCode(e.target.value);
     const handleDescriptionChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value);
     const handleTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => setType(e.target.value);
-    const handleSubTypeChange = (e: React.ChangeEvent<HTMLInputElement>) => setSubType(e.target.value || null);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (selectedTryoutId === "" || !titleSection || !type || duration <= 0 || order <= 0 || !code) {
+        if (selectedTryoutId === "" || !titleSection || !type || order <= 0 || !code) {
             toast.error("Missing required fields");
             return;
         }
@@ -51,8 +46,6 @@ const FormModalTryoutSection: React.FC<FormModalTryoutSectionProps> = ({
                 tryoutId: selectedTryoutId,
                 title: titleSection,
                 type,
-                subType,
-                duration,
                 order,
                 isActive,
                 code,
@@ -118,39 +111,14 @@ const FormModalTryoutSection: React.FC<FormModalTryoutSectionProps> = ({
                     />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="subType" className="block mb-1 text-xs font-medium text-gray-600">
-                        Sub Type
-                    </label>
-                    <input
-                        id="subType"
-                        type="text"
-                        value={subType ?? ""}
-                        onChange={handleSubTypeChange}
-                        className="w-full px-4 py-1 text-xs border rounded-md focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="duration" className="block mb-1 text-xs font-medium text-gray-600">
-                        Duration (minutes) *
-                    </label>
-                    <input
-                        id="duration"
-                        type="number"
-                        value={duration === 0 ? "" : duration}
-                        onChange={(e) => setDuration(e.target.value === "" ? 0 : Number(e.target.value))}
-                        className="w-full px-4 py-1 text-xs border rounded-md focus:ring-2 focus:ring-blue-500"
-                        required
-                    />
-                </div>
-                <div className="mb-4">
                     <label htmlFor="order" className="block mb-1 text-xs font-medium text-gray-600">
-                        Order *
+                        Urutan Tampil dalam Sesi Ujian *
                     </label>
                     <input
                         id="order"
                         type="number"
                         value={order === 0 ? "" : order}
-                        onChange={(e) => setOrder(e.target.value === "" ? 0 : Number(e.target.value))}
+                        onChange={(e) => setOrder(Math.max(0, e.target.value === "" ? 0 : Number(e.target.value)))}
                         className="w-full px-4 py-1 text-xs border rounded-md focus:ring-2 focus:ring-blue-500"
                         required
                     />

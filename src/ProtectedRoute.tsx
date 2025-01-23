@@ -11,7 +11,7 @@ export const ProtectedRoute = ({
     const { isAuthenticated, user } = useAuthStore();
 
     if (!isAuthenticated) {
-        return <Navigate to="/" replace />;
+        return <Navigate to="/" />;
     }
 
     if (allowedRole.length > 0 && !allowedRole.includes(user?.role ?? "")) {

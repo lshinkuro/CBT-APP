@@ -39,10 +39,6 @@ const TryoutSectionsList = () => {
         isLoading: isLoading,
     });
 
-    const usr =
-        sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") &&
-        JSON.parse(sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "");
-
     const columns: IDataTableProps<TryoutSection>["columns"] = [
         {
             name: "Title",
@@ -66,17 +62,11 @@ const TryoutSectionsList = () => {
             sortable: true,
         },
         {
-            name: "Sub Type",
-            selector: (row) => row.subType ?? "-",
-            sortable: true,
-        },
-        {
-            name: "Duration (minutes)",
-            selector: (row) => row.duration,
-            sortable: true,
-        },
-        {
-            name: "Order",
+            name: (
+                <div style={{ wordBreak: "break-word", width: "1000px" }}>
+                    Urutan Tampil dalam Sesi Ujian
+                </div>
+            ),
             selector: (row) => row.order,
             sortable: true,
         },
@@ -117,14 +107,12 @@ const TryoutSectionsList = () => {
                     >
                         <Pencil className="w-4 h-4" />
                     </button>
-                    {usr.role === "sysadmin" && (
-                        <button
-                            className="bg-red-500 hover:bg-red-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
-                            onClick={() => handleDeleteTryoutSection(props.id, props.title)}
-                        >
-                            <Trash className="w-4 h-4" />
-                        </button>
-                    )}
+                    <button
+                        className="bg-red-500 hover:bg-red-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
+                        onClick={() => handleDeleteTryoutSection(props.id, props.title)}
+                    >
+                        <Trash className="w-4 h-4" />
+                    </button>
                 </div>
             ),
             sortable: false,
@@ -219,22 +207,15 @@ const TryoutSectionsList = () => {
             >
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">List Tryout Sections</h1>
                 <div className="flex items-center justify-between mb-4">
-                    {usr.role === "sysadmin" && (
-                        <button
-                            className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
-                            type="button"
-                            onClick={handleClickCreateTryoutSection}
-                        >
-                            <Plus className="w-4 h-4 mr-1" />
-                            Create Tryout Section
-                        </button>
-                    )}
-                  
-                    <SearchInput
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        placeholder="Title, Type, Sub Type"
-                    />
+                    <button
+                        className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
+                        type="button"
+                        onClick={handleClickCreateTryoutSection}
+                    >
+                        <Plus className="w-4 h-4 mr-1" />
+                        Create Tryout Section
+                    </button>
+                    <SearchInput value={searchTerm} onChange={handleSearchChange} placeholder="Title, Type, Sub Type" />
                 </div>
                 <DataTable
                     columns={columns}

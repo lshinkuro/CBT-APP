@@ -9,7 +9,7 @@ export const MockAccuracyTest: AccuracyTest = {
     numberOfSessions: "",
     duration: "",
     order: 1,
-    tryoutSection: { id: "", title: "", code: "", type: "", subType: "", tryout: { id: "", title: "", type: "" } },
+    tryoutSection: { id: "", title: "", code: "", type: "", tryout: { id: "", title: "", type: "" } },
     isActive: true,
     createdAt: "",
 };

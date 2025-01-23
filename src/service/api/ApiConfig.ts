@@ -15,9 +15,9 @@ const axiosInstance: AxiosInstance = axios.create({
 const handleRequestError = (error: AxiosError): Promise<never> => {
     if (error.response) {
         console.error("Response error:", error.response.data);
-        if (error.response.status === 401) {
-            if (sessionStorage.length > 0) {
-                sessionStorage.clear();
+        if (error.response.status === 401 || error.response.status === 403) {
+            if (localStorage.length > 0) {
+                localStorage.clear();
                 location.href = "/";
             }
         }
@@ -168,7 +168,7 @@ export const logout = async (endpoint: string): Promise<void> => {
             }
         );
         if (response.data.status === 200) {
-            sessionStorage.clear();
+            localStorage.clear();
             location.href = "/";
         }
     } catch (error) {

@@ -32,7 +32,7 @@ const ResetPassword = () => {
     useEffect(() => {
         if (message && isSuccessResetPassword) {
             toast.success(message);
-            navigate("/login");
+            location.href = "/";
         }
         useAuthStore.setState({ message: null, isSuccessResetPassword: false });
     }, [isSuccessResetPassword, message, navigate]);
@@ -57,10 +57,10 @@ const ResetPassword = () => {
                 </h2>
                 <form onSubmit={handleSubmit} className="space-y-6">
                     <p className="text-xs text-red-600">
-                        Ensure your password is at least 8 characters long, with a mix of uppercase, lowercase, numbers,
-                        and preferably a special character (e.g., !, @, #). Avoid using easily guessed details like
-                        names or birthdays, and never reuse passwords from other accounts. Keep your password secure and
-                        private!
+                        Pastikan kata sandi Anda minimal 8 karakter, dengan kombinasi huruf besar, huruf kecil, angka, dan
+                        karakter spesial (misalnya !, @, #). Hindari menggunakan detail yang mudah ditebak seperti nama
+                        atau tanggal lahir, dan jangan pernah menggunakan kembali kata sandi dari akun lain. Jaga kata
+                        sandi Anda tetap aman dan pribadi!
                     </p>
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-gray-700">

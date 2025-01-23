@@ -11,5 +11,5 @@ export const MockQuestion: Question = {
     isActive: true,
     data: MockData,
     createdAt: "",
-    tryoutSection: { id: "", code: "", title: "", type: "", subType: "", tryout: { id: "", title: "", type: "" } },
+    tryoutSection: { id: "", code: "", title: "", type: "", tryout: { id: "", title: "", type: "" } },
 };

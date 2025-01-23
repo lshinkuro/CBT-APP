@@ -11,8 +11,6 @@ export const MockTryoutSection: TryoutSection = {
     description: "",
     title: "",
     type: "",
-    subType: "",
-    duration: 0,
     order: 0,
     createdAt: "",
     isActive: true,

@@ -36,10 +36,6 @@ const TryoutsList = () => {
         setIsMinimized(!isMinimized);
     };
 
-    const usr =
-        sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") &&
-        JSON.parse(sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "");
-
     const columns: IDataTableProps<Tryout>["columns"] = [
         {
             name: "Title",
@@ -88,14 +84,12 @@ const TryoutsList = () => {
                     >
                         <Pencil className="w-4 h-4" />
                     </button>
-                    {usr.role === "sysadmin" && (
-                        <button
-                            className="bg-red-500 hover:bg-red-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
-                            onClick={() => handleDeleteTryout(props.id, props.title)}
-                        >
-                            <Trash className="w-4 h-4" />
-                        </button>
-                    )}
+                    <button
+                        className="bg-red-500 hover:bg-red-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
+                        onClick={() => handleDeleteTryout(props.id, props.title)}
+                    >
+                        <Trash className="w-4 h-4" />
+                    </button>
                 </div>
             ),
             sortable: false,
@@ -184,22 +178,15 @@ const TryoutsList = () => {
             >
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">List Tryouts</h1>
                 <div className="flex items-center justify-between mb-4">
-                    {usr.role === "sysadmin" && (
-                        <button
-                            className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
-                            type="button"
-                            onClick={handleClickCreateTryout}
-                        >
-                            <Plus className="w-4 h-4 mr-1" />
-                            Create Tryout
-                        </button>
-                    )}
-             
-                    <SearchInput
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        placeholder="Title, Description"
-                    />
+                    <button
+                        className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
+                        type="button"
+                        onClick={handleClickCreateTryout}
+                    >
+                        <Plus className="w-4 h-4 mr-1" />
+                        Create Tryout
+                    </button>
+                    <SearchInput value={searchTerm} onChange={handleSearchChange} placeholder="Title, Description" />
                 </div>
                 <DataTable
                     columns={columns}

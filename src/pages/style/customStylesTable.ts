@@ -5,7 +5,7 @@ export const customStylesTable: TableStyles = {
         style: {
             backgroundColor: '#22c55e', // bg-gray-50
             borderBottom: '1px solid #e2e8f0', // border-gray-200
-            
+            width: '100%',
 
         }
     },

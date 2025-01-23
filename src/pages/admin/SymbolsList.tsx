@@ -33,10 +33,6 @@ const SymbolsList = () => {
         setIsMinimized(!isMinimized);
     };
 
-    const usr =
-        sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") &&
-        JSON.parse(sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "");
-
     const columns: IDataTableProps<Symbol>["columns"] = [
         {
             name: "Name",
@@ -90,14 +86,12 @@ const SymbolsList = () => {
                     >
                         <Pencil className="w-4 h-4" />
                     </button>
-                    {usr.role === "sysadmin" && (
-                        <button
-                            className="bg-red-500 hover:bg-red-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
-                            onClick={() => handleDeleteSymbol(props.id, props.name)}
-                        >
-                            <Trash className="w-4 h-4" />
-                        </button>
-                    )}
+                    <button
+                        className="bg-red-500 hover:bg-red-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
+                        onClick={() => handleDeleteSymbol(props.id, props.name)}
+                    >
+                        <Trash className="w-4 h-4" />
+                    </button>
                 </div>
             ),
             sortable: false,
@@ -184,22 +178,16 @@ const SymbolsList = () => {
             >
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">List Symbols</h1>
                 <div className="flex items-center justify-between mb-4">
-                    {usr.role === "sysadmin" && (
-                        <button
-                            className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
-                            type="button"
-                            onClick={handleClickCreateSymbol}
-                        >
-                            <Plus className="w-4 h-4 mr-1" />
-                            Create Symbol
-                        </button>
-                    )}
-       
-                    <SearchInput
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        placeholder="Symbol, Name, Code"
-                    />
+                    <button
+                        className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
+                        type="button"
+                        onClick={handleClickCreateSymbol}
+                    >
+                        <Plus className="w-4 h-4 mr-1" />
+                        Create Symbol
+                    </button>
+
+                    <SearchInput value={searchTerm} onChange={handleSearchChange} placeholder="Symbol, Name, Code" />
                 </div>
                 <DataTable
                     columns={columns}

@@ -101,8 +101,7 @@ function Options({
             <p className="text-center text-gray-800 text-2xl font-semibold m-3">Carilah simbol yang hilang</p>
             <div className="flex flex-wrap justify-center">
                 {currentSymbolOption
-                    .map((symbol) => ({ symbol, sort: Math.random() }))
-                    .sort((a, b) => a.sort - b.sort)
+                    .map((symbol) => ({ symbol }))
                     .map((data, index) => (
                         <motion.div
                             key={data.symbol + "a"}
@@ -128,8 +127,7 @@ function OptionLetters({ currentSymbolOption, handleAnswer, duration }: Readonly
         >
             <div className="flex flex-wrap justify-center">
                 {currentSymbolOption
-                    .map((symbol) => ({ symbol, sort: Math.random() }))
-                    .sort((a, b) => a.sort - b.sort)
+                    .map((symbol) => ({ symbol }))
                     .map((data, index) => (
                         <motion.div
                             key={data.symbol + "a"}

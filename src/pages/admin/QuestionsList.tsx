@@ -68,11 +68,6 @@ const QuestionsList = () => {
             sortable: true,
         },
         {
-            name: "Sub Type",
-            selector: (row) => row.tryoutSection.subType ?? "-",
-            sortable: true,
-        },
-        {
             name: "Type",
             selector: (row) => row.type,
             sortable: true,

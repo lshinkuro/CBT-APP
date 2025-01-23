@@ -71,17 +71,29 @@ const AccuracyTestsList = () => {
             sortable: true,
         },
         {
-            name: "Tryout Section",
+            name: (
+                <div style={{ wordBreak: "break-word", width: "500px" }}>
+                    Tryout Section
+                </div>
+            ),
             selector: (row) => row.tryoutSection.type,
             sortable: true,
         },
         {
-            name: "Number of Sessions",
+            name: (
+                <div style={{ wordBreak: "break-word", width: "500px" }}>
+                    Number of Sessions
+                </div>
+            ),
             selector: (row) => row.numberOfSessions,
             sortable: true,
         },
         {
-            name: "Duration",
+            name: (
+                <div style={{ wordBreak: "break-word", width: "500px" }}>
+                    Durasi per Sesi (minutes)
+                </div>
+            ),
             selector: (row) => row.duration,
             sortable: true,
         },

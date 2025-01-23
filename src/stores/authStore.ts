@@ -26,10 +26,10 @@ interface AuthState {
 
 const useAuthStore = create<AuthState>((set) => {
     return {
-        user: sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr")
-            ? JSON.parse(sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "")
+        user: localStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr")
+            ? JSON.parse(localStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "")
             : null,
-        isAuthenticated: !!sessionStorage.getItem("isAuthenticated"),
+        isAuthenticated: !!localStorage.getItem("isAuthenticated"),
         isLoading: false,
         error: null,
         message: null,
@@ -79,8 +79,8 @@ const useAuthStore = create<AuthState>((set) => {
             try {
                 const response = await login("/api/auth/login", email, password);
                 set({ user: response.data.user, isAuthenticated: true });
-                sessionStorage.setItem("isAuthenticated", "true");
-                sessionStorage.setItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr", JSON.stringify(response.data));
+                localStorage.setItem("isAuthenticated", "true");
+                localStorage.setItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr", JSON.stringify(response.data));
             } catch (error: any) {
                 set({ error: error.response?.data?.message || "Login failed" });
             } finally {
@@ -89,7 +89,7 @@ const useAuthStore = create<AuthState>((set) => {
         },
         logout: async () => {
             set({ user: null, isAuthenticated: false });
-            sessionStorage.clear();
+            localStorage.clear();
             try {
                 await logout("/api/auth/logout");
             } catch (error: any) {

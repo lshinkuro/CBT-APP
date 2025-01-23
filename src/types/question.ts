@@ -4,7 +4,6 @@ export interface Question {
         title: string;
         code: string;
         type: string;
-        subType: string | null;
         tryout: {
             id: string;
             title: string;

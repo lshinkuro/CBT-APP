@@ -78,8 +78,8 @@ const FormModalUser: React.FC<FormModalUserProps> = ({
     };
 
     const usr =
-        sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") &&
-        JSON.parse(sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "");
+        localStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") &&
+        JSON.parse(localStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "");
 
     return (
         <Modal isOpen={isOpen} onClose={onClose} title={title} isLoading={isLoading} onSubmit={handleSubmit}>

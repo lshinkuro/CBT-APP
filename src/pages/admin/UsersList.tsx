@@ -53,91 +53,86 @@ export const UsersList = () => {
     };
 
     const usr =
-        sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") &&
-        JSON.parse(sessionStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "");
+        localStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") &&
+        JSON.parse(localStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "");
 
     // Updated columns definition with Tailwind classes
-const columns: IDataTableProps<User>["columns"] = [
-    {
-        name: "Name",
-        selector: (row) => row.username,
-        sortable: true,
-       
-        cell: row => (
-            <div className="flex items-center gap-3 py-2">
-                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-blue-600 font-medium">
-                        {row.username.charAt(0).toUpperCase()}
-                    </span>
+    const columns: IDataTableProps<User>["columns"] = [
+        {
+            name: "Name",
+            selector: (row) => row.username,
+            sortable: true,
+
+            cell: (row) => (
+                <div className="flex items-center gap-3 py-2">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                        <span className="text-blue-600 font-medium">{row.username.charAt(0).toUpperCase()}</span>
+                    </div>
+                    <span className="font-medium text-gray-900">{row.username}</span>
                 </div>
-                <span className="font-medium text-gray-900">{row.username}</span>
-            </div>
-        )
-    },
-    {
-        name: "Email",
-        selector: (row) => row.email,
-        sortable: true,
-        cell: row => (
-            <span className="text-gray-600">{row.email}</span>
-        )
-    },
-    {
-        name: "Role",
-        selector: (row) => row.role,
-        sortable: true,
-       
-        cell: row => (
-            <span className="px-3 py-1 rounded-full text-xs font-medium capitalize bg-blue-50 text-blue-700">
-                {row.role}
-            </span>
-        )
-    },
-    {
-        name: "Created At",
-        selector: (row) =>
-            new Date(row.createdAt).toLocaleString("en-US", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-            }),
-        sortable: true,
-       
-        cell: row => (
-            <span className="text-gray-600">
-                {new Date(row.createdAt).toLocaleString("en-US", {
+            ),
+        },
+        {
+            name: "Email",
+            selector: (row) => row.email,
+            sortable: true,
+            cell: (row) => <span className="text-gray-600">{row.email}</span>,
+        },
+        {
+            name: "Role",
+            selector: (row) => row.role,
+            sortable: true,
+
+            cell: (row) => (
+                <span className="px-3 py-1 rounded-full text-xs font-medium capitalize bg-blue-50 text-blue-700">
+                    {row.role}
+                </span>
+            ),
+        },
+        {
+            name: "Created At",
+            selector: (row) =>
+                new Date(row.createdAt).toLocaleString("en-US", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",
                     hour: "2-digit",
                     minute: "2-digit",
-                })}
-            </span>
-        ),
-        sortFunction: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
-    },
-    {
-        name: "Active",
-        cell: (row) =>
-            row.isActive ? (
-                <span className="inline-block px-2 py-1 text-xs font-semibold leading-none text-white rounded-full bg-green-500 items-center justify-center">
-                    Active
-                </span>
-            ) : (
-                <span className="inline-block px-2 py-1 text-xs font-semibold leading-none text-white rounded-full bg-red-500 items-center justify-center">
-                    Inactive
+                }),
+            sortable: true,
+
+            cell: (row) => (
+                <span className="text-gray-600">
+                    {new Date(row.createdAt).toLocaleString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                    })}
                 </span>
             ),
-        sortable: true,
-        grow: 0.7,
-       
-    },
-    {
-        name: "Action",
-        cell: (props) => (
-            <div className="flex items-center justify-end space-x-2">
+            sortFunction: (a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
+        },
+        {
+            name: "Active",
+            cell: (row) =>
+                row.isActive ? (
+                    <span className="inline-block px-2 py-1 text-xs font-semibold leading-none text-white rounded-full bg-green-500 items-center justify-center">
+                        Active
+                    </span>
+                ) : (
+                    <span className="inline-block px-2 py-1 text-xs font-semibold leading-none text-white rounded-full bg-red-500 items-center justify-center">
+                        Inactive
+                    </span>
+                ),
+            sortable: true,
+            grow: 0.7,
+        },
+        {
+            name: "Action",
+            cell: (props) => (
+                <div className="flex items-center justify-end space-x-2">
                     <button
                         className="bg-green-500 hover:bg-green-700 w-8 h-8 text-sm text-white font-semibold rounded-full flex items-center justify-center"
                         onClick={() => {
@@ -178,8 +173,8 @@ const columns: IDataTableProps<User>["columns"] = [
                         </button>
                     )}
                 </div>
-        ),
-    },  
+            ),
+        },
     ];
 
     useEffect(() => {
@@ -260,7 +255,6 @@ const columns: IDataTableProps<User>["columns"] = [
         getAllUsers();
     };
 
-  
     return (
         <div className="flex flex-col w-full">
             <AdminSidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
@@ -269,22 +263,20 @@ const columns: IDataTableProps<User>["columns"] = [
             >
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">List Users</h1>
                 <div className="flex items-center justify-between mb-4">
-                    {usr.role === "sysadmin" && (
-                        <button
-                            className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
-                            type="button"
-                            onClick={handleClickRegister}
-                        >
-                            <Plus className="w-4 h-4 mr-1" />
-                            Register New User
-                        </button>
-                    )}
+                    <button
+                        className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
+                        type="button"
+                        onClick={handleClickRegister}
+                    >
+                        <Plus className="w-4 h-4 mr-1" />
+                        Register New User
+                    </button>
 
-                <SearchInput
-                value={searchTerm}
-                onChange={handleSearchChange}
-                placeholder="Username, Display Name, Email, Phone Number"
-                />
+                    <SearchInput
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        placeholder="Username, Display Name, Email, Phone Number"
+                    />
                 </div>
                 <DataTable
                     columns={columns}

@@ -22,7 +22,6 @@ const SelectTryoutSection = () => {
                 {availableTryoutSections.map((tryoutSection) => (
                     <option key={tryoutSection.id} value={tryoutSection.id}>
                         {tryoutSection.title} - {tryoutSection.type}{" "}
-                        {tryoutSection.subType && `- ${tryoutSection.subType}`}
                     </option>
                 ))}
             </select>

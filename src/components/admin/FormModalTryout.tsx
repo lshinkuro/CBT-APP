@@ -158,7 +158,7 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
                 </div>
                 <div className="mb-4">
                     <label htmlFor="duration" className="block mb-1 text-xs font-medium text-gray-600">
-                        Duration (minutes) *
+                        Durasi per Sesi (minutes) *
                     </label>
                     <input
                         id="duration"

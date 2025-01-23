@@ -10,8 +10,6 @@ export interface TryoutSection {
     code: string;
     description: string;
     type: string;
-    subType: string | null;
-    duration: number;
     order: number;
     isActive: boolean;
     createdAt: string;
@@ -22,7 +20,6 @@ export interface AvailableTryoutSections {
     title: string;
     type: string;
     code: string;
-    subType: string;
     description: string;
     tryout: {
         id: string;
