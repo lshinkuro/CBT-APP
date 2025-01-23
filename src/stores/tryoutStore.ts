@@ -33,7 +33,7 @@ const useTryoutStore = create<TryoutState>((set) => ({
                     hasAccuracyTest: response.data.hasAccuracyTest,
                     questionsCount: response.data.questionsCount,
                     targetAccuracyTestType:
-                        response.data.targetAccuracyTestTypes.length > 0
+                        response.data.targetAccuracyTestTypes && response.data.targetAccuracyTestTypes.length > 0
                             ? response.data.targetAccuracyTestTypes[0]
                             : "normal",
                 });
