@@ -12,7 +12,6 @@ import { ModalProfile } from "../../components/admin/ModalProfile";
 import useProgramStore from "../../stores/programStore";
 import { MockUser } from "../../mocks/User";
 import useAuthStore from "../../stores/authStore";
-import { color } from "framer-motion";
 import SearchInput from "../../components/layout/SearchInput";
 import { customStylesTable } from "../style/customStylesTable";
 
@@ -56,7 +55,6 @@ export const UsersList = () => {
         localStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") &&
         JSON.parse(localStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "");
 
-    // Updated columns definition with Tailwind classes
     const columns: IDataTableProps<User>["columns"] = [
         {
             name: "Name",
@@ -90,16 +88,8 @@ export const UsersList = () => {
             ),
         },
         {
-            name: "Created At",
-            selector: (row) =>
-                new Date(row.createdAt).toLocaleString("en-US", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                }),
-            sortable: true,
+            name: <div style={{ wordBreak: "break-word", width: "500px" }}>Created At</div>,
+            grow: 0.7,
 
             cell: (row) => (
                 <span className="text-gray-600">
