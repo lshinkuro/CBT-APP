@@ -39,7 +39,11 @@ const ExamsList = () => {
             sortable: true,
         },
         {
-            name: "Created At",
+            name: (
+                <div style={{ wordBreak: "break-word", width: "500px" }}>
+                   Created At
+                </div>
+            ),
             selector: (row) =>
                 new Date(row.createdAt).toLocaleString("en-US", {
                     year: "numeric",
