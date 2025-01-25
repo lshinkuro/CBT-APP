@@ -5,8 +5,6 @@ import { FormModalTryoutProps } from "../../types/tryout";
 import { toast } from "react-hot-toast";
 import useProgramStore from "../../stores/programStore";
 import SelectProgram from "./SelectProgram";
-import { useQuill } from "react-quilljs";
-import "quill/dist/quill.snow.css";
 
 const FormModalTryout: React.FC<FormModalTryoutProps> = ({
     isOpen,
@@ -196,10 +194,21 @@ interface SectionInstructionProps {
 }
 
 const SectionInstruction: React.FC<SectionInstructionProps> = ({ instruction, setInstruction }) => {
-    const { quill, quillRef } = useQuill({ theme: "snow" });
+    const [quill, setQuill] = useState<any>(null);
 
     useEffect(() => {
-        const interval = setInterval(() => {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css";
+        document.head.appendChild(link);
+        const script = document.createElement("script");
+        script.src = "https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js";
+        script.onload = () => {
+            const Quill = (window as any).Quill;
+            const quillInstance = new Quill("#instruction-editor", {
+                theme: "snow",
+            });
+            setQuill(quillInstance);
             const quillToolbar = document.querySelectorAll(".ql-toolbar");
             if (quillToolbar.length > 1) {
                 Array.from(quillToolbar)
@@ -214,8 +223,11 @@ const SectionInstruction: React.FC<SectionInstructionProps> = ({ instruction, se
             if (videoButton) {
                 videoButton.remove();
             }
-        }, 100);
-        return () => clearInterval(interval);
+        };
+        document.body.appendChild(script);
+        return () => {
+            document.body.removeChild(script);
+        };
     }, []);
 
     useEffect(() => {
@@ -233,7 +245,7 @@ const SectionInstruction: React.FC<SectionInstructionProps> = ({ instruction, se
             <label htmlFor="instruction" className="block mb-1 text-xs font-medium text-gray-600">
                 Instruction *
             </label>
-            <div className="w-full" ref={quillRef} />
+            <div id="instruction-editor" className="w-full" />
         </div>
     );
 };

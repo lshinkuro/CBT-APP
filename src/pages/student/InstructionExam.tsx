@@ -5,7 +5,6 @@ import Loading from "../../components/loading/Loading";
 import useExamStore from "../../stores/examStore";
 import EmptyResource from "./EmptyResource";
 import { Rocket } from "lucide-react";
-import "quill/dist/quill.snow.css";
 import { motion } from "framer-motion";
 
 const InstructionExam = () => {
@@ -21,6 +20,16 @@ const InstructionExam = () => {
     } = useTryoutStore();
     const navigate = useNavigate();
     const hasGenerateInstruction = useRef(false);
+
+    useEffect(() => {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = "https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css";
+        document.head.appendChild(link);
+        return () => {
+            document.head.removeChild(link);
+        };
+    }, []);
 
     useEffect(() => {
         if (code !== "" && !hasGenerateInstruction.current) {
