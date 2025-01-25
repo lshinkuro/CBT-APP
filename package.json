@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "update-prod":"git pull origin main && npm run build && sudo rm -rf /var/www/frontend/dist && sudo mv dist /var/www/frontend && sudo systemctl restart nginx"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.39.7",
