@@ -140,52 +140,48 @@ const FormModalUser: React.FC<FormModalUserProps> = ({
                         required
                     />
                 </div>
-                {usr?.role === "sysadmin" && role !== "sysadmin" && (
-                    <>
-                        <div className="mb-4">
-                            <label htmlFor="role" className="block mb-2 text-xs font-medium text-gray-600">
-                                Role *
-                            </label>
-                            <select
-                                id="role"
-                                value={role}
-                                onChange={handleRoleChange}
-                                className="w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                required
-                            >
-                                <option value="admin">Admin</option>
-                                <option value="student">Student</option>
-                            </select>
-                        </div>
-                        <div className="mb-4">
-                            <label htmlFor="programs" className="block mb-2 text-xs font-medium text-gray-600">
-                                Programs *
-                            </label>
-                            <MultiSelect
-                                options={multiSelectOptions}
-                                value={multiSelectSelected}
-                                onChange={setMultiSelectSelected}
-                                labelledBy="Select programs"
-                                className="text-xs"
-                            />
-                        </div>
-                        <div className="mb-4">
-                            <label htmlFor="isActive" className="block mb-2 text-xs font-medium text-gray-600">
-                                Active Status *
-                            </label>
-                            <select
-                                id="isActive"
-                                value={isActive.toString()}
-                                onChange={handleIsActiveChange}
-                                className="w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                required
-                            >
-                                <option value="true">Active</option>
-                                <option value="false">Inactive</option>
-                            </select>
-                        </div>
-                    </>
-                )}
+                <div className="mb-4">
+                    <label htmlFor="role" className="block mb-2 text-xs font-medium text-gray-600">
+                        Role *
+                    </label>
+                    <select
+                        id="role"
+                        value={role}
+                        onChange={handleRoleChange}
+                        className="w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                    >
+                        <option value="admin">Admin</option>
+                        <option value="student">Student</option>
+                    </select>
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="programs" className="block mb-2 text-xs font-medium text-gray-600">
+                        Programs *
+                    </label>
+                    <MultiSelect
+                        options={multiSelectOptions}
+                        value={multiSelectSelected}
+                        onChange={setMultiSelectSelected}
+                        labelledBy="Select programs"
+                        className="text-xs"
+                    />
+                </div>
+                <div className="mb-4">
+                    <label htmlFor="isActive" className="block mb-2 text-xs font-medium text-gray-600">
+                        Active Status *
+                    </label>
+                    <select
+                        id="isActive"
+                        value={isActive.toString()}
+                        onChange={handleIsActiveChange}
+                        className="w-full px-3 py-2 text-xs border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                    >
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </div>
             </form>
         </Modal>
     );
