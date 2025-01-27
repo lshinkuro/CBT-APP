@@ -7,6 +7,8 @@ import useTryoutSectionStore from "./tryoutSectionStore";
 
 const useQuestionStore = create<QuestionState>((set) => ({
     examQuestions: [],
+    excelQuestions: [],
+    pathExcelQuestions: "",
     currentQuestionData: null,
     currentQuestion: 0,
     hasChangeImageOptions: {
@@ -25,6 +27,52 @@ const useQuestionStore = create<QuestionState>((set) => ({
     offset: 0,
     search: "",
     totalRows: 0,
+    confirmAddOrUpdateQuestionFromExcel: async (data: any) => {
+        set({ isLoading: true });
+        try {
+            const response = await post("/api/admin/questions/add-or-update-question-from-excel", data);
+            if (response.message === "Success") {
+                set({ message: "Mass process store execute successfully" });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to mass process" });
+        } finally {
+            set({ isLoading: false });
+        }
+    },
+    readQuestionFromExcel: async (data: any) => {
+        set({ isLoading: true });
+        try {
+            const formData = new FormData();
+            formData.append("key", "upload-excel-question");
+            formData.append("excel", data.excelData ?? "");
+            const response = await post("/api/admin/questions/read-question-from-excel", formData);
+            if (response.message === "Success") {
+                set({
+                    message: "Mass process read execute successfully",
+                    excelQuestions: response.data.data,
+                    pathExcelQuestions: response.data.path,
+                });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to mass process" });
+        } finally {
+            set({ isLoading: false });
+        }
+    },
+    handleExportToExcel: async (data: any) => {
+        set({ isLoading: true });
+        try {
+            const response = await post("/api/admin/questions/generate-excel", data);
+            if (response.message === "Success") {
+                set({ message: "Exporting Excel Files, please check your email" });
+            }
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || "Failed to download questions" });
+        } finally {
+            set({ isLoading: false });
+        }
+    },
     getAllQuestions: async () => {
         set({ isLoading: true });
         try {

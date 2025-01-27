@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface Question {
     tryoutSection: {
         id: string;
@@ -22,7 +23,9 @@ export interface Question {
 }
 
 export interface QuestionState {
-    examQuestions: { id: string; answers: string[], numberOfCorrectAnswers: number }[];
+    examQuestions: { id: string; answers: string[]; numberOfCorrectAnswers: number }[];
+    excelQuestions: [];
+    pathExcelQuestions: string;
     currentQuestion: number;
     currentQuestionData: Question | null;
     hasChangeImageOptions: { [key: string]: boolean };
@@ -40,6 +43,9 @@ export interface QuestionState {
     createQuestion: (data: QuestionDto) => Promise<void>;
     updateQuestion: (id: string, data: QuestionDto) => Promise<void>;
     deleteQuestion: (id: string) => Promise<void>;
+    handleExportToExcel: (data: any) => Promise<void>;
+    readQuestionFromExcel: (data: any) => Promise<void>;
+    confirmAddOrUpdateQuestionFromExcel: (data: { path: string }) => Promise<void>;
 }
 
 export interface FormModalQuestionProps {
@@ -50,6 +56,14 @@ export interface FormModalQuestionProps {
     isLoading?: boolean;
     initialValues?: Question;
     mode?: "create" | "update";
+}
+
+export interface FormModalPreviewExcelQuestionProps {
+    isOpen: boolean;
+    onClose: () => void;
+    title: string;
+    onSubmit: (data: { path: string }) => Promise<void>;
+    isLoading?: boolean;
 }
 
 export interface Option {
@@ -65,6 +79,35 @@ export interface OptionProps {
     setData: (data: { options: Option[] }) => void;
     data: { options: Option[] };
     mode?: "create" | "update";
+}
+
+export interface PreviewQuestionProps {
+    id: string;
+    "Tryout Section Code": string;
+    Content: string;
+    Type: string;
+    "Image Url": { hyperlink: string; text: string };
+    "Number Of Correct Answers": string;
+    "Option a Image": { hyperlink: string; text: string };
+    "Option a Score": string;
+    "Option a Content": string;
+    "Option a Correct": string;
+    "Option b Image": { hyperlink: string; text: string };
+    "Option b Score": string;
+    "Option b Content": string;
+    "Option b Correct": string;
+    "Option c Image": { hyperlink: string; text: string };
+    "Option c Score": string;
+    "Option c Content": string;
+    "Option c Correct": string;
+    "Option d Image": { hyperlink: string; text: string };
+    "Option d Score": string;
+    "Option d Content": string;
+    "Option d Correct": string;
+    "Option e Image": { hyperlink: string; text: string };
+    "Option e Score": string;
+    "Option e Content": string;
+    "Option e Correct": string;
 }
 
 export type QuestionDto = Omit<Question, "id" | "createdAt" | "tryoutSection">;

@@ -67,7 +67,6 @@ export const QuestionView = () => {
 
                 <div className="space-y-6">
                     <div className="text-gray-800 text-lg">{currentQuestionData?.content}</div>
-
                     {currentQuestionData?.image && (
                         <div className="flex items-center justify-center">
                             <img
@@ -77,8 +76,11 @@ export const QuestionView = () => {
                             />
                         </div>
                     )}
-
                     <div className="space-y-3">
+                        <h6 className="text-gray-800 font-semibold">
+                            Pilihan {currentQuestionData?.data?.numberOfCorrectAnswers} dari{" "}
+                            {currentQuestionData?.data?.options.length} Opsi
+                        </h6>
                         {currentQuestionData?.data?.options.map((option) => (
                             <button
                                 key={option.key}
@@ -105,7 +107,6 @@ export const QuestionView = () => {
                             </button>
                         ))}
                     </div>
-
                     <div className="flex justify-between pt-6">
                         <button
                             onClick={() => goToQuestion(currentQuestion - 1)}

@@ -3,7 +3,6 @@ import {
     Users,
     ClipboardList,
     ClipboardCheck,
-    Settings,
     BarChart,
     MessageCircleQuestion,
     BookImage,
@@ -64,11 +63,6 @@ const menuItems = [
         title: "Exams",
         icon: BookOpenCheck,
         path: "/admin/exams",
-    },
-    {
-        title: "Settings",
-        icon: Settings,
-        path: "/admin/settings",
     },
     {
         title: "Logout",

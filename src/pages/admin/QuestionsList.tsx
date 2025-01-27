@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import DataTable, { IDataTableProps } from "react-data-table-component";
 import useQuestionStore from "../../stores/questionStore";
 import FormModalQuestion from "../../components/admin/FormModalQuestion";
@@ -15,6 +15,8 @@ import { MockQuestion } from "../../mocks/Question";
 import useTryoutStore from "../../stores/tryoutStore";
 import { customStylesTable } from "../style/customStylesTable";
 import SearchInput from "../../components/layout/SearchInput";
+import FormModalPreviewExcelQuestion from "../../components/admin/FormModalPreviewExcelQuestion";
+import Loading from "../../components/loading/Loading";
 
 const QuestionsList = () => {
     const {
@@ -27,11 +29,15 @@ const QuestionsList = () => {
         error,
         message,
         totalRows,
+        handleExportToExcel,
+        readQuestionFromExcel,
+        confirmAddOrUpdateQuestionFromExcel,
     } = useQuestionStore();
     const { selectedTryoutId } = useTryoutStore();
     const { getAllAvailableTryoutSectionsByTryoutId, availableTryoutSections, selectedTryoutSectionId } =
         useTryoutSectionStore();
     const [isOpenModal, setIsOpenModal] = useState(false);
+    const [isOpenModalPreviewExcel, setIsOpenModalPreviewExcel] = useState(false);
     const [mode, setMode] = useState<"create" | "update">("create");
     const [limit, setLimit] = useState<number>(10);
     const [searchTerm, setSearchTerm] = useState<string>("");
@@ -44,8 +50,24 @@ const QuestionsList = () => {
         useLoading: true,
         isLoading: isLoading,
     });
-
+    const [dropdownOpen, setDropdownOpen] = useState(false);
     const [isMinimized, setIsMinimized] = useState(false);
+
+    const dropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, []);
 
     const toggleSidebar = () => {
         setIsMinimized(!isMinimized);
@@ -182,6 +204,10 @@ const QuestionsList = () => {
         setMode("create");
     };
 
+    const handleSubmitConfirmPreviewExcel = async (data: { path: string }) => {
+        await confirmAddOrUpdateQuestionFromExcel(data);
+    };
+
     const handlePageChange = (page: number) => {
         useQuestionStore.setState({ offset: (page - 1) * limit });
         getAllQuestions();
@@ -199,6 +225,28 @@ const QuestionsList = () => {
         getAllQuestions();
     };
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const inputElement = e.target as HTMLInputElement;
+        const fileData = inputElement.files?.[0];
+        if (fileData) {
+            if (fileData.size <= 5 * 1024 * 1024) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    useQuestionStore.setState({ examQuestions: [] });
+                    readQuestionFromExcel({ excelData: fileData });
+                    setDropdownOpen(false);
+                    setIsOpenModalPreviewExcel(true);
+                };
+                reader.readAsDataURL(fileData);
+            } else {
+                toast.error("File size must be less than 5MB");
+                if (inputElement) {
+                    inputElement.value = "";
+                }
+            }
+        }
+    };
+
     return (
         <div className="flex flex-col w-full">
             <AdminSidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
@@ -210,21 +258,66 @@ const QuestionsList = () => {
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">List Questions</h1>
                 <SelectTryout />
                 {availableTryoutSections.length > 0 && <SelectTryoutSection />}
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center justify-between mb-4 sm:flex-row flex-col sm:space-x-4 space-x-0 space-y-4 sm:space-y-0">
                     <button
-                        className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
+                        className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center w-full sm:w-auto"
                         type="button"
                         onClick={handleClickCreateQuestion}
                     >
                         <Plus className="w-4 h-4 mr-1" />
                         Create Question
                     </button>
-                 
-                    <SearchInput
-                        value={searchTerm}
-                        onChange={handleSearchChange}
-                        placeholder="Type, Content"
-                    />
+                    <div className="flex items-center space-x-4">
+                        <div className="relative inline-block" ref={dropdownRef}>
+                            <button
+                                className="bg-gray-500 hover:bg-gray-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"
+                                type="button"
+                                onClick={() => setDropdownOpen(!dropdownOpen)}
+                            >
+                                Options
+                            </button>
+                            {dropdownOpen && (
+                                <div
+                                    className="absolute left-0 top-full mt-1 w-48 bg-white border border-gray-200 rounded shadow-lg z-10"
+                                    style={{ top: `calc(100% + 0.5rem)` }}
+                                >
+                                    <button
+                                        onClick={() => {
+                                            handleExportToExcel({
+                                                filters: {
+                                                    tryoutId: selectedTryoutId,
+                                                    tryoutSectionId: selectedTryoutSectionId,
+                                                },
+                                            });
+                                            setDropdownOpen(false);
+                                        }}
+                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                        Download All Questions
+                                    </button>
+                                    <label
+                                        htmlFor="fileInput"
+                                        className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                                    >
+                                        Upload Excel File
+                                    </label>
+                                    <input
+                                        id="fileInput"
+                                        type="file"
+                                        accept=".xlsx, .xls"
+                                        className="hidden"
+                                        onChange={handleFileChange}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                        <SearchInput
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            placeholder="Type, Content"
+                            containerClassName="w-full sm:w-auto"
+                        />
+                    </div>
                 </div>
                 <DataTable
                     columns={columns}
@@ -247,6 +340,13 @@ const QuestionsList = () => {
                     isLoading={isLoading}
                     initialValues={selectedQuestion}
                     mode={mode}
+                />
+                <FormModalPreviewExcelQuestion
+                    isOpen={isOpenModalPreviewExcel}
+                    onClose={() => setIsOpenModalPreviewExcel(false)}
+                    title="Preview Excel File"
+                    onSubmit={handleSubmitConfirmPreviewExcel}
+                    isLoading={isLoading}
                 />
                 <ConfirmationBox {...confirmationBox} />
             </main>
