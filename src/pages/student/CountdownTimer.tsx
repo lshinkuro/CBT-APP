@@ -41,9 +41,9 @@ const CountdownTimer = () => {
     }
 
     return (
-        <div className="from-blue-500 to-white py-8">
+        <div className="bg-blue-800 py-8">
             <div className="max-w-4xl mx-auto px-4">
-                <div className="flex items-center justify-center h-screen bg-gray-50">
+                <div className="flex items-center justify-center h-screen bg-blue-800">
                     <div className="text-center">
                         <div className="text-7xl font-bold text-white">{count > 0 ? count : "GO!"}</div>
                         <p className="mt-4 text-lg text-white">

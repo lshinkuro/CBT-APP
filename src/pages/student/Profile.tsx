@@ -43,7 +43,7 @@ export const Profile = () => {
                     className="relative bg-white rounded-2xl shadow-lg overflow-hidden"
                 >
                     {/* Profile Header */}
-                    <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-r from-blue-500 to-blue-600" />
+                    <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-r from-blue-700 to-blue-800" />
 
                     <div className="relative px-8 pt-20 pb-8">
                         {/* Profile Avatar */}

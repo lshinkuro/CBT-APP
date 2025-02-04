@@ -25,7 +25,7 @@ export const ExamComplete = () => {
         <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-lg shadow-md p-8 text-center h-screen"
+            className="bg-gradient-to-b from-blue-100 to-white rounded-lg shadow-md p-8 text-center h-screen"
         >
             <div className="flex justify-center mb-6">
                 <Trophy className="h-16 w-16 text-yellow-500" />

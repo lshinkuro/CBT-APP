@@ -23,7 +23,7 @@ export const ExamRunning = () => {
 
     if (mode === "normal")
         return (
-            <div className="min-h-screen bg-yellow-50 py-8">
+            <div className="min-h-screen bg-gradient-to-b from-blue-500 to-white py-8">
                 <div className="max-w-4xl mx-auto px-4">
                     <NormalExam currentExam={currentExam} />
                 </div>
@@ -31,7 +31,7 @@ export const ExamRunning = () => {
         );
     else if (mode === "accuracy_symbol") {
         return (
-            <div className="min-h-screen bg-yellow-50 py-8">
+            <div className="min-h-screen bg-gradient-to-b from-blue-500 to-white py-8">
                 <div className="max-w-4xl mx-auto px-4">
                     <AccuracySymbolExam currentExam={currentExam} />
                 </div>
@@ -39,7 +39,7 @@ export const ExamRunning = () => {
         );
     } else if (mode === "arithmetic_pauli") {
         return (
-            <div className="min-h-screen bg-yellow-50 py-8">
+            <div className="min-h-screen bg-gradient-to-b from-blue-500 to-white py-8">
                 <div className="max-w-4xl mx-auto px-4">
                     <PauliExam currentExam={currentExam} />
                 </div>

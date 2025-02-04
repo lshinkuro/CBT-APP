@@ -45,7 +45,7 @@ const ResetPassword = () => {
     }, [error]);
 
     return (
-        <div className="flex justify-center items-center h-screen bg-gradient-to-br from-white to-[#F5DEB3]">
+        <div className="flex justify-center items-center h-screen bg-gradient-to-b from-blue-500 to-white">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -120,9 +120,9 @@ const ResetPassword = () => {
                     </div>
                     <button
                         type="submit"
-                        className={`w-full py-2 px-4 ${
-                            isLoading ? "bg-gray-600 hover:bg-gray-700" : "bg-[#F5DEB3] hover:bg-[#F5D7B4]"
-                        } hover:text-black rounded-md transition-colors`}
+                        className={`w-full py-2 px-4 text-white ${
+                            isLoading ? "bg-gray-600 hover:bg-gray-700" : "bg-blue-500 hover:bg-blue-800"
+                        }  rounded-md transition-colors`}
                     >
                         {isLoading ? "Sending..." : "Send"}
                     </button>
