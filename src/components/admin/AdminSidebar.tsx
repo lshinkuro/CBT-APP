@@ -77,10 +77,14 @@ interface AdminSidebarProps {
     toggleSidebar: () => void;
 }
 
-export const AdminSidebar: React.FC<AdminSidebarProps>  = ({ isMinimized, toggleSidebar }) => {
+export const AdminSidebar: React.FC<AdminSidebarProps> = ({ isMinimized, toggleSidebar }) => {
     const location = useLocation();
     const [isOpen, setIsOpen] = useState(false);
     const toggleMenu = () => setIsOpen(!isOpen);
+
+    const usr =
+        localStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") &&
+        JSON.parse(localStorage.getItem(import.meta.env.VITE_APP_COOKIE_KEY + "-usr") ?? "");
 
     return (
         <div>
@@ -95,6 +99,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps>  = ({ isMinimized, toggle
                         {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                     </button>
                 </div>
+                <div className="text-sm text-black ms-5 mb-1">{usr?.email}</div>
                 {isOpen && (
                     <nav className="bg-white shadow-lg">
                         {menuItems.map((item) => (
@@ -139,6 +144,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps>  = ({ isMinimized, toggle
                         )}
                     </button>
                 </div>
+                {!isMinimized && <div className="text-sm text-black ms-5 mb-1">{usr?.email}</div>}
                 <nav className="mt-6">
                     {menuItems.map((item) => (
                         <Link
