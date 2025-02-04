@@ -30,9 +30,6 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
     const [data, setData] = useState<any>(initialValues?.data ?? MockData);
     const [isActive, setIsActive] = useState<boolean>(initialValues?.isActive ?? true);
     const [showImage, setShowImage] = useState<string | null>(initialValues?.image ?? null);
-    const [numberOfCorrectAnswers, setNumberOfCorrectAnswers] = useState<string>(
-        initialValues?.data?.numberOfCorrectAnswers ?? "1"
-    );
 
     useEffect(() => {
         setContent(initialValues?.content ?? "");
@@ -42,7 +39,6 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
         setImageObject(null);
         setData(initialValues?.data ?? MockData);
         setIsActive(initialValues?.isActive ?? true);
-        setNumberOfCorrectAnswers(initialValues?.data?.numberOfCorrectAnswers ?? "1");
         useQuestionStore.setState({ hasChangeImage: false });
         useQuestionStore.setState({
             hasChangeImageOptions: {
@@ -92,7 +88,7 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!content || !type || selectedTryoutId === "" || selectedTryoutSectionId === "") {
+        if (!content || !type || selectedTryoutId === "" || selectedTryoutSectionId === "" || data.numberOfCorrectAnswers === "" || Number(data.numberOfCorrectAnswers) <= 0) {
             toast.error("Missing required fields");
             return;
         }
@@ -125,8 +121,8 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
     };
 
     const handleBlur = () => {
-        if (numberOfCorrectAnswers === "") {
-            setNumberOfCorrectAnswers("0");
+        if (data.numberOfCorrectAnswers === "") {
+            setData((prevState: any) => ({ ...prevState, numberOfCorrectAnswers: "0" }));
         }
     };
 
@@ -165,7 +161,6 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
                         className="w-full px-4 py-1 border text-xs rounded-md focus:ring-2 focus:ring-blue-500"
                     >
                         <option value="multiple-choice">Multiple Choice</option>
-                        <option value="essay">Essay</option>
                     </select>
                 </div>
                 <div className="mb-4">
@@ -214,7 +209,7 @@ const FormModalQuestion: React.FC<FormModalQuestionProps> = ({
                     <input
                         id="numberOfCorrectAnswer"
                         type="number"
-                        value={data?.numberOfCorrectAnswers ?? ""}
+                        value={data?.numberOfCorrectAnswers ?? "0"}
                         onBlur={handleBlur}
                         onChange={handleChangeNumberOfCorrectAnswers}
                         className="w-full px-4 py-1 text-xs border rounded-md focus:ring-2 focus:ring-blue-500"

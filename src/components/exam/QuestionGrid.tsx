@@ -15,7 +15,7 @@ export const QuestionGrid = () => {
             className="bg-white rounded-lg shadow-md p-6"
         >
             <h3 className="text-lg font-semibold text-gray-800 mb-4">Navigasi Soal</h3>
-            <div className="grid grid-cols-10 gap-2">
+            <div className="grid grid-cols-5 gap-x-2 gap-y-4 md:grid-cols-10 md:gap-x-4 md:gap-y-2">
                 {examQuestions.map((examQuestion, index) => {
                     return (
                         <button
@@ -34,5 +34,6 @@ export const QuestionGrid = () => {
                 })}
             </div>
         </motion.div>
+
     );
 };
