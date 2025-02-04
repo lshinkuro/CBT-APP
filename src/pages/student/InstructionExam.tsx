@@ -41,7 +41,7 @@ const InstructionExam = () => {
     if (isLoading) return <Loading />;
 
     return (
-        <div className="min-h-screen bg-yellow-50 py-8">
+        <div className="min-h-screen bg-gradient-to-b from-blue-500 to-white py-8">
             <motion.div
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}

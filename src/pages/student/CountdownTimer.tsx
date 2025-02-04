@@ -41,12 +41,12 @@ const CountdownTimer = () => {
     }
 
     return (
-        <div className="bg-gray-50 py-8">
+        <div className="from-blue-500 to-white py-8">
             <div className="max-w-4xl mx-auto px-4">
                 <div className="flex items-center justify-center h-screen bg-gray-50">
                     <div className="text-center">
-                        <div className="text-7xl font-bold text-black">{count > 0 ? count : "GO!"}</div>
-                        <p className="mt-4 text-lg text-black">
+                        <div className="text-7xl font-bold text-white">{count > 0 ? count : "GO!"}</div>
+                        <p className="mt-4 text-lg text-white">
                             {count > 0 ? "Bersiaplah! Tes akan segera dimulai." : "Mengalihkan halaman..."}
                         </p>
                     </div>

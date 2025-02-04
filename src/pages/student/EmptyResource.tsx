@@ -9,9 +9,9 @@ export default function EmptyResource() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex items-center justify-center bg-yellow-50 p-8"
+            className="flex items-center justify-center p-8"
         >
-            <div className="max-w-md w-full bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+            <div className="max-w-md w-full bg-white">
                 <h1 className="text-4xl font-bold text-gray-800 mb-4">Materi belum tersedia</h1>
                 <p className="text-lg text-gray-600 mb-6">
                     Belum ada materi yang tersedia, kami sedang mempersiapkan materi.

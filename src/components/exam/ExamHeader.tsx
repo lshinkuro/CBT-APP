@@ -38,7 +38,7 @@ export const ExamHeader = ({ title, examId }: ExamHeaderProps) => {
                     key={duration}
                     duration={duration}
                     onTimeUp={() => {
-                        useQuestionStore.setState({ currentQuestion: examQuestions.length });
+                        useQuestionStore.setState({ currentQuestion: examQuestions.length - 1 });
                         nextQuestion();
                         location.reload();
                     }}
