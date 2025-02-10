@@ -16,7 +16,6 @@ import useTryoutStore from "../../stores/tryoutStore";
 import { customStylesTable } from "../style/customStylesTable";
 import SearchInput from "../../components/layout/SearchInput";
 import FormModalPreviewExcelQuestion from "../../components/admin/FormModalPreviewExcelQuestion";
-import Loading from "../../components/loading/Loading";
 
 const QuestionsList = () => {
     const {
