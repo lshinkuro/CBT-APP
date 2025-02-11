@@ -174,7 +174,7 @@ const SymbolsList = () => {
 
             {/* Main Content */}
             <main
-                className={`flex-1 p-8 transition-all duration-300 ${isMinimized ? "ml-2 md:ml-20" : "ml-2 md:ml-64"}`}
+                className={`flex-1 p-8 pt-36 md:pt-10 transition-all duration-300 ${isMinimized ? "ml-2 md:ml-20" : "ml-2 md:ml-64"}`}
             >
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">List Symbols</h1>
                 <div className="flex items-center justify-between mb-4">

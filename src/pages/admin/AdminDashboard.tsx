@@ -20,7 +20,7 @@ export const AdminDashboard = () => {
             <AdminSidebar isMinimized={isMinimized} toggleSidebar={toggleSidebar} />
 
             {/* Main Content */}
-            <main className={`flex-1 p-8 transition-all duration-300 md:ml-20 lg:ml-64 ${isMinimized ? "ml-20" : "md:ml-64 lg:ml-[21.25rem]"}`}>
+            <main className={`flex-1 p-8 pt-36 md:pt-10 transition-all duration-300 md:ml-20 lg:ml-64 ${isMinimized ? "ml-20" : "md:ml-64 lg:ml-[21.25rem]"}`}>
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
