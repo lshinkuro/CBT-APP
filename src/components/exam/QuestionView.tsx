@@ -78,8 +78,7 @@ export const QuestionView = () => {
                     )}
                     <div className="space-y-3">
                         <h6 className="text-gray-800 font-semibold">
-                            Pilihan {currentQuestionData?.data?.numberOfCorrectAnswers} dari{" "}
-                            {currentQuestionData?.data?.options.length} Opsi
+                            Soal ini memiliki {currentQuestionData?.data?.numberOfCorrectAnswers} jawaban benar
                         </h6>
                         {currentQuestionData?.data?.options.map((option) => (
                             <button
