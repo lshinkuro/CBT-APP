@@ -44,7 +44,7 @@ const FormModalTryout: React.FC<FormModalTryoutProps> = ({
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (!titleTryout || !startDate || !endDate || !code || selectedProgramId === "" || Number(duration) <= 0) {
+        if (!titleTryout || !startDate || !instruction || !endDate || !code || selectedProgramId === "" || Number(duration) <= 0) {
             toast.error("Missing required fields");
             return;
         }

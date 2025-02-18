@@ -56,8 +56,7 @@ const FormModalAccuracyTest: React.FC<FormModalAccuracyTestProps> = ({
             selectedTryoutSectionId === "" ||
             Number(duration) <= 0 ||
             order < 1 ||
-            !checkEmptySymbols ||
-            data.symbols.length < 1
+            (type === "accuracy_symbol" && (!checkEmptySymbols || data.symbols.length < 1))
         ) {
             toast.error("Missing required fields");
             return;
@@ -217,11 +216,9 @@ const FormModalAccuracyTest: React.FC<FormModalAccuracyTestProps> = ({
                         <option value="false">Inactive</option>
                     </select>
                 </div>
-                <InputSymbolPerSession
-                    numberOfSessions={Number(numberOfSessions)}
-                    data={data}
-                    setData={setData}
-                />
+                {type === "accuracy_symbol" && (
+                    <InputSymbolPerSession numberOfSessions={Number(numberOfSessions)} data={data} setData={setData} />
+                )}
             </form>
         </Modal>
     );
