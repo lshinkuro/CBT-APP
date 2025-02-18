@@ -5,6 +5,9 @@ export interface AccuracyTest {
     type: string;
     tryoutSectionId: string;
     numberOfSessions: string;
+    data: {
+        symbols: [];
+    };
     tryoutSection: {
         id: string;
         title: string;

@@ -7,6 +7,7 @@ import useTryoutSectionStore from "../../stores/tryoutSectionStore";
 import useTryoutStore from "../../stores/tryoutStore";
 import SelectTryout from "./SelectTryout";
 import SelectTryoutSection from "./SelectTryoutSection";
+import InputSymbolPerSession from "./InputSymbolPerSession";
 
 const FormModalAccuracyTest: React.FC<FormModalAccuracyTestProps> = ({
     isOpen,
@@ -23,6 +24,7 @@ const FormModalAccuracyTest: React.FC<FormModalAccuracyTestProps> = ({
     const [type, setType] = useState<string>(initialValues?.type ?? "");
     const [numberOfSessions, setNumberOfSessions] = useState<string>(initialValues?.numberOfSessions ?? "");
     const [duration, setDuration] = useState<string>(initialValues?.duration ?? "");
+    const [data, setData] = useState<any>(initialValues?.data ?? { symbols: [] });
     const [isActive, setIsActive] = useState<boolean>(initialValues?.isActive ?? true);
     const [order, setOrder] = useState<number>(initialValues?.order ?? 0);
 
@@ -34,6 +36,7 @@ const FormModalAccuracyTest: React.FC<FormModalAccuracyTestProps> = ({
         setDuration(initialValues?.duration ?? "");
         setIsActive(initialValues?.isActive ?? true);
         setOrder(initialValues?.order ?? 0);
+        setData(initialValues?.data ?? { symbols: [] });
     }, [initialValues]);
 
     const handleCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => setCode(e.target.value);
@@ -43,6 +46,7 @@ const FormModalAccuracyTest: React.FC<FormModalAccuracyTestProps> = ({
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        const checkEmptySymbols = data.symbols.every((symbol: string) => symbol !== "");
         if (
             !code ||
             !title ||
@@ -51,7 +55,9 @@ const FormModalAccuracyTest: React.FC<FormModalAccuracyTestProps> = ({
             selectedTryoutId === "" ||
             selectedTryoutSectionId === "" ||
             Number(duration) <= 0 ||
-            order < 1
+            order < 1 ||
+            !checkEmptySymbols ||
+            data.symbols.length < 1
         ) {
             toast.error("Missing required fields");
             return;
@@ -65,6 +71,7 @@ const FormModalAccuracyTest: React.FC<FormModalAccuracyTestProps> = ({
                 duration,
                 tryoutSectionId: selectedTryoutSectionId,
                 isActive,
+                data,
                 order,
             });
             onClose();
@@ -91,7 +98,15 @@ const FormModalAccuracyTest: React.FC<FormModalAccuracyTestProps> = ({
         const inputValue = e.target.value;
         const regex = /^\d*\.?\d*$/;
         if (regex.test(inputValue)) {
-            setNumberOfSessions(inputValue);
+            const newNumber = String(inputValue);
+            setNumberOfSessions(newNumber);
+            setData((prev: any) => ({
+                ...prev,
+                symbols:
+                    newNumber > prev.symbols.length
+                        ? [...prev.symbols, ...Array(Number(newNumber) - prev.symbols.length).fill("")]
+                        : prev.symbols.slice(0, newNumber),
+            }));
         }
     };
 
@@ -202,6 +217,11 @@ const FormModalAccuracyTest: React.FC<FormModalAccuracyTestProps> = ({
                         <option value="false">Inactive</option>
                     </select>
                 </div>
+                <InputSymbolPerSession
+                    numberOfSessions={Number(numberOfSessions)}
+                    data={data}
+                    setData={setData}
+                />
             </form>
         </Modal>
     );
