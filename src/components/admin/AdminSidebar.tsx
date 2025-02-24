@@ -12,7 +12,6 @@ import {
     Crosshair,
     ChevronsLeft,
     ChevronsRight,
-    Component,
     BookOpenCheck,
 } from "lucide-react";
 import { useState } from "react";
@@ -48,11 +47,6 @@ const menuItems = [
         title: "Questions",
         icon: MessageCircleQuestion,
         path: "/admin/questions",
-    },
-    {
-        title: "Symbols",
-        icon: Component,
-        path: "/admin/symbols",
     },
     {
         title: "Accuracy Tests",

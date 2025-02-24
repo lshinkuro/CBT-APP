@@ -105,7 +105,11 @@ export const ExamHistory = () => {
                                         {/* Score */}
                                         <div className="text-right">
                                             <div className="text-3xl font-bold text-blue-600">
-                                                {exam.data.allTotalScores}
+                                                {exam?.data?.code === "CPNS_SKB" ||
+                                                exam?.data?.code === "POLRI_AKADEMIK" ||
+                                                exam?.data?.code === "POLRI_PSIKOTES"
+                                                    ? exam?.data?.customScores.toFixed(2)
+                                                    : exam?.data?.allTotalScores}
                                             </div>
                                             <p className="text-sm text-black">Nilai Total</p>
                                         </div>

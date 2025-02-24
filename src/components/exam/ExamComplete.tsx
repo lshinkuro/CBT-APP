@@ -43,7 +43,13 @@ export const ExamComplete = () => {
                     <div className="border-t pt-2 mt-2">
                         <div className="flex justify-between font-bold">
                             <span>Total</span>
-                            <span>{currentExam?.data?.allTotalScores}</span>
+                            <span>
+                                {currentExam?.data?.code === "CPNS_SKB" ||
+                                currentExam?.data?.code === "POLRI_AKADEMIK" ||
+                                currentExam?.data?.code === "POLRI_PSIKOTES"
+                                    ? currentExam?.data?.customScores.toFixed(2)
+                                    : currentExam?.data?.allTotalScores}
+                            </span>
                         </div>
                     </div>
                 </div>

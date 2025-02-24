@@ -2,6 +2,7 @@
 import { create } from "zustand";
 import { post, get, put, del } from "../service/api/ApiConfig";
 import { TryoutSectionDto, TryoutSectionState } from "../types/tryoutSection";
+import useTryoutStore from "./tryoutStore";
 
 const useTryoutSectionStore = create<TryoutSectionState>((set) => ({
     selectedTryoutSectionId: "",
@@ -30,11 +31,13 @@ const useTryoutSectionStore = create<TryoutSectionState>((set) => ({
     getAllTryoutSections: async () => {
         set({ isLoading: true });
         try {
+            const { selectedTryoutId } = useTryoutStore.getState();
             const { limit, offset, search } = useTryoutSectionStore.getState();
             const params: Record<string, any> = { limit, offset };
             if (search) {
                 params.search = search;
             }
+            params.selectedTryoutId = selectedTryoutId;
             const response = await get(`/api/admin/tryout-sections`, params);
             if (response.message === "Success") {
                 set({

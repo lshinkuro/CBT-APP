@@ -80,7 +80,9 @@ export const QuestionView = () => {
                         <h6 className="text-gray-800 font-semibold">
                             Soal ini memiliki {currentQuestionData?.data?.numberOfCorrectAnswers} jawaban benar
                         </h6>
-                        {currentQuestionData?.data?.options.map((option) => (
+                        {currentQuestionData?.data?.options.map((option) => {
+                            if(!option.content || option.content === "") return null;
+                            return (
                             <button
                                 key={option.key}
                                 onClick={() => handleOptionSelect(option.key)}
@@ -104,7 +106,7 @@ export const QuestionView = () => {
                                     <span>{option.content}</span>
                                 </div>
                             </button>
-                        ))}
+                        )})}
                     </div>
                     <div className="flex justify-between pt-6">
                         <button

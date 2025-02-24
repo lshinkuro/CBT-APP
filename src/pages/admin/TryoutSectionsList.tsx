@@ -11,11 +11,11 @@ import useTryoutStore from "../../stores/tryoutStore";
 import { MockTryoutSection } from "../../mocks/TryoutSection";
 import { customStylesTable } from "../style/customStylesTable";
 import SearchInput from "../../components/layout/SearchInput";
+import SelectTryout from "../../components/admin/SelectTryout";
 
 const TryoutSectionsList = () => {
     const {
         totalRows,
-        tryoutSections,
         isLoading,
         getAllTryoutSections,
         createTryoutSection,
@@ -23,8 +23,10 @@ const TryoutSectionsList = () => {
         deleteTryoutSection,
         error,
         message,
+        tryoutSections,
+        getAllAvailableTryoutSectionsByTryoutId
     } = useTryoutSectionStore();
-    const { getAllAvailableTryouts } = useTryoutStore();
+    const { selectedTryoutId } = useTryoutStore();
     const [isOpenModal, setIsOpenModal] = useState(false);
     const [mode, setMode] = useState<"create" | "update">("create");
     const [limit, setLimit] = useState<number>(10);
@@ -121,8 +123,15 @@ const TryoutSectionsList = () => {
 
     useEffect(() => {
         getAllTryoutSections();
-        getAllAvailableTryouts();
-    }, [getAllTryoutSections, getAllAvailableTryouts]);
+    }, [getAllTryoutSections, selectedTryoutId]);
+
+    useEffect(() => {
+        if (selectedTryoutId !== "") {
+            getAllAvailableTryoutSectionsByTryoutId(selectedTryoutId);
+        } else {
+            useTryoutSectionStore.setState({ availableTryoutSections: [] });
+        }
+    }, [getAllAvailableTryoutSectionsByTryoutId, selectedTryoutId]);
 
     useEffect(() => {
         if (error) {
@@ -206,6 +215,7 @@ const TryoutSectionsList = () => {
                 className={`flex-1 p-8 pt-36 md:pt-10 transition-all duration-300 ${isMinimized ? "ml-2 md:ml-20" : "ml-2 md:ml-64"}`}
             >
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">List Tryout Sections</h1>
+                <SelectTryout/>
                 <div className="flex items-center justify-between mb-4">
                     <button
                         className="bg-blue-500 hover:bg-blue-700 px-4 py-2 text-sm text-white font-semibold rounded flex items-center"

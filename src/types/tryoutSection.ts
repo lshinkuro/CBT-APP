@@ -16,15 +16,19 @@ export interface TryoutSection {
 }
 
 export interface AvailableTryoutSections {
-    id: string;
-    title: string;
-    type: string;
-    code: string;
-    description: string;
     tryout: {
         id: string;
         title: string;
     };
+    id: string;
+    tryoutId: string;
+    title: string;
+    code: string;
+    description: string;
+    type: string;
+    order: number;
+    isActive: boolean;
+    createdAt: string;
 }
 export interface TryoutSectionState {
     selectedTryoutSectionId: string;
