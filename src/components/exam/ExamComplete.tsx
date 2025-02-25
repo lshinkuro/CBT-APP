@@ -44,12 +44,16 @@ export const ExamComplete = () => {
                         <div className="flex justify-between font-bold">
                             <span>Total</span>
                             <span>
-                                {currentExam?.data?.code === "CPNS_SKB" ||
-                                currentExam?.data?.code === "POLRI_AKADEMIK" ||
-                                currentExam?.data?.code === "POLRI_PSIKOTES"
+                                {(currentExam?.data?.code?.includes("CPNS_SKB_") ||
+                                    currentExam?.data?.code?.includes("POLRI_AKADEMIK_") ||
+                                    currentExam?.data?.code?.includes("POLRI_PSIKOTES_")) &&
+                                currentExam?.data?.customScores
                                     ? currentExam?.data?.customScores.toFixed(2)
                                     : currentExam?.data?.allTotalScores}
                             </span>
+                            <div>
+                                <p className="text-sm text-black">{currentExam?.data?.accuracyScoreInfo}</p>
+                            </div>
                         </div>
                     </div>
                 </div>

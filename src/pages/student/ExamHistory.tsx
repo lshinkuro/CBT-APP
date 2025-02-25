@@ -105,13 +105,15 @@ export const ExamHistory = () => {
                                         {/* Score */}
                                         <div className="text-right">
                                             <div className="text-3xl font-bold text-blue-600">
-                                                {exam?.data?.code === "CPNS_SKB" ||
-                                                exam?.data?.code === "POLRI_AKADEMIK" ||
-                                                exam?.data?.code === "POLRI_PSIKOTES"
+                                                {(exam?.data?.code?.includes("CPNS_SKB_") ||
+                                                    exam?.data?.code?.includes("POLRI_AKADEMIK_") ||
+                                                    exam?.data?.code?.includes("POLRI_PSIKOTES_")) &&
+                                                exam?.data?.customScores
                                                     ? exam?.data?.customScores.toFixed(2)
                                                     : exam?.data?.allTotalScores}
                                             </div>
                                             <p className="text-sm text-black">Nilai Total</p>
+                                            <p className="text-sm text-black">{exam?.data?.accuracyScoreInfo}</p>
                                         </div>
                                     </div>
                                     <div className="flex justify-end mt-4">
